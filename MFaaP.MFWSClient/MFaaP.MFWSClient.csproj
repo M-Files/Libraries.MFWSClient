@@ -14,7 +14,7 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <Version>1.0.1-alpha</Version>
     <FileVersion>0.1.0</FileVersion>
     <Authors>M-Files Corporation</Authors>
     <Description>Sample .NET wrapper for the M-Files Web Service.  Not designed for production use.</Description>
@@ -26,7 +26,8 @@
     <PackageVersion>1.0.0-alpha</PackageVersion>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>M-Files REST-API MFWS wrapper</PackageTags>
-    <PackageProjectUrl>https://github.com/M-Files/MFilesSamplesAndLibraries</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/M-Files/Libraries.MFWSClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/M-Files/Libraries.MFWSClient</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
