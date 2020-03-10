@@ -14,6 +14,10 @@ It currently provides the following functionality:
 * Vault extension method execution
 * Searching
 
+## Nuget package
+
+This library is available [via nuget](https://www.nuget.org/packages/MFaaP.MFWSClient).  The simplest way to get started with this library is to add the `MFaaP.MFWSClient` package to your class library.  .NET Framework 4.6 (and higher) and .NET Standard 2.0 runtimes are supported.
+
 ## Basic usage
 
 This functionality is exposed by the `MFWSClient` object, which takes the URL of the M-Files Web Service in the constructor:
