@@ -23,7 +23,7 @@
   
   <PropertyGroup>
     <PackageId>MFaaP.MFWSClient</PackageId>
-    <PackageVersion>1.0.1-alpha</PackageVersion>
+    <PackageVersion>1.0.2-alpha</PackageVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>M-Files REST-API MFWS wrapper</PackageTags>
     <PackageProjectUrl>https://github.com/M-Files/Libraries.MFWSClient</PackageProjectUrl>
