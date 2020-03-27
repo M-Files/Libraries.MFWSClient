@@ -189,6 +189,9 @@ namespace MFaaP.MFWSClient
 		/// <param name="value">The value of the HTTP header.</param>
 		public void AddDefaultHeader(string name, string value)
 		{
+			try { this.restClient.RemoveDefaultParameter(name); }
+			catch{ }
+
 			this.restClient.AddDefaultHeader(name, value);
 		}
 
