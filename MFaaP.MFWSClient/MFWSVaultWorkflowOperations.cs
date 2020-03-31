@@ -21,6 +21,60 @@ namespace MFaaP.MFWSClient
 		{
 		}
 
+		#region Get workflow states
+
+		/// <summary>
+		/// Gets all workflow states in the provided workflow.
+		/// </summary>
+		/// <param name="workflowId">The workflow identifier.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for the request.</returns>
+		public async Task<WorkflowState[]> GetWorkflowStatesAsync(int workflowId, CancellationToken token = default(CancellationToken))
+		{
+			// Create the request.
+			var request = new RestRequest($"/REST/structure/workflows/{workflowId}/states.aspx");
+
+			// Execute the request and parse the response.
+			var response = await this.MFWSClient.Get<List<WorkflowState>>(request, token);
+
+			// Return the typed response.
+			return response?.Data.ToArray();
+		}
+
+		/// <summary>
+		/// Gets all workflow states in the provided workflow.
+		/// </summary>
+		/// <param name="workflowId">The workflow identifier.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for the request.</returns>
+		public WorkflowState[] GetWorkflowStates(int workflowId, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetWorkflowStatesAsync(workflowId, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Gets the <see cref="WorkflowState"/> in the provided workflow with the name <paramref name="stateName"/>.
+		/// </summary>
+		/// <param name="workflowId">The workflow identifier.</param>
+		/// <param name="stateName">Name of the state.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for the request.  Task will return null if no state with that name is found.</returns>
+		/// <remarks>Note that this will retrieve all workflow states from the server and then filter them by the name, so will be inefficient to call multiple times.</remarks>
+		public WorkflowState GetWorkflowStateByName(int workflowId, string stateName, CancellationToken token = default(CancellationToken))
+		{
+			// Get all the states.
+			var workflowStates = this.GetWorkflowStates(workflowId, token);
+
+			// Filter to just the first one.
+			return workflowStates.FirstOrDefault(state => (state.Name ?? string.Empty).Equals(stateName, StringComparison.InvariantCultureIgnoreCase));
+		}
+
+		#endregion
+
 		#region Workflow alias to ID resolution
 
 		/// <summary>
