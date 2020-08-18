@@ -198,6 +198,64 @@ namespace MFaaP.MFWSClient.Tests
 			runner.Verify();
 		}
 
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
+		/// requests the correct resource address when passing a limit = 0 (unlimited numbers of records).
+		/// </summary>
+		[TestMethod]
+		public async Task SearchForObjectsByConditionsAsync_ObjectTypeSearchConditionAndUnlimited()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<Results<ObjectVersion>>
+			(
+				Method.GET,
+				$"/REST/objects?o=123&limit=0"
+			);
+
+			// Execute.
+			await runner
+				.MFWSClient
+				.ObjectSearchOperations
+				.SearchForObjectsByConditionsAsync
+				(
+					0,
+					new ObjectTypeSearchCondition(123)
+				);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
+		/// requests the correct resource address when passing a limit = -1 (default numbers (500) of records).
+		/// </summary>
+		[TestMethod]
+		public async Task SearchForObjectsByConditionsAsync_ObjectTypeSearchConditionDefaultLimit()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<Results<ObjectVersion>>
+			(
+				Method.GET,
+				$"/REST/objects?o=123"
+			);
+
+			// Execute.
+			await runner
+				.MFWSClient
+				.ObjectSearchOperations
+				.SearchForObjectsByConditionsAsync
+				(
+					-1,
+					new ObjectTypeSearchCondition(123)
+				);
+
+			// Verify.
+			runner.Verify();
+		}
+
+
 		/// <summary>
 		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
 		/// requests the correct resource address.
