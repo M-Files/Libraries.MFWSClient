@@ -172,6 +172,34 @@ namespace MFaaP.MFWSClient.Tests
 
 		/// <summary>
 		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
+		/// requests the correct resource address when passing a limit to the number of records.
+		/// </summary>
+		[TestMethod]
+		public async Task SearchForObjectsByConditionsAsync_ObjectTypeSearchConditionAndRecordLimit()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<Results<ObjectVersion>>
+			(
+				Method.GET,
+				$"/REST/objects?o=123&limit=2"
+			);
+
+			// Execute.
+			await runner
+				.MFWSClient
+				.ObjectSearchOperations
+				.SearchForObjectsByConditionsAsync
+				(
+					2,
+					new ObjectTypeSearchCondition(123)
+				);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
 		/// requests the correct resource address.
 		/// </summary>
 		[TestMethod]
