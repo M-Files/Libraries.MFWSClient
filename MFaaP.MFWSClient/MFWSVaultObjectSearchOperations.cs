@@ -13,6 +13,9 @@ namespace MFaaP.MFWSClient
 	public class MFWSVaultObjectSearchOperations
 		: MFWSVaultOperationsBase
 	{
+
+		private const int defaultSearchLimit = -1;
+
 		/// <summary>
 		/// Creates a new <see cref="MFWSVaultObjectSearchOperations"/> object.
 		/// </summary>
@@ -27,10 +30,11 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="searchTerm">The string to search for.</param>
 		/// <param name="objectTypeId">If provided, also restricts the results by the given object type.</param>
+		/// <param name="limit">If -1, uses Mfiles default at server (default 500 items returned), when 0, it's unlimited</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An array of items that match the search term.</returns>
 		/// <remarks>For more comprehensive search options, construct a series of <see cref="ISearchCondition"/> objects and use the <see cref="SearchForObjectsByString"/> method.</remarks>
-		public Task<ObjectVersion[]> SearchForObjectsByStringAsync(string searchTerm, int? objectTypeId = null, CancellationToken token = default(CancellationToken))
+		public Task<ObjectVersion[]> SearchForObjectsByStringAsync(string searchTerm, int? objectTypeId = null, int limit = defaultSearchLimit, CancellationToken token = default(CancellationToken))
 		{
 			// Create a collection of conditions.
 			var conditions = new List<ISearchCondition>
@@ -46,7 +50,7 @@ namespace MFaaP.MFWSClient
 			}
 
 			// Search.
-			return this.SearchForObjectsByConditionsAsync(token, conditions.ToArray());
+			return this.SearchForObjectsByConditionsAsync(token, limit, conditions.ToArray());
 		}
 
 		/// <summary>
@@ -54,13 +58,14 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="searchTerm">The string to search for.</param>
 		/// <param name="objectTypeId">If provided, also restricts the results by the given object type.</param>
+		/// <param name="limit">If -1, uses Mfiles default at server (default 500 items returned), if 0 it's unlimited</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An array of items that match the search term.</returns>
 		/// <remarks>For more comprehensive search options, construct a series of <see cref="ISearchCondition"/> objects and use the <see cref="SearchForObjectsByString"/> method.</remarks>
-		public ObjectVersion[] SearchForObjectsByString(string searchTerm, int? objectTypeId = null, CancellationToken token = default(CancellationToken))
+		public ObjectVersion[] SearchForObjectsByString(string searchTerm, int? objectTypeId = null, int limit = defaultSearchLimit, CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
-			return this.SearchForObjectsByStringAsync(searchTerm, objectTypeId, token)
+			return this.SearchForObjectsByStringAsync(searchTerm, objectTypeId, limit, token)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
@@ -73,7 +78,18 @@ namespace MFaaP.MFWSClient
 		/// <returns>An array of items that match the search conditions.</returns>
 		public Task<ObjectVersion[]> SearchForObjectsByConditionsAsync(params ISearchCondition[] searchConditions)
 		{
-			return this.SearchForObjectsByConditionsAsync(CancellationToken.None, searchConditions);
+			return this.SearchForObjectsByConditionsAsync(CancellationToken.None, defaultSearchLimit, searchConditions);
+		}
+
+		/// <summary>
+		/// Searches the vault.
+		/// </summary>
+		/// <param name="searchConditions">The conditions to search for.</param>
+		/// <param name="limit">If -1, uses Mfiles default at server (default 500 items returned). If 0 it's unlimited</param>
+		/// <returns>An array of items that match the search conditions.</returns>
+		public Task<ObjectVersion[]> SearchForObjectsByConditionsAsync(int limit, params ISearchCondition[] searchConditions)
+		{
+			return this.SearchForObjectsByConditionsAsync(CancellationToken.None, limit, searchConditions);
 		}
 
 		/// <summary>
@@ -83,8 +99,19 @@ namespace MFaaP.MFWSClient
 		/// <returns>An array of items that match the search conditions.</returns>
 		public ObjectVersion[] SearchForObjectsByConditions(params ISearchCondition[] searchConditions)
 		{
+			return this.SearchForObjectsByConditions(defaultSearchLimit, searchConditions);
+		}
+
+		/// <summary>
+		/// Searches the vault.
+		/// </summary>
+		/// <param name="limit">If -1, uses Mfiles default at server (default 500 items returned), If 0, it's unlimited</param>
+		/// <param name="searchConditions">The conditions to search for.</param>
+		/// <returns>An array of items that match the search conditions.</returns>
+		public ObjectVersion[] SearchForObjectsByConditions(int limit, params ISearchCondition[] searchConditions)
+		{
 			// Execute the async method.
-			return this.SearchForObjectsByConditionsAsync(searchConditions)
+			return this.SearchForObjectsByConditionsAsync(limit, searchConditions)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
@@ -94,9 +121,10 @@ namespace MFaaP.MFWSClient
 		/// Searches the vault.
 		/// </summary>
 		/// <param name="searchConditions">The conditions to search for.</param>
+		/// <param name="limit">If -1, uses Mfiles default at server (default 500 items returned), if 0 its unlimited</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An array of items that match the search conditions.</returns>
-		public async Task<ObjectVersion[]> SearchForObjectsByConditionsAsync(CancellationToken token, params ISearchCondition[] searchConditions)
+		public async Task<ObjectVersion[]> SearchForObjectsByConditionsAsync(CancellationToken token, int limit, params ISearchCondition[] searchConditions)
 		{
 			// Sanity.
 			if (null == searchConditions)
@@ -128,6 +156,12 @@ namespace MFaaP.MFWSClient
 				request.Resource += "&";
 			}
 
+			// by default, the limit will be 500, when 0 it will be unlimited.
+			if (limit > defaultSearchLimit)
+			{
+				request.Resource += $"limit={limit}";
+			}
+
 			// Strip last ampersand if needed.
 			if (request.Resource.EndsWith("&"))
 				request.Resource = request.Resource.Substring(0, request.Resource.Length - 1);
@@ -148,12 +182,13 @@ namespace MFaaP.MFWSClient
 		/// Searches the vault.
 		/// </summary>
 		/// <param name="searchConditions">The conditions to search for.</param>
+		/// <param name="limit">If -1, uses Mfiles default at server (default 500 items returned), if 0, it's unlimited</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An array of items that match the search conditions.</returns>
-		public ObjectVersion[] SearchForObjectsByConditions(CancellationToken token, params ISearchCondition[] searchConditions)
+		public ObjectVersion[] SearchForObjectsByConditions(CancellationToken token, int limit = defaultSearchLimit, params ISearchCondition[] searchConditions)
 		{
 			// Execute the async method.
-			return this.SearchForObjectsByConditionsAsync(token, searchConditions)
+			return this.SearchForObjectsByConditionsAsync(token, limit, searchConditions)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
