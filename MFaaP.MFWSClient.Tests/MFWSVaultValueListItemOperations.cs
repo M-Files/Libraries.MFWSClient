@@ -149,6 +149,41 @@ namespace MFaaP.MFWSClient.Tests
 			runner.Verify();
 		}
 
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.CreateValueListItemAsync"/>
+		/// requests the correct resource using the correct method.
+		/// </summary>
+		[TestMethod]
+		public async Task  CreateValueListItemAsync()
+        {
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Execute.
+			await runner.MFWSClient.ValueListItemOperations.CreateValueListItemAsync(1, "new valuelistItem name");
+
+			// Verify.
+			runner.Verify();
+        }
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.CreateValueListItem"/>
+		/// requests the correct resource using the correct method.
+		/// </summary>
+		[TestMethod]
+		public void CreateValueListItem()
+        {
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Execute.
+			runner.MFWSClient.ValueListItemOperations.CreateValueListItem(1, "new valuelistItem name");
+
+			// Verify.
+			runner.Verify();
+        }
+
+
 		#endregion
 
 	}
