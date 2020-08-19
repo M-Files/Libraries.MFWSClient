@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -149,12 +150,16 @@ namespace MFaaP.MFWSClient.Tests
 			runner.Verify();
 		}
 
+		#endregion
+
+		#region AddValueListItem
+
 		/// <summary>
 		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.CreateValueListItemAsync"/>
 		/// requests the correct resource using the correct method.
 		/// </summary>
 		[TestMethod]
-		public async Task AddValueListItemAsync()
+		public async Task AddValueListItemByNameAsync()
 		{
 			// Create our test runner.
 			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
@@ -173,6 +178,141 @@ namespace MFaaP.MFWSClient.Tests
 
 			// Verify.
 			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.AddValueListItemAsync"/>
+		/// excepts with a null name.
+		/// </summary>
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public async Task AddValueListItemByNameAsyncThrowsWithNullName()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Execute.
+			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync(1, newItemName: null);
+		}
+
+		/// <summary>
+		/// Ensures that <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.AddValueListItemAsync"/>
+		/// excepts with a blank name.
+		/// </summary>
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public async Task AddValueListItemByNameAsyncThrowsWithBlankName()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Execute.
+			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync(1, newItemName: "");
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.AddValueListItem"/>
+		/// requests the correct resource using the correct method.
+		/// </summary>
+		[TestMethod]
+		public void AddValueListItemByName()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Set the expected body.
+			var newVLitem = new ValueListItem
+			{
+				ValueListID = 1,
+				Name = "new valuelistItem name"
+			};
+
+			runner.SetExpectedRequestBody(newVLitem);
+
+
+			// Execute.
+			runner.MFWSClient.ValueListItemOperations.AddValueListItem(1, "new valuelistItem name");
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.AddValueListItemAsync"/>
+		/// requests the correct resource using the correct method.
+		/// </summary>
+		[TestMethod]
+		public async Task AddValueListItemAsync()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Set the expected body.
+			var newVLitem = new ValueListItem
+			{
+				ValueListID = 1,
+				Name = "new valuelistItem name"
+			};
+
+			runner.SetExpectedRequestBody(newVLitem);
+
+			// Execute.
+			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync
+			(
+				1,
+				newVLitem
+			);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.AddValueListItemAsync"/>
+		/// requests the correct resource using the correct method.
+		/// </summary>
+		[TestMethod]
+		public async Task AddValueListItemValueListIDPopulatedAsync()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/23/items");
+
+			// Set the expected body.
+			var newVLitem = new ValueListItem
+			{
+				ValueListID = 23,
+				Name = "new valuelistItem name"
+			};
+
+			runner.SetExpectedRequestBody(newVLitem);
+
+			// Execute.
+			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync
+			(
+				23,
+				new ValueListItem
+				{
+					Name = "new valuelistItem name"
+				}
+			);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that <see cref="MFaaP.MFWSClient.MFWSVaultValueListItemOperations.AddValueListItemAsync"/>
+		/// excepts with a null value.
+		/// </summary>
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public async Task AddValueListItemAsyncThrowsWithNull()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+
+			// Execute.
+			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync(1, valueListItem: null);
 		}
 
 		/// <summary>
@@ -196,12 +336,15 @@ namespace MFaaP.MFWSClient.Tests
 
 
 			// Execute.
-			runner.MFWSClient.ValueListItemOperations.AddValueListItem(1, "new valuelistItem name");
+			runner.MFWSClient.ValueListItemOperations.AddValueListItem
+			(
+				1,
+				newVLitem
+			);
 
 			// Verify.
 			runner.Verify();
 		}
-
 
 		#endregion
 

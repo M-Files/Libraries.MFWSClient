@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -76,20 +77,61 @@ namespace MFaaP.MFWSClient
 		/// Creates a new item with the <see cref="newItemName"/> in the value list with id <see cref="valueListId"/>.
 		/// </summary>
 		/// <param name="valueListId">The Id of the value list to create the new item in.</param>
-		/// <param name="newItemName">Name of the new value list item to create</param>
+		/// <param name="newItemName">Name of the new value list item to create.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The newly created value list item</returns>
-		public async Task<ValueListItem> AddValueListItemAsync(int valueListId, string newItemName, CancellationToken token = default(CancellationToken))
+		public Task<ValueListItem> AddValueListItemAsync(int valueListId, string newItemName, CancellationToken token = default(CancellationToken))
 		{
+			// Sanity.
+			if (string.IsNullOrWhiteSpace(newItemName))
+				throw new ArgumentException("The value list item must have a name.", nameof(newItemName));
+
+			// Create the value list item instance.
 			var newValueListItem = new ValueListItem
 			{
-				Name		= newItemName,
+				Name = newItemName,
 				ValueListID = valueListId
 			};
 
+			// Use the other overload.
+			return this.AddValueListItemAsync(valueListId, newValueListItem, token);
+		}
+
+		/// Creates a new item with the <see cref="newItemName"/> in the value list with id <see cref="valueListId"/>.
+		/// </summary>
+		/// <param name="valueListId">The Id of the value list to create the new item in.</param>
+		/// <param name="newItemName">Name of the new value list item to create.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The newly created value list item</returns>
+		public ValueListItem AddValueListItem(int valueListId, string newItemName, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.AddValueListItemAsync(valueListId, newItemName, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Creates a new <see cref="valueListItem"/> in the value list with id <see cref="valueListId"/>.
+		/// </summary>
+		/// <param name="valueListId">The Id of the value list to create the new item in.</param>
+		/// <param name="valueListItem">The value list item to create.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The newly created value list item</returns>
+		public async Task<ValueListItem> AddValueListItemAsync(int valueListId, ValueListItem valueListItem, CancellationToken token = default(CancellationToken))
+		{
+			// Sanity.
+			if (null == valueListItem)
+				throw new ArgumentNullException(nameof(valueListItem));
+			if (valueListItem.ValueListID != valueListId)
+				valueListItem.ValueListID = valueListId;
+			if (string.IsNullOrWhiteSpace(valueListItem.Name))
+				throw new ArgumentException("The value list item must have a name.", nameof(valueListItem));
+
 			// Create the request.
 			var request = new RestRequest($"/REST/valuelists/{valueListId}/items");
-			request.AddJsonBody(newValueListItem);
+			request.AddJsonBody(valueListItem);
 
 			// Make the request and get the response.
 			var response = await this.MFWSClient.Post<ValueListItem>(request, token)
@@ -98,16 +140,17 @@ namespace MFaaP.MFWSClient
 			return response.Data;
 		}
 
-		/// Creates a new item with the <see cref="newItemName"/> in the value list with id <see cref="valueListId"/>.
+		/// <summary>
+		/// Creates a new <see cref="valueListItem"/> in the value list with id <see cref="valueListId"/>.
 		/// </summary>
 		/// <param name="valueListId">The Id of the value list to create the new item in.</param>
-		/// <param name="newItemName">Name of the new value list item to create</param>
+		/// <param name="valueListItem">The value list item to create.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The newly created value list item</returns>
-		public ValueListItem AddValueListItem(int valueListId, string newItemName, CancellationToken token = default(CancellationToken))
+		public ValueListItem AddValueListItem(int valueListId, ValueListItem valueListItem, CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
-			return this.AddValueListItemAsync(valueListId, newItemName, token)
+			return this.AddValueListItemAsync(valueListId, valueListItem, token)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
