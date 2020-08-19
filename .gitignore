@@ -340,3 +340,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+MFaaP.MFWSClient-with-sandbox.sln
+Sandbox/
