@@ -2510,11 +2510,15 @@ namespace MFaaP.MFWSClient
     public class ClassGroup
     {
 
+		public ClassGroup() { }
+
         /// <summary>
         /// Based on M-Files API.
         /// </summary>
         public string Name { get; set; }
         
+		public List<ExtendedObjectClass> Classes { get; set; }
+
     }
 
     
