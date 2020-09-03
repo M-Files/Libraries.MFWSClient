@@ -219,44 +219,6 @@ namespace MFaaP.MFWSClient
 				.GetAwaiter()
 				.GetResult();
 		}
-
-
-		/// <summary>
-        /// Gets a list of all class groups with classes in the vault for a given object type.
-        /// </summary>
-        /// <param name="objectTypeId">The type of the object.</param>
-        /// <param name="token">A cancellation token for the request.</param>
-        /// <returns>All classes in the vault for the supplied object type.</returns>
-        /// <remarks>This may be filtered by the user's permissions.</remarks>
-        public async Task<List<ClassGroup>> GetObjectClassGroupsAsync(int objectTypeId, CancellationToken token = default(CancellationToken))
-        {
-            // Create the request.
-            var request = new RestRequest($"/REST/structure/classes.aspx?objtype={objectTypeId}&bygroup=true");
-
-            // Make the request and get the response.
-            var response = await this.MFWSClient.Get<List<ClassGroup>>(request, token)
-                .ConfigureAwait(false);
-
-            // Return the data.
-            return response.Data;
-        }
-
-        /// <summary>
-        /// Gets a list of all classes in the vault for a given object type.
-        /// </summary>
-        /// <param name="objectTypeId">The type of the object.</param>
-        /// <param name="token">A cancellation token for the request.</param>
-        /// <returns>All classes in the vault for the supplied object type.</returns>
-        /// <remarks>This may be filtered by the user's permissions.</remarks>
-        public List<ClassGroup> GetObjectClassGroups(int objectTypeId, CancellationToken token = default(CancellationToken))
-		{
-			// Execute the async method.
-			return this.GetObjectClassGroupsAsync(objectTypeId, token)
-				.ConfigureAwait(false)
-				.GetAwaiter()
-				.GetResult();
-		}
-
 	}
-	
+
 }
