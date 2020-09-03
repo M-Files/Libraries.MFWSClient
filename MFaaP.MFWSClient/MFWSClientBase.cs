@@ -113,6 +113,11 @@ namespace MFaaP.MFWSClient
 		public MFWSVaultClassOperations ClassOperations { get; }
 
 		/// <summary>
+		/// Gets the class operations interface.
+		/// </summary>
+		public MFWSVaultClassGroupOperations ClassGroupOperations { get; }
+
+		/// <summary>
 		/// Gets the property definitions operations interface.
 		/// </summary>
 		public MFWSVaultPropertyDefOperations PropertyDefOperations { get; }
@@ -160,6 +165,7 @@ namespace MFaaP.MFWSClient
 			this.ObjectTypeOperations = new MFWSVaultObjectTypeOperations(this);
 			this.ValueListOperations = new MFWSVaultValueListOperations(this);
 			this.ObjectFileOperations = new MFWSVaultObjectFileOperations(this);
+			this.ClassGroupOperations = new MFWSVaultClassGroupOperations(this);
 			this.ClassOperations = new MFWSVaultClassOperations(this);
 			this.PropertyDefOperations = new MFWSVaultPropertyDefOperations(this);
 			this.AutomaticMetadataOperations = new MFWSVaultAutomaticMetadataOperations(this);
@@ -220,7 +226,7 @@ namespace MFaaP.MFWSClient
 			if (null == acceptLanguages)
 				return;
 
-			// Set the 
+			// Set the
 			this.AddDefaultHeader(MFWSClientBase.AcceptLanguageHttpHeaderName, acceptLanguages);
 		}
 
