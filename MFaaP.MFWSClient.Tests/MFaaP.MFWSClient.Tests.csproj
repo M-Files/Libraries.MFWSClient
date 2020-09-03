@@ -54,6 +54,7 @@
     <Compile Include="ExtensionMethods\IRestRequestExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\ListParameterExtensionMethods.cs" />
     <Compile Include="MFWSVaultAutomaticMetadataOperations.cs" />
+    <Compile Include="MFWSVaultClassGroupOperations.cs" />
     <Compile Include="MFWSVaultExtensionAuthenticationOperations.cs" />
     <Compile Include="MFWSVaultExternalObjectOperations.cs" />
     <Compile Include="MFWSVaultObjectFileOperations.cs" />

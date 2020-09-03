@@ -142,45 +142,6 @@ namespace MFaaP.MFWSClient.Tests
 		/// requests the correct resource address with the correct method.
 		/// </summary>
 		[TestMethod]
-		public async Task GetObjectClassGroupsAsync()
-		{
-			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ClassGroup>>(Method.GET, "/REST/structure/classes.aspx?objtype=0&bygroup=true");
-
-			// Execute.
-			await runner.MFWSClient.ClassOperations.GetObjectClassGroupsAsync(0);
-
-			// Verify.
-			runner.Verify();
-		}
-
-		/// <summary>
-		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultClassOperations.GetObjectClasses"/>
-		/// requests the correct resource address with the correct method.
-		/// </summary>
-		[TestMethod]
-		public void GetObjectClassGroups()
-		{
-			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ClassGroup>>(Method.GET, "/REST/structure/classes.aspx?objtype=0&bygroup=true");
-
-			// Execute.
-			runner.MFWSClient.ClassOperations.GetObjectClassGroups(0);
-
-			// Verify.
-			runner.Verify();
-		}
-
-		#endregion
-
-
-		#region GetObjectClasses
-
-		/// <summary>
-		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultClassOperations.GetObjectClassesAsync"/>
-		/// requests the correct resource address with the correct method.
-		/// </summary>
-		[TestMethod]
 		public async Task GetObjectClassesAsync()
 		{
 			// Create our test runner.
