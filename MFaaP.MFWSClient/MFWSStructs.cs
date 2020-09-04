@@ -1898,6 +1898,16 @@ namespace MFaaP.MFWSClient
         public int OwnerPropertyDef { get; set; }
         
         /// <summary>
+        /// Is this ValueList a sublist of another (eg, does this ValueList have an owner)?
+        /// </summary>
+		public bool HasOwner { get; set; }
+
+        /// <summary>
+        /// If HasOwner is true, Owner will yield the ID of the Owner ValueList.
+        /// </summary>
+		public int Owner { get; set; }
+
+        /// <summary>
         /// Based on M-Files API.
         /// </summary>
         public List<int> ReadOnlyPropertiesDuringInsert { get; set; }
