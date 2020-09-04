@@ -27,8 +27,7 @@
     <PackageProjectUrl>https://github.com/M-Files/Libraries.MFWSClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/M-Files/Libraries.MFWSClient</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Adds methods to retrieve workflow states: https://github.com/M-Files/Libraries.MFWSClient/commit/9537ca55cf5fb81b2de38047667b3ea09851d9f5
-Adds an explicit .NET Framework 4.8 target.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
   
   <Target Name="PostBuild" AfterTargets="Pack" Condition=" '$(Configuration)' == 'Release'">
