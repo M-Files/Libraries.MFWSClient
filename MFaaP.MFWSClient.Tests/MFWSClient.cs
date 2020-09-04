@@ -54,6 +54,27 @@ namespace MFaaP.MFWSClient.Tests
 			runner.Verify();
 		}
 
+		[TestMethod]
+		public void InstantiationAlsoPopulatesPropertiesAndFields()
+		{
+			var client = new MFaaP.MFWSClient.MFWSClient("http://localhost");
+			Assert.IsNotNull(client.AutomaticMetadataOperations);
+			Assert.IsNotNull(client.ClassGroupOperations);
+			Assert.IsNotNull(client.ClassOperations);
+			Assert.IsNotNull(client.ExtensionAuthenticationOperations);
+			Assert.IsNotNull(client.ExtensionMethodOperations);
+			Assert.IsNotNull(client.ExternalObjectOperations);
+			Assert.IsNotNull(client.ObjectFileOperations);
+			Assert.IsNotNull(client.ObjectOperations);
+			Assert.IsNotNull(client.ObjectPropertyOperations);
+			Assert.IsNotNull(client.ObjectSearchOperations);
+			Assert.IsNotNull(client.ObjectTypeOperations);
+			Assert.IsNotNull(client.PropertyDefOperations);
+			Assert.IsNotNull(client.ValueListItemOperations);
+			Assert.IsNotNull(client.ValueListOperations);
+			Assert.IsNotNull(client.WorkflowOperations);
+		}
+
 		/// <summary>
 		/// Creates a MFWSClient using the supplied mock request client.
 		/// </summary>
