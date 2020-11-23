@@ -878,24 +878,44 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
-		public async Task<UploadInfo> UploadTemporaryFileBlockBeginAsync(FileInfo fileInfo, CancellationToken token = default(CancellationToken))
+		public Task<UploadInfo> UploadTemporaryFileBlockBeginAsync(FileInfo fileInfo, CancellationToken token = default)
 		{
 			// Sanity.
-			if(null == fileInfo)
+			if (null == fileInfo)
 				throw new ArgumentNullException(nameof(fileInfo));
-			if(false == fileInfo.Exists)
+			if (false == fileInfo.Exists)
 				throw new ArgumentException("The file must exist.", nameof(fileInfo));
-
-			// Create the request.
-			var request = new RestRequest("/REST/files/upload.aspx");
 
 			// Add the request body.
 			var uploadInfo = new UploadInfo()
 			{
-				Extension = fileInfo.Extension.Substring(1), // Remove the dot.
+				Extension = fileInfo.Extension.StartsWith(".")
+					? fileInfo.Extension.Substring(1) // Remove the dot.
+					: fileInfo.Extension,
 				Size = fileInfo.Length,
 				Title = fileInfo.Name
 			};
+
+			// Use the other overload.
+			return UploadTemporaryFileBlockBeginAsync(uploadInfo, token);
+
+		}
+
+		/// <summary>
+		/// Begins the upload of a file to a temporary location.
+		/// </summary>
+		/// <param name="fileInfo">The file to upload.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Information on the upload.</returns>
+		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
+		public async Task<UploadInfo> UploadTemporaryFileBlockBeginAsync(UploadInfo uploadInfo, CancellationToken token = default)
+		{
+			// Sanity.
+			if(null == uploadInfo)
+				throw new ArgumentNullException(nameof(uploadInfo));
+
+			// Create the request.
+			var request = new RestRequest("/REST/files/upload.aspx");
 			request.AddJsonBody(uploadInfo);
 
 			// Execute the request.
@@ -1045,6 +1065,73 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Uploads a temporary file to M-Files using blocks of the given size.
 		/// </summary>
+		/// <param name="newFileName">The new file name, e.g. "hello.docx"</param>
+		/// <param name="fileToUpload">The file to upload.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <param name="blockSize">The chunk size (bytes)to upload in.  Defaults to 2MB.</param>
+		/// <returns>Information on the upload.</returns>
+		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
+		public async Task<UploadInfo> UploadTemporaryFileInBlocksAsync(
+			string newFileName,
+			Stream fileToUpload,
+			CancellationToken token = default,
+			int blockSize = 1024 * 1024 * 2)
+		{
+			// Sanity.
+			if (null == fileToUpload)
+				throw new ArgumentNullException(nameof(fileToUpload));
+			if (null == fileToUpload)
+				throw new ArgumentNullException("The file must exist.", nameof(fileToUpload));
+			if (false == fileToUpload.CanRead)
+				throw new ArgumentException("The stream cannot be read.", nameof(fileToUpload));
+			if (fileToUpload.Length == 0)
+				throw new ArgumentException("The stream length cannot be zero.", nameof(fileToUpload));
+			if (blockSize <= 0)
+				throw new ArgumentOutOfRangeException(nameof(blockSize), "The block size must be greater than zero.");
+
+			// Start the upload.
+			var uploadInfo = new UploadInfo()
+			{
+				Title = newFileName.Contains(".")
+					? newFileName.Substring(0, newFileName.LastIndexOf("."))
+					: newFileName,
+				Extension = newFileName.Contains(".")
+					? newFileName.Substring(newFileName.LastIndexOf("."))
+					: "",
+				Size = fileToUpload.Length
+			};
+			uploadInfo = await this.UploadTemporaryFileBlockBeginAsync(uploadInfo, token);
+
+			// Iterate over the file blocks and upload them.
+			long offset = 0;
+			long totalSizeInBytes = fileToUpload.Length;
+			if (blockSize > totalSizeInBytes)
+				blockSize = (int)totalSizeInBytes;
+
+			var buffer = new byte[blockSize];
+			do
+			{
+				// Read the data from the stream.
+				var bytesRead = await fileToUpload.ReadAsync(buffer, 0, blockSize, token);
+
+				// Upload the block.
+				await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, buffer, token);
+
+				// Move onwards.
+				offset += bytesRead;
+			} while (offset < totalSizeInBytes);
+
+			// Commit the file.
+			await this.UploadTemporaryFileCommitAsync(uploadInfo, token);
+
+			// Return the upload information.
+			return uploadInfo;
+
+		}
+
+		/// <summary>
+		/// Uploads a temporary file to M-Files using blocks of the given size.
+		/// </summary>
 		/// <param name="fileToUpload">The file to upload.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <param name="blockSize">The chunk size (bytes)to upload in.  Defaults to 2MB.</param>
@@ -1052,7 +1139,7 @@ namespace MFaaP.MFWSClient
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
 		public async Task<UploadInfo> UploadTemporaryFileInBlocksAsync(
 			FileInfo fileToUpload,
-			CancellationToken token = default(CancellationToken),
+			CancellationToken token = default,
 			int blockSize = 1024 * 1024 * 2)
 		{
 			// Sanity.
@@ -1063,32 +1150,11 @@ namespace MFaaP.MFWSClient
 			if(blockSize <= 0)
 				throw new ArgumentOutOfRangeException(nameof(blockSize), "The block size must be greater than zero.");
 
-			// Start the upload.
-			var uploadInfo = await this.UploadTemporaryFileBlockBeginAsync(fileToUpload, token);
-
-			// Iterate over the file blocks and upload them.
-			long offset = 0;
-			long totalSizeInBytes = fileToUpload.Length;
-			if (blockSize > totalSizeInBytes)
-				blockSize = (int)totalSizeInBytes;
+			// Use the other overload.
 			using (var stream = fileToUpload.OpenRead())
 			{
-				var buffer = new byte[blockSize];
-				do
-				{
-					// Read the data from the stream.
-					var bytesRead = await stream.ReadAsync(buffer, 0, blockSize, token);
-
-					// Upload the block.
-					await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, buffer, token);
-
-					// Move onwards.
-					offset += blockSize;
-				} while (offset < totalSizeInBytes);
+				return await this.UploadTemporaryFileInBlocksAsync(fileToUpload.Name, stream, token, blockSize);
 			}
-
-			// Return the upload information.
-			return uploadInfo;
 
 		}
 
@@ -1107,6 +1173,27 @@ namespace MFaaP.MFWSClient
 		{
 			// Execute the async method.
 			return this.UploadTemporaryFileInBlocksAsync(fileToUpload, token, blockSize)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Uploads a temporary file to M-Files using blocks of the given size.
+		/// </summary>
+		/// <param name="fileToUpload">The file to upload.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <param name="blockSize">The chunk size (bytes)to upload in.  Defaults to 2MB.</param>
+		/// <returns>Information on the upload.</returns>
+		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
+		public UploadInfo UploadTemporaryFileInBlocks(
+			string newFileName,
+			Stream fileToUpload,
+			CancellationToken token = default(CancellationToken),
+			int blockSize = 1024 * 1024 * 2)
+		{
+			// Execute the async method.
+			return this.UploadTemporaryFileInBlocksAsync(newFileName, fileToUpload, token, blockSize)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
