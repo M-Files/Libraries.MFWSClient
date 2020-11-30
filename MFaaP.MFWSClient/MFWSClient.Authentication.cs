@@ -160,8 +160,9 @@ namespace MFaaP.MFWSClient
 		/// <param name="username">The username to use.</param>
 		/// <param name="password">The password to use.</param>
 		/// <param name="expiration">The date and time that the token should expire.</param>
+		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public Task AuthenticateUsingCredentialsAsync(Guid? vaultId, string username, string password, DateTime? expiration = null, CancellationToken token = default(CancellationToken))
+		public Task AuthenticateUsingCredentialsAsync(Guid? vaultId, string username, string password, DateTime? expiration = null, string sessionID = null, CancellationToken token = default(CancellationToken))
 		{
 			// Use the other overload.
 			return this.AuthenticateUsingCredentialsAsync(new Authentication()
@@ -169,7 +170,8 @@ namespace MFaaP.MFWSClient
 				Username = username,
 				Password = password,
 				VaultGuid = vaultId,
-				Expiration = expiration
+				Expiration = expiration,
+				SessionID = sessionID
 			}, token);
 		}
 
@@ -179,11 +181,12 @@ namespace MFaaP.MFWSClient
 		/// <param name="vaultId">The Id of the vault to connect to.</param>
 		/// <param name="username">The username to use.</param>
 		/// <param name="password">The password to use.</param>
+		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, string sessionID, CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
-			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, null, token)
+			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, null, sessionID, token)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
@@ -196,11 +199,12 @@ namespace MFaaP.MFWSClient
 		/// <param name="username">The username to use.</param>
 		/// <param name="password">The password to use.</param>
 		/// <param name="expiration">The date and time that the token should expire.</param>
+		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, DateTime expiration, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, DateTime expiration, string sessionID, CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
-			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, expiration, token)
+			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, expiration, sessionID, token)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
@@ -213,11 +217,12 @@ namespace MFaaP.MFWSClient
 		/// <param name="username">The username to use.</param>
 		/// <param name="password">The password to use.</param>
 		/// <param name="expiration">The duration of time (from now) in which the token should expire.</param>
+		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, TimeSpan expiration, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, TimeSpan expiration, string sessionID, CancellationToken token = default(CancellationToken))
 		{
 			// Use the other overload.
-			this.AuthenticateUsingCredentials(vaultId, username, password, DateTime.Now.Add(expiration), token);
+			this.AuthenticateUsingCredentials(vaultId, username, password, DateTime.Now.Add(expiration), sessionID, token);
 		}
 
 		/// <summary>
@@ -333,6 +338,44 @@ namespace MFaaP.MFWSClient
 				.GetResult();
 		}
 
+		#region Logging out
+
+		/// <summary>
+		/// Logs the current session out from the server.
+		/// </summary>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <remarks>https://developer.m-files.com/APIs/REST-API/Reference/resources/session/</remarks>
+		public async Task LogOutAsync(CancellationToken token = default(CancellationToken))
+		{
+			// Clear any current tokens.
+			this.ClearAuthenticationToken();
+
+			// Build the request to authenticate to the server.
+			{
+				var request = new RestRequest("/REST/session.aspx");
+
+				// Execute the request and store the response.
+				await this.Delete(request, token)
+					.ConfigureAwait(false);
+			}
+
+		}
+
+		/// <summary>
+		/// Logs the current session out from the server.
+		/// </summary>
+		/// <param name="token">A cancellation token for the request.</param>
+		protected void LogOut(CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			this.LogOutAsync(token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		#endregion
+
 	}
-	
+
 }

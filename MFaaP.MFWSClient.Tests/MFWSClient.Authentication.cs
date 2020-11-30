@@ -127,10 +127,32 @@ namespace MFaaP.MFWSClient.Tests
 
 		#endregion
 
+		#region Log out
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSClient.LogOut(CancellationToken)"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task LogOutAsync()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner(Method.DELETE, "/REST/session.aspx");
+
+			// Execute.
+			await runner.MFWSClient.LogOutAsync();
+
+			// Verify.
+			runner.Verify();
+		}
+
+		#endregion
+
 		#region AuthenticateUsingCredentials
 
 		/// <summary>
-		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSClient.AuthenticateUsingCredentials(System.Nullable{System.Guid},string,string,System.Threading.CancellationToken)"/>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSClient.AuthenticateUsingCredentials(System.Nullable{System.Guid},string,string,string,System.Threading.CancellationToken)"/>
 		/// requests the correct resource address with the correct method.
 		/// </summary>
 		/// <returns></returns>
@@ -152,12 +174,13 @@ namespace MFaaP.MFWSClient.Tests
 				VaultGuid = Guid.NewGuid(),
 				Username = "my username",
 				Password = "my password",
+				SessionID = "mySessionId",
 				Expiration = new DateTime(2017, 01, 01, 0, 0, 0, DateTimeKind.Utc)
 			};
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
-			runner.MFWSClient.AuthenticateUsingCredentials(body.VaultGuid.Value, body.Username, body.Password, body.Expiration.Value);
+			runner.MFWSClient.AuthenticateUsingCredentials(body.VaultGuid.Value, body.Username, body.Password, body.Expiration.Value, body.SessionID);
 
 			// Verify.
 			runner.Verify();
@@ -171,7 +194,7 @@ namespace MFaaP.MFWSClient.Tests
 		}
 
 		/// <summary>
-		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSClient.AuthenticateUsingCredentialsAsync(System.Nullable{System.Guid},string,string,System.Nullable{System.DateTime},System.Threading.CancellationToken)"/>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSClient.AuthenticateUsingCredentialsAsync(System.Nullable{System.Guid},string,string,System.Nullable{System.DateTime},string,System.Threading.CancellationToken)"/>
 		/// requests the correct resource address with the correct method.
 		/// </summary>
 		/// <returns></returns>
@@ -193,12 +216,13 @@ namespace MFaaP.MFWSClient.Tests
 				VaultGuid = Guid.NewGuid(),
 				Username = "my username",
 				Password = "my password",
+				SessionID = "mySessionId",
 				Expiration = new DateTime(2017, 01, 01, 0, 0, 0, DateTimeKind.Utc)
 			};
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
-			await runner.MFWSClient.AuthenticateUsingCredentialsAsync(body.VaultGuid.Value, body.Username, body.Password, body.Expiration.Value);
+			await runner.MFWSClient.AuthenticateUsingCredentialsAsync(body.VaultGuid.Value, body.Username, body.Password, body.Expiration.Value, body.SessionID);
 
 			// Verify.
 			runner.Verify();

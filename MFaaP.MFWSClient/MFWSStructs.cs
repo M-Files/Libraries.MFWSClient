@@ -719,7 +719,13 @@ namespace MFaaP.MFWSClient
 		/// Authentication plugin name.
 		/// </summary>
 		public string Plugin { get; set; }
-    }
+
+		/// <summary>
+		/// The ID of this session.
+		/// </summary>
+		/// <remarks>https://developer.m-files.com/APIs/REST-API/Authentication/#logging-out-sessions</remarks>
+		public string SessionID { get; set; }
+	}
 
     
 
