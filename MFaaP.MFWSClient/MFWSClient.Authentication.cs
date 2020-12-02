@@ -201,7 +201,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="expiration">The date and time that the token should expire.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, DateTime expiration, string sessionID, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, DateTime expiration, string sessionID = null, CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
 			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, expiration, sessionID, token)
@@ -219,7 +219,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="expiration">The duration of time (from now) in which the token should expire.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, TimeSpan expiration, string sessionID, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, TimeSpan expiration, string sessionID = null, CancellationToken token = default(CancellationToken))
 		{
 			// Use the other overload.
 			this.AuthenticateUsingCredentials(vaultId, username, password, DateTime.Now.Add(expiration), sessionID, token);
@@ -347,9 +347,6 @@ namespace MFaaP.MFWSClient
 		/// <remarks>https://developer.m-files.com/APIs/REST-API/Reference/resources/session/</remarks>
 		public async Task LogOutAsync(CancellationToken token = default(CancellationToken))
 		{
-			// Clear any current tokens.
-			this.ClearAuthenticationToken();
-
 			// Build the request to authenticate to the server.
 			{
 				var request = new RestRequest("/REST/session.aspx");
@@ -359,13 +356,16 @@ namespace MFaaP.MFWSClient
 					.ConfigureAwait(false);
 			}
 
+			// Clear any current tokens.
+			this.ClearAuthenticationToken();
+
 		}
 
 		/// <summary>
 		/// Logs the current session out from the server.
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
-		protected void LogOut(CancellationToken token = default(CancellationToken))
+		public void LogOut(CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
 			this.LogOutAsync(token)
