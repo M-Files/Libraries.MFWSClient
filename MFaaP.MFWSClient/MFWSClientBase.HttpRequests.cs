@@ -459,6 +459,16 @@ namespace MFaaP.MFWSClient
 			// Output the basic request data.
 			System.Diagnostics.Debug.WriteLine($"Executing {e.Method} request to {e.Resource}");
 
+			// If we have any cookies then output them.
+			if ((this.CookieContainer?.Count ?? 0) != 0)
+			{
+				// ReSharper disable once PossibleNullReferenceException
+				foreach (Cookie cookie in this.CookieContainer.GetCookies(new Uri(this.BaseUrl, e.Resource)))
+				{
+					System.Diagnostics.Debug.WriteLine($"\t{cookie.Name} = {cookie.Value}");
+				}
+			}
+
 			// If we have any parameters then output them.
 			if ((e.Parameters?.Count ?? 0) != 0)
 			{
