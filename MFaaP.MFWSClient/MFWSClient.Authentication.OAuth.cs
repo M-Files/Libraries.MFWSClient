@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MFaaP.MFWSClient.ExtensionMethods;
@@ -18,16 +19,23 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="pluginConfiguration">The configuration for the OAuth 2.0 plugin.</param>
 		/// <param name="oAuthTokens">The access tokens retrieved via the OAuth flow.</param>
+		/// <param name="clearAuthenticationToken">If true, calls <see cref="ClearAuthenticationToken"/> first.</param>
 		/// <remarks><see cref="OAuth2Configuration.UseIdTokenAsAccessToken"/> defines whether <see cref="OAuth2TokenResponse.IdToken"/> (if true) or
 		/// <see cref="OAuth2TokenResponse.AccessToken"/> (if false) should be used for the bearer value.</remarks>
-		public void AddAuthorizationHeader(OAuth2Configuration pluginConfiguration, OAuth2TokenResponse oAuthTokens)
+		public void AddAuthorizationHeader
+			(
+			OAuth2Configuration pluginConfiguration, 
+			OAuth2TokenResponse oAuthTokens,
+			bool clearAuthenticationToken = true
+			)
 		{
 			// Sanity.
 			if (null == pluginConfiguration)
 				throw new ArgumentNullException(nameof(pluginConfiguration));
 
 			// Clear the authorisation token.
-			this.ClearAuthenticationToken();
+			if(clearAuthenticationToken)
+				this.ClearAuthenticationToken();
 
 			// Add the authorisation token to the headers.
 			if (pluginConfiguration.UseIdTokenAsAccessToken)
@@ -118,6 +126,17 @@ namespace MFaaP.MFWSClient
 				throw new InvalidOperationException( "OAuth token not received from endpoint. Response: " + response.Content );
 			else if( response.Data.TokenType != "Bearer")
 				throw new InvalidOperationException( "Token type was not bearer. Response: " + response.Content );
+
+			// Save the response cookies in our persistent RestClient cookie container.
+			// This is required for multi-server-mode compatibility.
+			this.CookieContainer = new CookieContainer();
+			if (null != response.Cookies)
+			{
+				foreach (var cookie in response.Cookies)
+				{
+					this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
+				}
+			}
 
 			// Return the access token data.
 			return response.Data;
@@ -333,7 +352,7 @@ namespace MFaaP.MFWSClient
 			// Set the authorisation header.
 			if (setHttpHeaders)
 			{
-				this.AddAuthorizationHeader(configuration, tokens);
+				this.AddAuthorizationHeader(configuration, tokens, clearAuthenticationToken: false);
 			}
 
 			// Return the tokens.
