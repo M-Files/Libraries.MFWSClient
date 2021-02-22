@@ -250,6 +250,17 @@ namespace MFaaP.MFWSClient
 
 				// Save the authentication token.
 				this.AuthenticationToken = response?.Data?.Value;
+
+				// Save the response cookies in our persistent RestClient cookie container.
+				// This is required for multi-server-mode compatibility.
+				this.CookieContainer = new CookieContainer();
+				if (null != response.Cookies)
+				{
+					foreach (var cookie in response.Cookies)
+					{
+						this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
+					}
+				}
 			}
 
 		}
