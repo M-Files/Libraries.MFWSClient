@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,6 +47,40 @@ namespace MFaaP.MFWSClient
 			{
 				this.AddDefaultHeader(MFWSClient.AuthorizationHttpHeaderName, "Bearer " + oAuthTokens.AccessToken);
 			}
+		}
+
+		/// <summary>
+		/// Gets the OAuth 2.0 plugin configuration (or null if not configured).
+		/// </summary>
+		/// <param name="vaultGuid">Vault GUID, Guid.Empty to get just server configuration.</param>
+		/// <param name="token">A cancellation token for the task.</param>
+		/// <returns>The OAuth 2.0 plugin configuration.</returns>
+		public async Task<OAuth2Configuration> GetOAuth2ConfigurationAsync(
+			Guid vaultGuid = default(Guid),
+			CancellationToken token = default(CancellationToken))
+		{
+			var plugin = (await this.GetAuthenticationPluginsAsync(vaultGuid, token))
+				.FirstOrDefault(p => p.Protocol == "OAuth 2.0");
+			if (null == plugin)
+				return null;
+			return OAuth2Configuration.ParseFrom(plugin.Configuration);
+		}
+
+		/// <summary>
+		/// Gets the OAuth 2.0 plugin configuration (or null if not configured).
+		/// </summary>
+		/// <param name="vaultGuid">Vault GUID.</param>
+		/// <param name="token">A cancellation token for the task.</param>
+		/// <returns>The OAuth 2.0 plugin configuration.</returns>
+		public OAuth2Configuration GetOAuth2Configuration(
+			Guid vaultGuid = default(Guid),
+			CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetOAuth2ConfigurationAsync(vaultGuid, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
 		}
 
 		/// <summary>
@@ -126,17 +161,6 @@ namespace MFaaP.MFWSClient
 				throw new InvalidOperationException( "OAuth token not received from endpoint. Response: " + response.Content );
 			else if( response.Data.TokenType != "Bearer")
 				throw new InvalidOperationException( "Token type was not bearer. Response: " + response.Content );
-
-			// Save the response cookies in our persistent RestClient cookie container.
-			// This is required for multi-server-mode compatibility.
-			this.CookieContainer = new CookieContainer();
-			if (null != response.Cookies)
-			{
-				foreach (var cookie in response.Cookies)
-				{
-					this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
-				}
-			}
 
 			// Return the access token data.
 			return response.Data;

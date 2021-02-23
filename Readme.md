@@ -31,7 +31,7 @@ The API provides both "Async" and blocking versions of most methods.  To use .NE
 
 ## Authentication
 
-Currently two methods of authentication are supported: authentication using credentials, and Windows Single Sign On.
+Currently three methods of authentication are supported: authentication using credentials, and Windows Single Sign On.
 
 ## Authenticating using credentials
 
@@ -40,10 +40,13 @@ Currently two methods of authentication are supported: authentication using cred
 var client = new MFWSClient("http://m-files.mycompany.com");
 
 // Authentiate to a vault with GUID {C840BE1A-5B47-4AC0-8EF7-835C166C8E24} (clear credentials).
-client.AuthenticateUsingCredentials(
+client.AuthenticateUsingCredentials
+(
     Guid.Parse("{C840BE1A-5B47-4AC0-8EF7-835C166C8E24}"),
     "MyUsername",
-    "MyPassword" );
+    "MyPassword",
+	Guid.NewGuid.ToString() // Providing a session ID allows logout.
+);
 ```
 
 Note that the M-Files Web Service will provide authentication tokens even if the credentials are incorrect.  This is by design.
@@ -58,11 +61,13 @@ var client = new MFWSClient("http://m-files.mycompany.com");
 
 // Authentiate to a vault with GUID {C840BE1A-5B47-4AC0-8EF7-835C166C8E24} (clear credentials).
 // Set the expiry as 10am UTC on 1st January 2017.
-client.AuthenticateUsingCredentials(
+client.AuthenticateUsingCredentials
+(
     Guid.Parse("{C840BE1A-5B47-4AC0-8EF7-835C166C8E24}"),
     "MyUsername",
     "MyPassword",
-    new DateTime(2017, 01, 01, 10, 00, 00, DateTimeKind.Utc) );
+    new DateTime(2017, 01, 01, 10, 00, 00, DateTimeKind.Utc)
+);
 ```
 
 Alternatively, to expire after a specified time from the initial authentication, provide a TimeSpan when authenticating:
@@ -92,6 +97,15 @@ var client = new MFWSClient("http://m-files.mycompany.com");
 // Authentiate to a vault with GUID {C840BE1A-5B47-4AC0-8EF7-835C166C8E24}.
 client.AuthenticateUsingSingleSignOn( Guid.Parse("{C840BE1A-5B47-4AC0-8EF7-835C166C8E24}") );
 ```
+
+## Authenticating using OAuth 2.0
+
+Connecting using OAuth 2.0 requires several steps:
+
+1. Call `MFWSClient.GetOAuth2Configuration`.  If this returns null then OAuth 2.0 is not configured.
+2. Open a web browser and navigate to `OAuth2Configuration.GenerateAuthorizationUri`.
+3. Handle any redirects that occur within the web browser.  If the redirected URI **does not** start with `OAuth2Configuration.GetAppropriateRedirectUri` then allow it to occur.
+4. For redirects that **do** start with `OAuth2Configuration.GetAppropriateRedirectUri`, call `MFWSClient.HandleOAuth2AuthorizationEndpointRedirectData`.  Note that this may throw an exception if the login failed.
 
 ## Searching
 
