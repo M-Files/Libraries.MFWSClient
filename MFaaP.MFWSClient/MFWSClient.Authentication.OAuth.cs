@@ -50,40 +50,6 @@ namespace MFaaP.MFWSClient
 		}
 
 		/// <summary>
-		/// Gets the OAuth 2.0 plugin configuration (or null if not configured).
-		/// </summary>
-		/// <param name="vaultGuid">Vault GUID, Guid.Empty to get just server configuration.</param>
-		/// <param name="token">A cancellation token for the task.</param>
-		/// <returns>The OAuth 2.0 plugin configuration.</returns>
-		public async Task<OAuth2Configuration> GetOAuth2ConfigurationAsync(
-			Guid vaultGuid = default(Guid),
-			CancellationToken token = default(CancellationToken))
-		{
-			var plugin = (await this.GetAuthenticationPluginsAsync(vaultGuid, token))
-				.FirstOrDefault(p => p.Protocol == "OAuth 2.0");
-			if (null == plugin)
-				return null;
-			return OAuth2Configuration.ParseFrom(plugin.Configuration);
-		}
-
-		/// <summary>
-		/// Gets the OAuth 2.0 plugin configuration (or null if not configured).
-		/// </summary>
-		/// <param name="vaultGuid">Vault GUID.</param>
-		/// <param name="token">A cancellation token for the task.</param>
-		/// <returns>The OAuth 2.0 plugin configuration.</returns>
-		public OAuth2Configuration GetOAuth2Configuration(
-			Guid vaultGuid = default(Guid),
-			CancellationToken token = default(CancellationToken))
-		{
-			// Execute the async method.
-			return this.GetOAuth2ConfigurationAsync(vaultGuid, token)
-				.ConfigureAwait(false)
-				.GetAwaiter()
-				.GetResult();
-		}
-
-		/// <summary>
 		/// Using the <see paramref="code"/> from the OAuth authorisation endpoint, 
 		/// requests tokens from the token endpoint and sets up the client to use them.
 		/// The token data is returned in case it is needed in the future (e.g.
@@ -302,7 +268,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="setHttpHeaders">If true, <see cref="AddAuthorizationHeader"/> will be called automatically.</param>
 		/// <param name="token">A cancellation token for the task.</param>
 		/// <remarks>Callees must ensure that this method is only called for the valid redirect Uri.</remarks>
-		public OAuth2TokenResponse HandleOAuth2AuthorizationEndpointRedirectData(
+		public OAuth2TokenResponse GenerateTokensFromOAuthRedirect(
 			OAuth2Configuration configuration,
 			Uri redirectionUri,
 			bool setHttpHeaders = true,
@@ -315,7 +281,7 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentNullException(nameof(redirectionUri));
 
 			// Execute the async method.
-			return this.HandleOAuth2AuthorizationEndpointRedirectDataAsync(configuration, redirectionUri, setHttpHeaders, token)
+			return this.GenerateTokensFromOAuthRedirectAsync(configuration, redirectionUri, setHttpHeaders, token)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
@@ -331,7 +297,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="setHttpHeaders">If true, <see cref="AddAuthorizationHeader"/> will be called automatically.</param>
 		/// <param name="token">A cancellation token for the task.</param>
 		/// <remarks>Callees must ensure that this method is only called for the valid redirect Uri.</remarks>
-		public async Task<OAuth2TokenResponse> HandleOAuth2AuthorizationEndpointRedirectDataAsync(
+		public async Task<OAuth2TokenResponse> GenerateTokensFromOAuthRedirectAsync(
 			OAuth2Configuration configuration,
 			Uri redirectionUri,
 			bool setHttpHeaders = true,
@@ -376,6 +342,8 @@ namespace MFaaP.MFWSClient
 			// Set the authorisation header.
 			if (setHttpHeaders)
 			{
+				if(Guid.TryParse(configuration.VaultGuid, out Guid vaultGuid))
+					this.AddDefaultHeader("X-Vault", vaultGuid.ToString("B"));
 				this.AddAuthorizationHeader(configuration, tokens, clearAuthenticationToken: false);
 			}
 

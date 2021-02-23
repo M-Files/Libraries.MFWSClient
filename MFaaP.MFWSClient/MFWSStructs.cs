@@ -3249,6 +3249,15 @@ namespace MFaaP.MFWSClient
 		/// Configuration source.
 		/// </summary>
 		public Dictionary<string, string> ConfigurationSource { get; set; }
+
+		/// <summary>
+		/// The vault guid from the <see cref="ConfigurationSource"/>, if available
+		/// </summary>
+		public string VaultGuid {
+			get => (this.ConfigurationSource?.ContainsKey("VaultGUID") ?? false)
+				? this.ConfigurationSource["VaultGUID"]
+				: null;
+		}
 	}
 	
 	/// <summary>

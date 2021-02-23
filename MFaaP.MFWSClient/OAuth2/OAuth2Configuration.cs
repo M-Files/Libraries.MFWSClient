@@ -120,6 +120,11 @@ namespace MFaaP.MFWSClient.OAuth2
 		public string State { get; set; } = Guid.NewGuid().ToString("B");
 
 		/// <summary>
+		/// The vault guid this relates to.
+		/// </summary>
+		public string VaultGuid { get; set; }
+
+		/// <summary>
 		/// Instantiates the configuration class.
 		/// </summary>
 		/// <param name="forceLogin">If true, the user will be prompted to log in even if they have done so already (<see cref="ForceLogin"/>).</param>
@@ -134,8 +139,9 @@ namespace MFaaP.MFWSClient.OAuth2
 		/// provided plugin configuration.
 		/// </summary>
 		/// <param name="pluginConfiguration">The dictionary containing plugin configuration settings.</param>
+		/// <param name="vaultGuid">The GUID of the vault.</param>
 		/// <param name="forceLogin">If true, the user will be prompted to log in even if they have done so already (<see cref="ForceLogin"/>).</param>
-		public OAuth2Configuration(Dictionary<string, string> pluginConfiguration, bool forceLogin = false)
+		public OAuth2Configuration(Dictionary<string, string> pluginConfiguration, string vaultGuid, bool forceLogin = false)
 			: this(forceLogin)
 		{
 			// Sanity.
@@ -154,8 +160,11 @@ namespace MFaaP.MFWSClient.OAuth2
 			this.Resource = pluginConfiguration.GetValueOrDefault("Resource");
 			this.TokenEndpoint = pluginConfiguration.GetValueOrDefault("TokenEndpoint");
 			this.Scope = pluginConfiguration.GetValueOrDefault("Scope");
-			this.ClientSecret= pluginConfiguration.GetValueOrDefault("ClientSecret");
-			this.SiteRealm= pluginConfiguration.GetValueOrDefault("SiteRealm");
+			this.ClientSecret = pluginConfiguration.GetValueOrDefault("ClientSecret");
+			this.SiteRealm = pluginConfiguration.GetValueOrDefault("SiteRealm");
+			this.VaultGuid = vaultGuid;
+			try { this.MFServerVersion = Version.Parse(pluginConfiguration.GetValueOrDefault("MFServerVersion")); }
+			catch { }
 
 			// If the configuration tells us to use the id token instead of the access token then we should.
 			this.UseIdTokenAsAccessToken = string.Equals(
@@ -174,10 +183,11 @@ namespace MFaaP.MFWSClient.OAuth2
 		/// Creates an <see cref="OAuth2Configuration"/> by parsing the provided plugin configuration.
 		/// </summary>
 		/// <param name="pluginConfiguration">The dictionary containing plugin configuration settings.</param>
+		/// <param name="vaultGuid">The GUID of the vault.</param>
 		/// <returns>A configuration class representing the provided details.</returns>
-		public static OAuth2Configuration ParseFrom(Dictionary<string, string> pluginConfiguration)
+		public static OAuth2Configuration ParseFrom(Dictionary<string, string> pluginConfiguration, string vaultGuid)
 		{
-			return new OAuth2Configuration(pluginConfiguration);
+			return new OAuth2Configuration(pluginConfiguration, vaultGuid);
 		}
 
 		/// <summary>

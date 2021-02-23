@@ -4,7 +4,7 @@ using System.Linq;
 using MFaaP.MFWSClient;
 using MFaaP.MFWSClient.OAuth2;
 
-namespace MFaaP.MFWSClient.ExtensionMethods
+namespace MFaaP.MFWSClient
 {
 	/// <summary>
 	/// Helper methods for working with authentication plugin configuration data.
@@ -42,14 +42,10 @@ namespace MFaaP.MFWSClient.ExtensionMethods
 		/// <returns>True if OAuth is found, false otherwise.</returns>
 		public static bool TryGetOAuth2Configuration(this IEnumerable<PluginInfoConfiguration> pluginInfoConfiguration, out OAuth2Configuration oAuth2Configuration)
 		{
-			// Sanity.
-			if (null == pluginInfoConfiguration)
-				throw new ArgumentNullException(nameof(pluginInfoConfiguration));
-
 			// Is OAuth 2.0 specified?
-			oAuth2Configuration = pluginInfoConfiguration
-				.Where(pic => pic.Protocol == IEnumerablePluginInfoConfigurationExtensionMethods.OAuth2PluginConfigurationProtocol)
-				.Select(pic => OAuth2Configuration.ParseFrom(pic.Configuration))
+			oAuth2Configuration = pluginInfoConfiguration?
+				.Where(pic => pic.Protocol == IEnumerablePluginInfoConfigurationExtensionMethods.OAuth2PluginConfigurationProtocol)?
+				.Select(pic => OAuth2Configuration.ParseFrom(pic.Configuration, pic.VaultGuid))?
 				.FirstOrDefault();
 
 			// Did we get a value?
