@@ -14,7 +14,7 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <Version>1.1.2-alpha</Version>
+    <Version>1.2.0-alpha</Version>
     <Authors>M-Files Corporation</Authors>
     <Description>Sample .NET wrapper for the M-Files Web Service.  Not designed for production use.</Description>
     <Copyright>Copyright (c) 2020 onwards, M-Files Corporation</Copyright>

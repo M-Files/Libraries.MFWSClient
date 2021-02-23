@@ -105,7 +105,7 @@ Connecting using OAuth 2.0 requires several steps:
 1. Call `MFWSClient.GetOAuth2Configuration`.  If this returns null then OAuth 2.0 is not configured.
 2. Open a web browser and navigate to `OAuth2Configuration.GenerateAuthorizationUri`.
 3. Handle any redirects that occur within the web browser.  If the redirected URI **does not** start with `OAuth2Configuration.GetAppropriateRedirectUri` then allow it to occur.
-4. For redirects that **do** start with `OAuth2Configuration.GetAppropriateRedirectUri`, call `MFWSClient.HandleOAuth2AuthorizationEndpointRedirectData`.  Note that this may throw an exception if the login failed.
+4. For redirects that **do** start with `OAuth2Configuration.GetAppropriateRedirectUri`, call `MFWSClient.GenerateTokensFromOAuthRedirect`.  Note that this may throw an exception if the login failed.
 
 ## Searching
 
