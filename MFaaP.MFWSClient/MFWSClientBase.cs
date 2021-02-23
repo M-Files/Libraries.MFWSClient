@@ -25,6 +25,11 @@ namespace MFaaP.MFWSClient
 		public const string ExtensionsHttpHeaderName = "X-Extensions";
 
 		/// <summary>
+		/// The HTTP header for any pre-shared key.
+		/// </summary>
+		public const string PresharedKeyHttpHeaderName = "X-PresharedKey";
+
+		/// <summary>
 		/// Defines the extensions that are enabled via the <see cref="ExtensionsHttpHeaderName"/> HTTP header.
 		/// </summary>
 		/// <remarks>Some extensions may be required for server functionality to work.
@@ -202,6 +207,38 @@ namespace MFaaP.MFWSClient
 		}
 
 		/// <summary>
+		/// Removes any set pre-shared key.
+		/// </summary>
+		public void ClearPresharedKey()
+		{
+			// Remove any existing accept-langauge header.
+			var existingHeaders = this.DefaultParameters
+				.Where(p => p.Type == ParameterType.HttpHeader)
+				.Where(p => p.Name == MFWSClientBase.PresharedKeyHttpHeaderName)
+				.ToArray();
+			foreach (var existingHeader in existingHeaders)
+			{
+				this.DefaultParameters.Remove(existingHeader);
+			}
+		}
+
+		/// <summary>
+		/// Sets the pre-shared key.
+		/// </summary>
+		public void SetPresharedKey(string presharedKey)
+		{
+			// Remove any pre-shared key.
+			this.ClearPresharedKey();
+
+			// Sanity.
+			if (string.IsNullOrWhiteSpace(presharedKey))
+				return;
+
+			// Set the pre-shared key.
+			this.AddDefaultHeader(MFWSClientBase.PresharedKeyHttpHeaderName, presharedKey);
+		}
+
+		/// <summary>
 		/// Sets the default value for the "Accept-Language"
 		/// HTTP header.
 		/// </summary>
@@ -226,7 +263,7 @@ namespace MFaaP.MFWSClient
 			if (null == acceptLanguages)
 				return;
 
-			// Set the
+			// Set the accept-language http header.
 			this.AddDefaultHeader(MFWSClientBase.AcceptLanguageHttpHeaderName, acceptLanguages);
 		}
 
