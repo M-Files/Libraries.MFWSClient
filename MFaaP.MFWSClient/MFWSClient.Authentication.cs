@@ -183,7 +183,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="password">The password to use.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, string sessionID, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, string sessionID = null, CancellationToken token = default(CancellationToken))
 		{
 			// Execute the async method.
 			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, null, sessionID, token)
