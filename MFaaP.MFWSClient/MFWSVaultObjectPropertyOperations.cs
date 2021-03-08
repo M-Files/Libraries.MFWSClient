@@ -647,7 +647,7 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentException("The property definition is invalid", nameof(propertyDef));
 
 			// Create the request.
-			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}");
+			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}.aspx");
 			request.Method = Method.DELETE;
 
 			// Make the request and get the response.
