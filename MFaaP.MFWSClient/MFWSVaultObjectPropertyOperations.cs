@@ -23,6 +23,117 @@ namespace MFaaP.MFWSClient
 		{
 		}
 
+		#region Get (single) property
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objectTypeId">The Id of the object type.</param>
+		/// <param name="objectId">The Id of the object.</param>
+		/// <param name="version">The version (or null for latest).</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public async Task<PropertyValue> GetPropertyAsync(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		{
+			// Sanity.
+			if (objectTypeId < 0)
+				throw new ArgumentException("The object type id cannot be less than zero");
+			if (objectId <= 0)
+				throw new ArgumentException("The object id cannot be less than or equal to zero");
+			if (propertyDef < 0)
+				throw new ArgumentException("The property definition is invalid", nameof(propertyDef));
+
+			// Create the request.
+			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}");
+			request.Method = Method.GET;
+
+			// Make the request and get the response.
+			var response = await this.MFWSClient.Get<PropertyValue>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objVer">The object to set the property on.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public Task<PropertyValue> GetPropertyAsync(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Use the other overload.
+			return this.GetPropertyAsync(objVer.Type, objVer.ID, propertyDef, objVer.Version, token);
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objId">The object to set the property on.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public Task<PropertyValue> GetPropertyAsync(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Use the other overload.
+			return this.GetPropertyAsync(objId.Type, objId.ID, propertyDef, null, token);
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objectTypeId">The Id of the object type.</param>
+		/// <param name="objectId">The Id of the object.</param>
+		/// <param name="version">The version (or null for latest).</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public PropertyValue GetProperty(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetPropertyAsync(objectTypeId, objectId, propertyDef, version, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objVer">The object to retrieve the properties of.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public PropertyValue GetProperty(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetPropertyAsync(objVer, propertyDef, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objId">The object to set the property on.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public PropertyValue GetProperty(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetPropertyAsync(objId, propertyDef, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		#endregion
+
 		#region Get properties of multiple objects
 
 		/// <summary>
@@ -626,6 +737,187 @@ namespace MFaaP.MFWSClient
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
+		}
+
+		#endregion
+
+		#region CanCompleteAssignment
+
+		public async Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
+		(
+			int assignmentObjectId,
+			int? version = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Create the request.
+			var request = new RestRequest($"/REST/objects/{assignmentObjectId}/{version?.ToString() ?? "latest"}/canCompleteAssignment.aspx");
+			request.Method = Method.GET;
+
+			// Make the request and get the response.
+			var response = await this.MFWSClient.Get<PrimitiveType<bool>>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
+		}
+
+		public Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
+		(
+			ObjID objId,
+			int? version = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objId)
+				throw new ArgumentNullException(nameof(objId));
+			if (objId.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object does not refer to an assignment");
+			return this.CanCompleteAssignmentAsync(objId.ID, version, token);
+		}
+
+		public Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
+		(
+			ObjVer objVer,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+			if (objVer.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object does not refer to an assignment");
+			return this.CanCompleteAssignmentAsync(objVer.ID, objVer.Version, token);
+		}
+
+		public PrimitiveType<bool> CanCompleteAssignment
+		(
+			int objectId,
+			int? version = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.CanCompleteAssignmentAsync(objectId, version, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		#endregion
+
+		#region ApproveOrRejectAssignment
+
+		public Task<ObjectVersion> ApproveAssignmentAsync
+		(
+			int objectTypeId,
+			int objectId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			return this.ApproveOrRejectAssignmentAsync(objectTypeId, objectId, true, version, comment, token);
+		}
+
+		public Task<ObjectVersion> ApproveAssignmentAsync
+		(
+			ObjID objId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objId)
+				throw new ArgumentNullException(nameof(objId));
+			return this.ApproveAssignmentAsync(objId.Type, objId.ID, version, comment, token);
+		}
+
+		public Task<ObjectVersion> ApproveAssignmentAsync
+		(
+			ObjVer objVer,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+			return this.ApproveAssignmentAsync(objVer.Type, objVer.ID, objVer.Version, comment, token);
+		}
+
+		public Task<ObjectVersion> RejectAssignmentAsync
+		(
+			int objectTypeId,
+			int objectId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			return this.ApproveOrRejectAssignmentAsync(objectTypeId, objectId, false, version, comment, token);
+		}
+
+		public Task<ObjectVersion> RejectAssignmentAsync
+		(
+			ObjID objId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objId)
+				throw new ArgumentNullException(nameof(objId));
+			return this.RejectAssignmentAsync(objId.Type, objId.ID, version, comment, token);
+		}
+
+		public Task<ObjectVersion> RejectAssignmentAsync
+		(
+			ObjVer objVer,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+			return this.RejectAssignmentAsync(objVer.Type, objVer.ID, objVer.Version, comment, token);
+		}
+
+		public async Task<ObjectVersion> ApproveOrRejectAssignmentAsync
+		(
+			int objectTypeId,
+			int objectId,
+			bool approve,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Vary the URI based on whether we are approving or rejecting.
+			var uri = approve
+				? $"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/complete.aspx"
+				: $"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/reject.aspx";
+
+			// Create the request.
+			var request = new RestRequest(uri);
+			request.Method = Method.PUT;
+
+			// We currently don't support complex assignment state (e.g. e-signatures).
+			request.AddJsonBody(new AssignmentState()
+			{
+				Comment = comment
+			});
+
+			// Make the request and get the response.
+			var response = await this.MFWSClient.Put<ObjectVersion>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
 		}
 
 		#endregion
