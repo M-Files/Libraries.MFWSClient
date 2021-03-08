@@ -673,6 +673,24 @@ namespace MFaaP.MFWSClient.Tests
 		}
 
 		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void CanCompleteAssignment()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/123/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(123);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
 		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignmentAsync"/>
 		/// requests the correct resource address with the correct method.
 		/// </summary>
@@ -685,6 +703,28 @@ namespace MFaaP.MFWSClient.Tests
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjID()
+			{
+				ID = 987,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void CanCompleteAssignment_ObjID()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjID()
 			{
 				ID = 987,
 				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment
@@ -718,6 +758,29 @@ namespace MFaaP.MFWSClient.Tests
 		}
 
 		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void CanCompleteAssignment_ObjID_ThrowsForOtherObjectType()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjID()
+			{
+				ID = 987,
+				Type = 101
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
 		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignmentAsync"/>
 		/// requests the correct resource address with the correct method.
 		/// </summary>
@@ -730,6 +793,29 @@ namespace MFaaP.MFWSClient.Tests
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjVer()
+			{
+				ID = 987,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 123
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void CanCompleteAssignment_ObjVer()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/123/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjVer()
 			{
 				ID = 987,
 				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
