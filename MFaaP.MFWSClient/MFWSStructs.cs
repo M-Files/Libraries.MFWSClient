@@ -3290,4 +3290,22 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		public string RefreshToken { get; set; }
 	}
+
+	/// <summary>
+	/// Used for completing and rejecting assignments.
+	/// </summary>
+	/// <remarks>Marked as internal as this should not be created by external developers.</remarks>
+	internal class AssignmentState
+	{
+		/// <summary>
+		/// Must be true.
+		/// </summary>
+		public bool Value { get; set; } = true;
+
+
+		/// <summary>
+		/// If not null, will be set as the version comment on the completed/rejected assignment version.
+		/// </summary>
+		public string Comment { get; set; }
+	}
 }

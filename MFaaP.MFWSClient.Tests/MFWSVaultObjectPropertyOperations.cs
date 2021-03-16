@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -332,7 +333,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void RemoveProperty()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, "/REST/objects/1/2/latest/properties/0");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, "/REST/objects/1/2/latest/properties/0.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.RemoveProperty(1, 2, 0);
@@ -350,7 +351,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RemovePropertyAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, "/REST/objects/1/2/latest/properties/0");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, "/REST/objects/1/2/latest/properties/0.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.RemovePropertyAsync(1, 2, 0);
@@ -650,43 +651,413 @@ namespace MFaaP.MFWSClient.Tests
 		}
 
 		#endregion
-		
+
+		#region Can the user approve/reject an assignment?
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task CanCompleteAssignmentAsync()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/123/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(123);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void CanCompleteAssignment()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/123/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(123);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task CanCompleteAssignmentAsync_ObjID()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjID()
+			{
+				ID = 987,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void CanCompleteAssignment_ObjID()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjID()
+			{
+				ID = 987,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public async Task CanCompleteAssignmentAsync_ObjID_ThrowsForOtherObjectType()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjID()
+			{
+				ID = 987,
+				Type = 101
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		[ExpectedException(typeof(ArgumentException))]
+		public void CanCompleteAssignment_ObjID_ThrowsForOtherObjectType()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjID()
+			{
+				ID = 987,
+				Type = 101
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task CanCompleteAssignmentAsync_ObjVer()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/123/canCompleteAssignment.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjVer()
+			{
+				ID = 987,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 123
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.CanCompleteAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void CanCompleteAssignment_ObjVer()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/123/canCompleteAssignment.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjVer()
+			{
+				ID = 987,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 123
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		#endregion
+
+		#region Approve assignment
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.ApproveAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task ApproveAssignmentAsync()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/456/complete.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.ApproveAssignmentAsync(new ObjVer()
+			{
+				ID = 123,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 456
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.ApproveAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void ApproveAssignment()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/456/complete.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.ApproveAssignment(new ObjVer()
+			{
+				ID = 123,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 456
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.ApproveOrRejectAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task ApproveOrRejectAssignmentAsync_Approve()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/complete.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignmentAsync
+			(
+				(int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				123,
+				approve: true
+			);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.ApproveOrRejectAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void ApproveOrRejectAssignment_Approve()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/complete.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignment
+			(
+				(int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				123,
+				approve: true
+			);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		#endregion
+
+		#region Reject assignment
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.RejectAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task RejectAssignmentAsync()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/876/reject.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.RejectAssignmentAsync(new ObjVer()
+			{
+				ID = 123,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 876
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.RejectAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void RejectAssignment()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/876/reject.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.RejectAssignment(new ObjVer()
+			{
+				ID = 123,
+				Type = (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				Version = 876
+			});
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.ApproveOrRejectAssignmentAsync"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public async Task ApproveOrRejectAssignmentAsync_Reject()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/reject.aspx");
+
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignmentAsync
+			(
+				(int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				123,
+				approve: false
+			);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		/// <summary>
+		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectPropertyOperations.ApproveOrRejectAssignment"/>
+		/// requests the correct resource address with the correct method.
+		/// </summary>
+		/// <returns></returns>
+		[TestMethod]
+		public void ApproveOrRejectAssignment_Reject()
+		{
+			// Create our test runner.
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/reject.aspx");
+
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignment
+			(
+				(int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				123,
+				approve: false
+			);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		#endregion
+
 		#region Set workflow states
-        [TestMethod]
-        public async Task SetWorkflowStateAsync()
-        {
-            var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
 
-            runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
-            // Execute.
-            await runner.MFWSClient.ObjectPropertyOperations.SetWorkflowStateAsync(new ObjVer()
-            {
-                Type = 0,
-                ID = 1,
-                Version = 2
-            }, 2);
+		[TestMethod]
+		public async Task SetWorkflowStateAsync()
+		{
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
 
-            // Verify.
-            runner.Verify();
-        }
+			runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
+			// Execute.
+			await runner.MFWSClient.ObjectPropertyOperations.SetWorkflowStateAsync(new ObjVer()
+			{
+				Type = 0,
+				ID = 1,
+				Version = 2
+			}, 2);
 
-        [TestMethod]
-        public void SetWorkflowState()
-        {
-            var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
+			// Verify.
+			runner.Verify();
+		}
 
-            runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
-            // Execute.
-            runner.MFWSClient.ObjectPropertyOperations.SetWorkflowState(new ObjVer()
-            {
-                Type = 0,
-                ID = 1,
-                Version = 2
-            }, 2);
+		[TestMethod]
+		public void SetWorkflowState()
+		{
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
 
-            // Verify.
-            runner.Verify();
-        }
-        #endregion
+			runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
+			// Execute.
+			runner.MFWSClient.ObjectPropertyOperations.SetWorkflowState(new ObjVer()
+			{
+				Type = 0,
+				ID = 1,
+				Version = 2
+			}, 2);
+
+			// Verify.
+			runner.Verify();
+		}
+
+		#endregion
 	}
 }

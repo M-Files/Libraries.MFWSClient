@@ -23,6 +23,117 @@ namespace MFaaP.MFWSClient
 		{
 		}
 
+		#region Get (single) property
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objectTypeId">The Id of the object type.</param>
+		/// <param name="objectId">The Id of the object.</param>
+		/// <param name="version">The version (or null for latest).</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public async Task<PropertyValue> GetPropertyAsync(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		{
+			// Sanity.
+			if (objectTypeId < 0)
+				throw new ArgumentException("The object type id cannot be less than zero");
+			if (objectId <= 0)
+				throw new ArgumentException("The object id cannot be less than or equal to zero");
+			if (propertyDef < 0)
+				throw new ArgumentException("The property definition is invalid", nameof(propertyDef));
+
+			// Create the request.
+			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}");
+			request.Method = Method.GET;
+
+			// Make the request and get the response.
+			var response = await this.MFWSClient.Get<PropertyValue>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objVer">The object to set the property on.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public Task<PropertyValue> GetPropertyAsync(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Use the other overload.
+			return this.GetPropertyAsync(objVer.Type, objVer.ID, propertyDef, objVer.Version, token);
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objId">The object to set the property on.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public Task<PropertyValue> GetPropertyAsync(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Use the other overload.
+			return this.GetPropertyAsync(objId.Type, objId.ID, propertyDef, null, token);
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objectTypeId">The Id of the object type.</param>
+		/// <param name="objectId">The Id of the object.</param>
+		/// <param name="version">The version (or null for latest).</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public PropertyValue GetProperty(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetPropertyAsync(objectTypeId, objectId, propertyDef, version, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objVer">The object to retrieve the properties of.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public PropertyValue GetProperty(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetPropertyAsync(objVer, propertyDef, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Retrieves a single property from a single object.
+		/// </summary>
+		/// <param name="objId">The object to set the property on.</param>
+		/// <param name="propertyDef">The property to retrieve.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The property value.</returns>
+		public PropertyValue GetProperty(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.GetPropertyAsync(objId, propertyDef, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		#endregion
+
 		#region Get properties of multiple objects
 
 		/// <summary>
@@ -536,7 +647,7 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentException("The property definition is invalid", nameof(propertyDef));
 
 			// Create the request.
-			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}");
+			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}.aspx");
 			request.Method = Method.DELETE;
 
 			// Make the request and get the response.
@@ -630,8 +741,504 @@ namespace MFaaP.MFWSClient
 
 		#endregion
 
+		#region CanCompleteAssignment
+
+		/// <summary>
+		/// Returns whether the current user can complete (approve or reject)
+		/// the provided assignment object.
+		/// </summary>
+		/// <param name="assignmentObjectId">The ID of the assignment object.</param>
+		/// <param name="version">The version of the assignment object, or null to use the latest.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for the operation.</returns>
+		public async Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
+		(
+			int assignmentObjectId,
+			int? version = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Create the request.
+			var request = new RestRequest($"/REST/objects/{assignmentObjectId}/{version?.ToString() ?? "latest"}/canCompleteAssignment.aspx");
+			request.Method = Method.GET;
+
+			// Make the request and get the response.
+			var response = await this.MFWSClient.Get<PrimitiveType<bool>>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
+		}
+
+		/// <summary>
+		/// Returns whether the current user can complete (approve or reject)
+		/// the provided assignment object.
+		/// </summary>
+		/// <param name="assignmentObjectId">The ID of the assignment object.</param>
+		/// <param name="version">The version of the assignment object, or null to use the latest.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Whether the user can complete the assignment.</returns>
+		public PrimitiveType<bool> CanCompleteAssignment(int assignmentObjectId, int? version = null, CancellationToken token = default(CancellationToken))
+		{
+			// Execute the async method.
+			return this.CanCompleteAssignmentAsync(assignmentObjectId, version, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Returns whether the current user can complete (approve or reject)
+		/// the provided assignment object.
+		/// </summary>
+		/// <param name="objId">The ObjID of the assignment object.</param>
+		/// <param name="version">The version of the assignment object, or null to use the latest.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for the operation.</returns>
+		public Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
+		(
+			ObjID objId,
+			int? version = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objId)
+				throw new ArgumentNullException(nameof(objId));
+			if (objId.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object does not refer to an assignment");
+			return this.CanCompleteAssignmentAsync(objId.ID, version, token);
+		}
+
+		/// <summary>
+		/// Returns whether the current user can complete (approve or reject)
+		/// the provided assignment object.
+		/// </summary>
+		/// <param name="objId">The ObjID of the assignment object.</param>
+		/// <param name="version">The version of the assignment object, or null to use the latest.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Whether the user can complete the assignment.</returns>
+		public PrimitiveType<bool> CanCompleteAssignment
+		(
+			ObjID objId, 
+			int? version = null, 
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.CanCompleteAssignmentAsync(objId, version, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Returns whether the current user can complete (approve or reject)
+		/// the provided assignment object.
+		/// </summary>
+		/// <param name="objVer">The ObjVer of the assignment object.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for the operation.</returns>
+		public Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
+		(
+			ObjVer objVer,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+			if (objVer.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object does not refer to an assignment");
+			return this.CanCompleteAssignmentAsync(objVer.ID, objVer.Version, token);
+		}
+
+		/// <summary>
+		/// Returns whether the current user can complete (approve or reject)
+		/// the provided assignment object.
+		/// </summary>
+		/// <param name="objVer">The ObjVer of the assignment object.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Whether the user can complete the assignment.</returns>
+		public PrimitiveType<bool> CanCompleteAssignment
+		(
+			ObjVer objVer,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.CanCompleteAssignmentAsync(objVer, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		#endregion
+
+		#region ApproveOrRejectAssignment
+
+		/// <summary>
+		/// Marks the assignment as approved by the current user.
+		/// </summary>
+		/// <param name="objectId">The ID of the assignment to approve.</param>
+		/// <param name="version">The version of the assignment to approve (or null for latest).</param>
+		/// <param name="comment">A version comment for the approval.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>An awaitable task for the approval.</returns>
+		public Task<ObjectVersion> ApproveAssignmentAsync
+		(
+			int objectId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			return this.ApproveOrRejectAssignmentAsync
+			(
+				(int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				objectId,
+				true,
+				version,
+				comment,
+				token
+			);
+		}
+
+		/// <summary>
+		/// Marks the assignment as approved by the current user.
+		/// </summary>
+		/// <param name="objectId">The ID of the assignment to approve.</param>
+		/// <param name="version">The version of the assignment to approve (or null for latest).</param>
+		/// <param name="comment">A version comment for the approval.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion ApproveAssignment
+		(
+			int objectId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.ApproveAssignmentAsync(objectId, version, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Marks the assignment as approved by the current user.
+		/// </summary>
+		/// <param name="objId">The ID of the assignment to approve.</param>
+		/// <param name="version">The version of the assignment to approve (or null for latest).</param>
+		/// <param name="comment">A version comment for the approval.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>An awaitable task for the approval.</returns>
+		public Task<ObjectVersion> ApproveAssignmentAsync
+		(
+			ObjID objId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objId)
+				throw new ArgumentNullException(nameof(objId));
+			if (objId.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object is not an assignment");
+			return this.ApproveAssignmentAsync(objId.ID, version, comment, token);
+		}
+
+		/// <summary>
+		/// Marks the assignment as approved by the current user.
+		/// </summary>
+		/// <param name="objId">The ID of the assignment to approve.</param>
+		/// <param name="version">The version of the assignment to approve (or null for latest).</param>
+		/// <param name="comment">A version comment for the approval.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion ApproveAssignment
+		(
+			ObjID objId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.ApproveAssignmentAsync(objId, version, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Marks the assignment as approved by the current user.
+		/// </summary>
+		/// <param name="objVer">The ObjVer of the assignment to approve.</param>
+		/// <param name="comment">A version comment for the approval.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>An awaitable task for the approval.</returns>
+		public Task<ObjectVersion> ApproveAssignmentAsync
+		(
+			ObjVer objVer,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+			if (objVer.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object is not an assignment");
+			return this.ApproveAssignmentAsync(objVer.ID, objVer.Version, comment, token);
+		}
+
+		/// <summary>
+		/// Marks the assignment as approved by the current user.
+		/// </summary>
+		/// <param name="objVer">The ObjVer of the assignment to approve.</param>
+		/// <param name="comment">A version comment for the approval.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion ApproveAssignment
+		(
+			ObjVer objVer,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.ApproveAssignmentAsync(objVer, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Marks the assignment as rejected by the current user.
+		/// </summary>
+		/// <param name="objectId">The ID of the assignment to reject.</param>
+		/// <param name="version">The version of the assignment to reject (or null for latest).</param>
+		/// <param name="comment">A version comment for the rejection.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>An awaitable task for the rejection.</returns>
+		public Task<ObjectVersion> RejectAssignmentAsync
+		(
+			int objectId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			return this.ApproveOrRejectAssignmentAsync
+			(
+				(int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment,
+				objectId,
+				false,
+				version,
+				comment,
+				token
+			);
+		}
+
+		/// <summary>
+		/// Marks the assignment as rejected by the current user.
+		/// </summary>
+		/// <param name="objectId">The ID of the assignment to reject.</param>
+		/// <param name="version">The version of the assignment to reject (or null for latest).</param>
+		/// <param name="comment">A version comment for the rejection.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion RejectAssignment
+		(
+			int objectId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.RejectAssignmentAsync(objectId, version, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Marks the assignment as rejected by the current user.
+		/// </summary>
+		/// <param name="objId">The ObjID of the assignment to reject.</param>
+		/// <param name="version">The version of the assignment to reject (or null for latest).</param>
+		/// <param name="comment">A version comment for the rejection.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>An awaitable task for the rejection.</returns>
+		public Task<ObjectVersion> RejectAssignmentAsync
+		(
+			ObjID objId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objId)
+				throw new ArgumentNullException(nameof(objId));
+			if (objId.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object is not an assignment");
+			return this.RejectAssignmentAsync(objId.ID, version, comment, token);
+		}
+
+		/// <summary>
+		/// Marks the assignment as rejected by the current user.
+		/// </summary>
+		/// <param name="objId">The ObjID of the assignment to reject.</param>
+		/// <param name="version">The version of the assignment to reject (or null for latest).</param>
+		/// <param name="comment">A version comment for the rejection.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion RejectAssignment
+		(
+			ObjID objId,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.RejectAssignmentAsync(objId, version, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Marks the assignment as rejected by the current user.
+		/// </summary>
+		/// <param name="objVer">The ObjVer of the assignment to reject.</param>
+		/// <param name="comment">A version comment for the rejection.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>An awaitable task for the rejection.</returns>
+		public Task<ObjectVersion> RejectAssignmentAsync
+		(
+			ObjVer objVer,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+			if (objVer.Type != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object is not an assignment");
+			return this.RejectAssignmentAsync(objVer.ID, objVer.Version, comment, token);
+		}
+
+		/// <summary>
+		/// Marks the assignment as rejected by the current user.
+		/// </summary>
+		/// <param name="objVer">The ObjVer of the assignment to reject.</param>
+		/// <param name="comment">A version comment for the rejection.</param>
+		/// <param name="token">A cancellation token for the process.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion RejectAssignment
+		(
+			ObjVer objVer,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.RejectAssignmentAsync(objVer, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		/// <summary>
+		/// Approves or rejects an assignment (see <paramref name="approve"/>).
+		/// </summary>
+		/// <param name="objectTypeId">The object type ID of the assignment.  Anything other than MFBuiltInObjectTypeAssignment (10) will be thrown as an error.</param>
+		/// <param name="objectId">The ID of the assignment.</param>
+		/// <param name="approve">If true, the assignment is marked as approved.  If false the assignment is marked as rejected.</param>
+		/// <param name="version">The version of the assignment to update, or null to use the latest.</param>
+		/// <param name="comment">An optional comment for the approval/rejection.  Can be null.</param>
+		/// <param name="token">The cancellation token.</param>
+		/// <returns>An awaitable task for the approval/rejection.</returns>
+		public async Task<ObjectVersion> ApproveOrRejectAssignmentAsync
+		(
+			int objectTypeId,
+			int objectId,
+			bool approve,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Sanity.
+			if (objectTypeId != (int)MFBuiltInObjectType.MFBuiltInObjectTypeAssignment)
+				throw new ArgumentException("The object is not an assignment");
+
+			// Vary the URI based on whether we are approving or rejecting.
+			var uri = approve
+				? $"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/complete.aspx"
+				: $"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/reject.aspx";
+
+			// Create the request.
+			var request = new RestRequest(uri);
+			request.Method = Method.PUT;
+
+			// If we are rejecting then we need the MFWA extension...
+			if (false == approve)
+				request.AddHeader("X-Extensions", "mfwa");
+
+			// We currently don't support complex assignment state (e.g. e-signatures).
+			request.AddJsonBody(new AssignmentState()
+			{
+				Comment = comment
+			});
+
+			// Make the request and get the response.
+			var response = await this.MFWSClient.Put<ObjectVersion>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
+		}
+
+		/// <summary>
+		/// Approves or rejects an assignment (see <paramref name="approve"/>).
+		/// </summary>
+		/// <param name="objectTypeId">The object type ID of the assignment.  Anything other than MFBuiltInObjectTypeAssignment (10) will be thrown as an error.</param>
+		/// <param name="objectId">The ID of the assignment.</param>
+		/// <param name="approve">If true, the assignment is marked as approved.  If false the assignment is marked as rejected.</param>
+		/// <param name="version">The version of the assignment to update, or null to use the latest.</param>
+		/// <param name="comment">An optional comment for the approval/rejection.  Can be null.</param>
+		/// <param name="token">The cancellation token.</param>
+		/// <returns>The new version of the object.</returns>
+		public ObjectVersion ApproveOrRejectAssignment
+		(
+			int objectTypeId,
+			int objectId,
+			bool approve,
+			int? version = null,
+			string comment = null,
+			CancellationToken token = default(CancellationToken)
+		)
+		{
+			// Execute the async method.
+			return this.ApproveOrRejectAssignmentAsync(objectTypeId, objectId, approve, version, comment, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
+		#endregion
+
 		#region Set workflow states
-		
+
 		/// <summary>
 		/// Sets Workflow state of the object
 		/// </summary>
@@ -648,7 +1255,7 @@ namespace MFaaP.MFWSClient
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{objVer.Type}/{objVer.ID}/{objVer.Version}/workflowstate");
 			request.Method = Method.PUT;
-			request.AddJsonBody(new ObjectWorkflowState() { StateID=stateId});
+			request.AddJsonBody(new ObjectWorkflowState() { StateID = stateId });
 			// Execute the request and parse the response.
 			var response = await this.MFWSClient.Put<ExtendedObjectVersion>(request, token).ConfigureAwait(false);
 
@@ -664,7 +1271,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>A representation of the updated object version</returns>
 		public ObjectVersion SetWorkflowState(ObjVer objVer, int stateId, CancellationToken token = default(CancellationToken))
 		{
-			return this.SetWorkflowStateAsync(objVer,stateId, token)
+			return this.SetWorkflowStateAsync(objVer, stateId, token)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
