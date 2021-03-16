@@ -8,44 +8,6 @@ namespace MFaaP.MFWSClient.Tests
 	[TestClass]
 	public class MFWSVaultWorkflowOperations
 	{
-		#region Set workflow states
-        [TestMethod]
-        public async Task SetWorkflowStateAsync()
-        {
-            var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
-
-            runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
-            // Execute.
-            await runner.MFWSClient.WorkflowOperations.SetWorkflowStateAsync(new ObjVer()
-            {
-                Type = 0,
-                ID = 1,
-                Version = 2
-            }, 2);
-
-            // Verify.
-            runner.Verify();
-        }
-
-        [TestMethod]
-        public void SetWorkflowState()
-        {
-            var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
-
-            runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
-            // Execute.
-            runner.MFWSClient.WorkflowOperations.SetWorkflowState(new ObjVer()
-            {
-                Type = 0,
-                ID = 1,
-                Version = 2
-            }, 2);
-
-            // Verify.
-            runner.Verify();
-        }
-        #endregion
-		
 		#region Get workflow states
 
 		/// <summary>
