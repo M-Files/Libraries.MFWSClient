@@ -1202,5 +1202,33 @@ namespace MFaaP.MFWSClient
 		#endregion
 
 		#endregion
+
+		#region Removing files
+		public ExtendedObjectVersion RemoveFile(ObjVer objVer, int fileId, CancellationToken token = default(CancellationToken))
+        {
+			return this.RemoveFileAsync(objVer, fileId)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+		public async Task<ExtendedObjectVersion> RemoveFileAsync(ObjVer objVer, int fileId, CancellationToken token = default(CancellationToken))
+		{
+			// Sanity.
+			if (null == objVer)
+				throw new ArgumentNullException(nameof(objVer));
+
+			// Build up the request.
+			var request = new RestRequest($"/REST/objects/{objVer.Type}/{objVer.ID}/{objVer.Version}/files/{fileId}");
+			request.Method = Method.DELETE;
+
+			// Execute the request.
+			var response = await this.MFWSClient.Delete<ExtendedObjectVersion>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the data.
+			return response.Data;
+
+		}
+			#endregion
 	}
 }
