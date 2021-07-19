@@ -45,7 +45,9 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Returns the default parameters for requests.
 		/// </summary>
+#pragma warning disable CS0618 // Type or member is obsolete
 		public IList<Parameter> DefaultParameters => this.restClient.DefaultParameters;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 		/// <summary>
 		/// If true, exceptions returned (e.g. Forbidden) by the web service will be converted

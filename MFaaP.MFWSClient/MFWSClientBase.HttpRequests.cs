@@ -114,7 +114,9 @@ namespace MFaaP.MFWSClient
 			request.Method = Method.GET;
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -149,7 +151,9 @@ namespace MFaaP.MFWSClient
 			request.Method = Method.GET;
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -184,7 +188,9 @@ namespace MFaaP.MFWSClient
 			request.Method = Method.POST;
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -221,7 +227,9 @@ namespace MFaaP.MFWSClient
 			request.Method = Method.POST;
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -258,7 +266,9 @@ namespace MFaaP.MFWSClient
 			request.AddQueryParameter("_method", "DELETE");
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -297,7 +307,9 @@ namespace MFaaP.MFWSClient
 			request.AddQueryParameter("_method", "DELETE");
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -334,7 +346,9 @@ namespace MFaaP.MFWSClient
 			request.AddQueryParameter("_method", "PUT");
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -373,7 +387,9 @@ namespace MFaaP.MFWSClient
 			request.AddQueryParameter("_method", "PUT");
 
 			// We only deal with Json.
+#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -409,7 +425,9 @@ namespace MFaaP.MFWSClient
 
 			// Retrieve the current X-Extensions values (comma-separated) as an array.
 			// Need to handle various null/empty scenarios here.
+#pragma warning disable CS0618 // Type or member is obsolete
 			var existingExtensions = ((request.Parameters ?? new List<Parameter>())
+#pragma warning restore CS0618 // Type or member is obsolete
 										.FirstOrDefault(p =>
 											p.Type == ParameterType.HttpHeader
 											&& p.Name == MFWSClientBase.ExtensionsHttpHeaderName)?
@@ -440,12 +458,7 @@ namespace MFaaP.MFWSClient
 				.RemoveAll(p => p.Type == ParameterType.HttpHeader && p.Name == MFWSClientBase.ExtensionsHttpHeaderName);
 
 			// Add the header.
-			request.Parameters?.Add(new Parameter
-				(
-					MFWSClientBase.ExtensionsHttpHeaderName,
-					string.Join(",", existingExtensions),
-					ParameterType.HttpHeader)
-				);
+			request.AddHeader(MFWSClientBase.ExtensionsHttpHeaderName, string.Join(",", existingExtensions));
 		}
 
 		/// <summary>

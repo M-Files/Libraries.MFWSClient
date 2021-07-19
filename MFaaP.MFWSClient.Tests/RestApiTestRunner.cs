@@ -94,7 +94,9 @@ namespace MFaaP.MFWSClient.Tests
 		/// <summary>
 		/// The request body which is expected to be passed.
 		/// </summary>
+#pragma warning disable CS0618 // Type or member is obsolete
 		public Parameter ExpectedRequestBody { get; set; }
+#pragma warning restore CS0618 // Type or member is obsolete
 
 		/// <summary>
 		/// The extensions that must be specified in the <see cref="MFWSClientBase.ExtensionsHttpHeaderName"/>
@@ -153,7 +155,9 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetExpectedRequestBody(object body, DataFormat dataFormat = DataFormat.Json, string xmlNamespace = "")
 		{
 			// Set up the parameter.
+#pragma warning disable CS0618 // Type or member is obsolete
 			var parameter = new Parameter("Body", "", ParameterType.RequestBody);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Fill in the parameter data based on the data format.
 			ISerializer serializer;
@@ -260,13 +264,17 @@ namespace MFaaP.MFWSClient.Tests
 			// Ensure the data format is correct.
 			Assert.AreEqual(
 				this.ExpectedRequestFormat,
+#pragma warning disable CS0618 // Type or member is obsolete
 				r.RequestFormat);
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Was a request body expected?
 			if (null != this.ExpectedRequestBody)
 			{
 				// Get the body from the request.
+#pragma warning disable CS0618 // Type or member is obsolete
 				var requestBody = (r.Parameters ?? new List<Parameter>())
+#pragma warning restore CS0618 // Type or member is obsolete
 					.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
 				if (null == requestBody)
 					Assert.Fail("A request body was expected but none was provided.");

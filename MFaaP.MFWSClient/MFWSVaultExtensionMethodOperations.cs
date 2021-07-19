@@ -141,7 +141,7 @@ namespace MFaaP.MFWSClient
 				request.Parameters.AddRange(this.MFWSClient.DefaultParameters);
 
 				// Add the message body.
-				request.Parameters.Add(new Parameter("application/json", input, "application/json", ParameterType.RequestBody));
+				request.AddJsonBody(input);
 			}
 
 			// Make the request and get the response.

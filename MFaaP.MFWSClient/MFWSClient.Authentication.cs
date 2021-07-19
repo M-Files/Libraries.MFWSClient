@@ -40,7 +40,7 @@ namespace MFaaP.MFWSClient
 				this.authenticationToken = value;
 
 				// Remove any existing default parameters.
-				foreach (Parameter parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.XAuthenticationHttpHeaderName)
+				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.XAuthenticationHttpHeaderName)
 					.ToArray())
 				{
 					this.DefaultParameters.Remove(parameter);
@@ -78,7 +78,7 @@ namespace MFaaP.MFWSClient
 		public void ClearVaultHeader()
 		{
 			// Remove the authorisation header.
-			foreach (Parameter parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.VaultHttpHeaderName)
+			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.VaultHttpHeaderName)
 				.ToArray())
 			{
 				this.DefaultParameters.Remove(parameter);
@@ -98,7 +98,7 @@ namespace MFaaP.MFWSClient
 			this.CookieContainer = new CookieContainer();
 
 			// Remove the authorisation header.
-			foreach (Parameter parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
+			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
 				.ToArray())
 			{
 				this.DefaultParameters.Remove(parameter);

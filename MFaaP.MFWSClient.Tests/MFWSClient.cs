@@ -89,7 +89,9 @@ namespace MFaaP.MFWSClient.Tests
 			// Ensure that we have a default parameter collection, if it's not been mocked already.
 			if (null == restClientMoq.Object.DefaultParameters)
 			{
+#pragma warning disable CS0618 // Type or member is obsolete
 				var defaultParameters = new List<Parameter>();
+#pragma warning restore CS0618 // Type or member is obsolete
 				restClientMoq
 					.SetupGet(p => p.DefaultParameters)
 					.Returns(defaultParameters);
