@@ -530,7 +530,10 @@ namespace MFaaP.MFWSClient.Tests
             // Create a temporary file.
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
+            {
                 tempFile.Create();
+                tempFile.Refresh();
+            }
 
             // Create our restsharp mock.
             var mock = new Mock<IRestClient>();
