@@ -23,9 +23,14 @@ namespace MFaaP.MFWSClient
 		protected const string XAuthenticationHttpHeaderName = "X-Authentication";
 
 		/// <summary>
+		/// The HTTP header name used to maintain the active vault (if multiple vaults and using SSO).
+		/// </summary>
+		protected const string XActiveVaultHttpHeaderName = "X-Active-Vault";
+
+		/// <summary>
 		/// The HTTP header name used for the vault guid (<see cref="AddVaultHeader(System.Guid)"/>).
 		/// </summary>
-		protected const string VaultHttpHeaderName = "X-Vault";
+		protected const string XVaultHttpHeaderName = "X-Vault";
 
 		/// <summary>
 		/// This is the authentication token used in the request headers.
@@ -69,7 +74,7 @@ namespace MFaaP.MFWSClient
 		/// <remarks>Typically used with OAuth authentication tokens.</remarks>
 		public void AddVaultHeader(string vaultGuid)
 		{
-			this.AddDefaultHeader(MFWSClient.VaultHttpHeaderName, vaultGuid);
+			this.AddDefaultHeader(MFWSClient.XVaultHttpHeaderName, vaultGuid);
 		}
 
 		/// <summary>
@@ -78,7 +83,7 @@ namespace MFaaP.MFWSClient
 		public void ClearVaultHeader()
 		{
 			// Remove the authorisation header.
-			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.VaultHttpHeaderName)
+			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.XVaultHttpHeaderName)
 				.ToArray())
 			{
 				this.DefaultParameters.Remove(parameter);
@@ -98,7 +103,13 @@ namespace MFaaP.MFWSClient
 			this.CookieContainer = new CookieContainer();
 
 			// Remove the authorisation header.
-			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
+			foreach (var parameter in this
+				.DefaultParameters
+				.Where
+				(
+					p => p.Name == MFWSClient.AuthorizationHttpHeaderName
+					|| p.Name == MFWSClient.XActiveVaultHttpHeaderName
+				)
 				.ToArray())
 			{
 				this.DefaultParameters.Remove(parameter);
@@ -137,6 +148,9 @@ namespace MFaaP.MFWSClient
 					this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
 				}
 			}
+
+			// Ensure that the active vault is stored.
+			this.AddDefaultHeader(MFWSClient.XActiveVaultHttpHeaderName, vaultId.ToString("B"));
 		}
 
 		/// <summary>
