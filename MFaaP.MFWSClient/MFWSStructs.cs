@@ -2159,8 +2159,12 @@ namespace MFaaP.MFWSClient
         /// Based on M-Files API.
         /// </summary>
         public int ValueListID { get; set; }
-        
-    }
+
+		/// <summary>
+		/// Based on M-Files API.
+		/// </summary>
+		public string ItemGUID { get; set; }
+	}
 
     
 
