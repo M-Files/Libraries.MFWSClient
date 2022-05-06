@@ -37,6 +37,14 @@ namespace MFaaP.MFWSClient.Tests
 			// Set up the response to include the session Id.
 			runner.RestClientMock
 				.Setup(c => c.ExecuteAsync(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
+				.Callback((IRestRequest r, Method m, CancellationToken t) =>
+				{
+					Assert.AreEqual(Method.GET, m, $"HTTP method {Method.GET} expected, but {m} was executed.");
+
+					var vaultParameter = r.Parameters.FirstOrDefault(p => p.Type == ParameterType.QueryString && p.Name == "vault");
+					Assert.IsNotNull(vaultParameter, "Vault parameter was not found on the request.");
+					Assert.AreEqual("E1CE61EB-B255-41C3-B64C-FAA9FEB070F0", vaultParameter.Value, $"Wrong vault guid {vaultParameter.Value} in a querystring parameter.");
+				})
 				// Return a mock response.
 				.Returns(() =>
 				{
@@ -92,6 +100,14 @@ namespace MFaaP.MFWSClient.Tests
 			// Set up the response to include the session Id.
 			runner.RestClientMock
 				.Setup(c => c.ExecuteAsync(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
+				.Callback((IRestRequest r, Method m, CancellationToken t) =>
+				{
+					Assert.AreEqual(Method.GET, m, $"HTTP method {Method.GET} expected, but {m} was executed.");
+
+					var vaultParameter = r.Parameters.FirstOrDefault(p => p.Type == ParameterType.QueryString && p.Name == "vault");
+					Assert.IsNotNull(vaultParameter, "Vault parameter was not found on the request.");
+					Assert.AreEqual("E1CE61EB-B255-41C3-B64C-FAA9FEB070F0", vaultParameter.Value, $"Wrong vault guid {vaultParameter.Value} in a querystring parameter.");
+				})
 				// Return a mock response.
 				.Returns(() =>
 				{

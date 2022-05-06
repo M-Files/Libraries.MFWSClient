@@ -118,7 +118,7 @@ namespace MFaaP.MFWSClient
 			// Make a request to the WebServiceSSO.aspx file (which will give our token).
 			// Note: "popup=1" in the QueryString just indicates that we don't care about redirecting on success/failure.
 			// Note: The vault Id in the QueryString indicates which vault to authenticate to.  This is optional if there is only one vault.
-			var request = new RestRequest($"/WebServiceSSO.aspx?popup=1&vault={vaultId:D}");
+			var request = new RestRequest("/WebServiceSSO.aspx?popup=1&vault=" + vaultId.ToString("D").ToUpper());
 
 			// Set the credentials of the request to be our current network credentials.
 			request.Credentials = CredentialCache.DefaultNetworkCredentials;
