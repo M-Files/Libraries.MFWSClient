@@ -32,7 +32,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no classes have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<int> GetObjectClassIDByAliasAsync(string alias, CancellationToken token = default(CancellationToken))
+		public async Task<int> GetObjectClassIDByAliasAsync(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = await this.GetObjectClassIDsByAliasesAsync(token, aliases: new string[] { alias });
@@ -49,7 +49,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no object type have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<List<int>> GetObjectClassIDsByAliasesAsync(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public async Task<List<int>> GetObjectClassIDsByAliasesAsync(CancellationToken token = default, params string[] aliases)
 		{
 			// Sanity.
 			if (null == aliases)
@@ -78,7 +78,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no object type have the alias, or more than one does).</remarks>
-		public List<int> GetObjectClassIDsByAliases(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public List<int> GetObjectClassIDsByAliases(CancellationToken token = default, params string[] aliases)
 		{
 			// Execute the async method.
 			return this.GetObjectClassIDsByAliasesAsync(token, aliases)
@@ -95,7 +95,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no classes have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public int GetObjectClassIDByAlias(string alias, CancellationToken token = default(CancellationToken))
+		public int GetObjectClassIDByAlias(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = this.GetObjectClassIDsByAliases(token, aliases: new string[] { alias });
@@ -114,7 +114,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The class in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public async Task<ExtendedObjectClass> GetObjectClassAsync(int classId, bool includeTemplates = false, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectClass> GetObjectClassAsync(int classId, bool includeTemplates = false, CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/structure/classes/{classId}.aspx");
@@ -141,7 +141,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The class in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public ExtendedObjectClass GetObjectClass(int classId, bool includeTemplates = false, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectClass GetObjectClass(int classId, bool includeTemplates = false, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetObjectClassAsync(classId, includeTemplates, token)
@@ -156,7 +156,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All classes in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public async Task<List<ExtendedObjectClass>> GetAllObjectClassesAsync(CancellationToken token = default(CancellationToken))
+		public async Task<List<ExtendedObjectClass>> GetAllObjectClassesAsync(CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/structure/classes.aspx");
@@ -175,7 +175,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All classes in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public List<ExtendedObjectClass> GetAllObjectClasses(CancellationToken token = default(CancellationToken))
+		public List<ExtendedObjectClass> GetAllObjectClasses(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetAllObjectClassesAsync(token)
@@ -191,7 +191,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All classes in the vault for the supplied object type.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public async Task<List<ExtendedObjectClass>> GetObjectClassesAsync(int objectTypeId, CancellationToken token = default(CancellationToken))
+		public async Task<List<ExtendedObjectClass>> GetObjectClassesAsync(int objectTypeId, CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/structure/classes.aspx?objtype={objectTypeId}");
@@ -211,7 +211,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All classes in the vault for the supplied object type.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public List<ExtendedObjectClass> GetObjectClasses(int objectTypeId, CancellationToken token = default(CancellationToken))
+		public List<ExtendedObjectClass> GetObjectClasses(int objectTypeId, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetObjectClassesAsync(objectTypeId, token)

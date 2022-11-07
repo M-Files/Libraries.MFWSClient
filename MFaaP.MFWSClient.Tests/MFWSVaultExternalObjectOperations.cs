@@ -22,7 +22,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task DemoteObjectAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/demotemultiobjects");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/demotemultiobjects");
 
 			// Create the expected body.
 			var body = new[]
@@ -52,7 +52,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void DemoteObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/demotemultiobjects");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/demotemultiobjects");
 
 			// Create the expected body.
 			var body = new[]
@@ -86,7 +86,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task DemoteObjectsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/demotemultiobjects");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/demotemultiobjects");
 
 			// Create the expected body.
 			var body = new[]
@@ -121,7 +121,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void DemoteObjects()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/demotemultiobjects");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/demotemultiobjects");
 
 			// Create the expected body.
 			var body = new[]
@@ -164,7 +164,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task PromoteObjectAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/setmultipleobjproperties");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/setmultipleobjproperties");
 
 			// Create the expected body.
 			var body = new ObjectsUpdateInfo()
@@ -231,7 +231,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void PromoteObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/setmultipleobjproperties");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/setmultipleobjproperties");
 
 			// Create the expected body.
 			var body = new ObjectsUpdateInfo()
@@ -302,7 +302,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task PromoteObjectsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/setmultipleobjproperties");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/setmultipleobjproperties");
 
 			// Create the expected body.
 			var body = new ObjectsUpdateInfo()
@@ -379,7 +379,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void PromoteObjects()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/setmultipleobjproperties");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/setmultipleobjproperties");
 
 			// Create the expected body.
 			var body = new ObjectsUpdateInfo()

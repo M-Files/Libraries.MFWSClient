@@ -22,7 +22,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListItemsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.GetValueListItemsAsync(1);
@@ -39,7 +39,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueListItems()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items");
 
 			// Execute.
 			runner.MFWSClient.ValueListItemOperations.GetValueListItems(1);
@@ -56,7 +56,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListItemsAsync_WithNameFilter()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items?filter=hello");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items?filter=hello");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.GetValueListItemsAsync(1, "hello");
@@ -73,7 +73,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueListItems_WithNameFilter()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items?filter=hello");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items?filter=hello");
 
 			// Execute.
 			runner.MFWSClient.ValueListItemOperations.GetValueListItems(1, "hello");
@@ -90,7 +90,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListItemsAsync_WithLimit()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items?limit=501");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items?limit=501");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.GetValueListItemsAsync(1, limit: 501);
@@ -107,7 +107,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueListItems_WithLimit()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items?limit=501");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items?limit=501");
 
 			// Execute.
 			runner.MFWSClient.ValueListItemOperations.GetValueListItems(1, limit: 501);
@@ -124,7 +124,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListItemsAsync_WithLimitAndNameFilter()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items?filter=hello&limit=501");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items?filter=hello&limit=501");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.GetValueListItemsAsync(1, "hello", limit: 501);
@@ -141,7 +141,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueListItems_WithLimitAndNameFilter()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.GET, "/REST/valuelists/1/items?filter=hello&limit=501");
+			var runner = new RestApiTestRunner<Results<ValueListItem>>(Method.Get, "/REST/valuelists/1/items?filter=hello&limit=501");
 
 			// Execute.
 			runner.MFWSClient.ValueListItemOperations.GetValueListItems(1, "hello", limit: 501);
@@ -162,7 +162,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddValueListItemByNameAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Set the expected body.
 			var newVLitem = new ValueListItem
@@ -189,7 +189,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddValueListItemByNameAsyncThrowsWithNullName()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync(1, newItemName: null);
@@ -204,7 +204,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddValueListItemByNameAsyncThrowsWithBlankName()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync(1, newItemName: "");
@@ -218,7 +218,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void AddValueListItemByName()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Set the expected body.
 			var newVLitem = new ValueListItem
@@ -245,7 +245,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddValueListItemAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Set the expected body.
 			var newVLitem = new ValueListItem
@@ -275,7 +275,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddValueListItemValueListIDPopulatedAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/23/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/23/items");
 
 			// Set the expected body.
 			var newVLitem = new ValueListItem
@@ -309,7 +309,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddValueListItemAsyncThrowsWithNull()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Execute.
 			await runner.MFWSClient.ValueListItemOperations.AddValueListItemAsync(1, valueListItem: null);
@@ -323,7 +323,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void AddValueListItem()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ValueListItem>(Method.POST, "/REST/valuelists/1/items");
+			var runner = new RestApiTestRunner<ValueListItem>(Method.Post, "/REST/valuelists/1/items");
 
 			// Set the expected body.
 			var newVLitem = new ValueListItem

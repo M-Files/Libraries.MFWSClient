@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MFaaP.MFWSClient.ExtensionMethods;
 using MFaaP.MFWSClient.OAuth2;
+using RestSharp;
 
 namespace MFaaP.MFWSClient
 {
@@ -62,7 +63,7 @@ namespace MFaaP.MFWSClient
 		protected OAuth2TokenResponse ConvertOAuth2AuthorizationCodeToTokens(
 			OAuth2Configuration pluginConfiguration, 
 			string code,
-			CancellationToken cancellationToken = default(CancellationToken))
+			CancellationToken cancellationToken = default)
 		{
 			// Sanity.
 			if (null == pluginConfiguration)
@@ -89,7 +90,7 @@ namespace MFaaP.MFWSClient
 		protected async Task<OAuth2TokenResponse> ConvertOAuth2AuthorizationCodeToTokensAsync(
 			OAuth2Configuration pluginConfiguration,
 			string code,
-			CancellationToken cancellationToken = default( CancellationToken ) )
+			CancellationToken cancellationToken = default )
 		{
 			// Sanity.
 			if( null == pluginConfiguration )
@@ -99,8 +100,8 @@ namespace MFaaP.MFWSClient
 
 			// Create the request, adding the mandatory items.
 			var tokenEndpoint = new Uri( pluginConfiguration.TokenEndpoint, uriKind: UriKind.Absolute );
-			var request = new RestSharp.RestRequest( tokenEndpoint.PathAndQuery, RestSharp.Method.POST );
-			request.AddParameter( "code", code );
+			var request = new RestSharp.RestRequest( tokenEndpoint.PathAndQuery, RestSharp.Method.Post );
+			request.AddParameter( new QueryParameter("code", code) );
 			request.AddParameter( "grant_type", pluginConfiguration.GrantType );
 			request.AddParameter( "redirect_uri", pluginConfiguration.GetAppropriateRedirectUri() );
 
@@ -144,7 +145,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration pluginConfiguration,
 			OAuth2TokenResponse oAuthTokens,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.RefreshOAuth2TokenAsync(pluginConfiguration, oAuthTokens, setHttpHeaders, token)
@@ -165,7 +166,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration pluginConfiguration,
 			string refreshToken,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.RefreshOAuth2TokenAsync(pluginConfiguration, refreshToken, setHttpHeaders, token)
@@ -186,7 +187,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration pluginConfiguration,
 			OAuth2TokenResponse oAuthTokens,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == pluginConfiguration)
@@ -210,7 +211,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration pluginConfiguration,
 			string refreshToken,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == pluginConfiguration)
@@ -220,7 +221,7 @@ namespace MFaaP.MFWSClient
 
 			// Create the request, adding the mandatory items.
 			var tokenEndpoint = new Uri(pluginConfiguration.TokenEndpoint, uriKind: UriKind.Absolute);
-			var request = new RestSharp.RestRequest(tokenEndpoint.PathAndQuery, RestSharp.Method.POST);
+			var request = new RestSharp.RestRequest(tokenEndpoint.PathAndQuery, RestSharp.Method.Post);
 			request.AddParameter("grant_type", "refresh_token");
 			request.AddParameter("refresh_token", refreshToken);
 			request.AddParameter("redirect_uri", pluginConfiguration.GetAppropriateRedirectUri());
@@ -272,7 +273,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration configuration,
 			Uri redirectionUri,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == configuration)
@@ -301,7 +302,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration configuration,
 			Uri redirectionUri,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == configuration)

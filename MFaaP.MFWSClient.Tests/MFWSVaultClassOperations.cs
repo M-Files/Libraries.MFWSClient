@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace MFaaP.MFWSClient.Tests
@@ -19,10 +20,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectClassIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/classes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/classes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -40,10 +41,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectClassIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/classes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/classes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -61,10 +62,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectClassIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/classes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/classes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -82,10 +83,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectClassIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/classes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/classes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -107,7 +108,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetAllObjectClassesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.GET, "/REST/structure/classes.aspx");
+			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.Get, "/REST/structure/classes.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ClassOperations.GetAllObjectClassesAsync();
@@ -124,7 +125,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetAllObjectClasses()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.GET, "/REST/structure/classes.aspx");
+			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.Get, "/REST/structure/classes.aspx");
 
 			// Execute.
 			runner.MFWSClient.ClassOperations.GetAllObjectClasses();
@@ -145,7 +146,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectClassesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.GET, "/REST/structure/classes.aspx?objtype=0");
+			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.Get, "/REST/structure/classes.aspx?objtype=0");
 
 			// Execute.
 			await runner.MFWSClient.ClassOperations.GetObjectClassesAsync(0);
@@ -162,7 +163,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectClasses()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.GET, "/REST/structure/classes.aspx?objtype=0");
+			var runner = new RestApiTestRunner<List<ExtendedObjectClass>>(Method.Get, "/REST/structure/classes.aspx?objtype=0");
 
 			// Execute.
 			runner.MFWSClient.ClassOperations.GetObjectClasses(0);
@@ -183,7 +184,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectClassAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.GET, "/REST/structure/classes/0.aspx");
+			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.Get, "/REST/structure/classes/0.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ClassOperations.GetObjectClassAsync(classId: 0);
@@ -200,7 +201,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectClass()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.GET, "/REST/structure/classes/0.aspx");
+			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.Get, "/REST/structure/classes/0.aspx");
 
 			// Execute.
 			runner.MFWSClient.ClassOperations.GetObjectClass(classId: 0);
@@ -221,7 +222,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectClassAsync_WithTemplates()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.GET, "/REST/structure/classes/0.aspx?include=templates");
+			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.Get, "/REST/structure/classes/0.aspx?include=templates");
 
 			// Execute.
 			await runner.MFWSClient.ClassOperations.GetObjectClassAsync(classId: 0, includeTemplates: true);
@@ -238,7 +239,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectClass_WithTemplates()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.GET, "/REST/structure/classes/0.aspx?include=templates");
+			var runner = new RestApiTestRunner<ExtendedObjectClass>(Method.Get, "/REST/structure/classes/0.aspx?include=templates");
 
 			// Execute.
 			runner.MFWSClient.ClassOperations.GetObjectClass(classId: 0, includeTemplates: true);

@@ -24,22 +24,29 @@ namespace MFaaP.MFWSClient.Tests
 		public void AuthenticateUsingSingleSignOn()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.GET, "/WebServiceSSO.aspx?popup=1&vault=e1ce61eb-b255-41c3-b64c-faa9feb070f0");
+			var runner = new RestApiTestRunner(Method.Get, "/WebServiceSSO.aspx?popup=1&vault=e1ce61eb-b255-41c3-b64c-faa9feb070f0");
 
 			// The ASP.NET session Id (dummy value).
 			var sessionId = Guid.NewGuid().ToString();
 
 			// We need to set a base url so that we can check the session ID values.
 			runner.RestClientMock.SetupAllProperties();
-			runner.RestClientMock.SetupGet(c => c.BaseUrl)
-				.Returns(new Uri("http://example.org/"));
+            runner.RestClientMock.Setup(c => c.BaseUrl)
+                .Returns(new Uri("http://example.org/"));
+            {
+                var options = new RestClientOptions();
+                options.BaseUrl = runner.RestClientMock.Object.BaseUrl;
+                runner.RestClientMock.Setup(m => m.Options).Returns(options);
+                var cookieContainer = new CookieContainer();
+                runner.RestClientMock.Setup(m => m.CookieContainer).Returns(cookieContainer);
+            }
 
-			// Set up the response to include the session Id.
-			runner.RestClientMock
-				.Setup(c => c.ExecuteAsync(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) =>
+            // Set up the response to include the session Id.
+            runner.RestClientMock
+				.Setup(c => c.ExecuteAsync(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) =>
 				{
-					Assert.AreEqual(Method.GET, m, $"HTTP method {Method.GET} expected, but {m} was executed.");
+					Assert.AreEqual(Method.Get, r.Method, $"HTTP method {Method.Get} expected, but {r.Method} was executed.");
 
 					var vaultParameter = r.Parameters.FirstOrDefault(p => p.Type == ParameterType.QueryString && p.Name == "vault");
 					Assert.IsNotNull(vaultParameter, "Vault parameter was not found on the request.");
@@ -47,20 +54,24 @@ namespace MFaaP.MFWSClient.Tests
 				})
 				// Return a mock response.
 				.Returns(() =>
-				{
-					var response = new Mock<IRestResponse>();
-					response.SetupGet(r => r.Cookies)
-						.Returns(new List<RestResponseCookie>()
-						{
-							new RestResponseCookie() {
-								Name = "ASP.NET_SessionId",
-								Value = sessionId,
-								Path = "/",
-								Domain = "example.org"
-							}
-						});
-					return Task.FromResult(response.Object);
-				});
+                {
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse>
+                        (
+                            r => r.Cookies == new CookieCollection()
+                            {
+                                new Cookie()
+                                {
+                                    Name = "ASP.NET_SessionId",
+                                    Value = sessionId,
+                                    Path = "/",
+                                    Domain = "example.org"
+                                }
+                            }
+                        )
+                    );
+                });
 			
 			// Execute.
 			runner.MFWSClient.AuthenticateUsingSingleSignOn(Guid.Parse("e1ce61eb-b255-41c3-b64c-faa9feb070f0"));
@@ -87,22 +98,29 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AuthenticateUsingSingleSignOnAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.GET, "/WebServiceSSO.aspx?popup=1&vault=e1ce61eb-b255-41c3-b64c-faa9feb070f0");
+			var runner = new RestApiTestRunner(Method.Get, "/WebServiceSSO.aspx?popup=1&vault=e1ce61eb-b255-41c3-b64c-faa9feb070f0");
 
 			// The ASP.NET session Id (dummy value).
 			var sessionId = Guid.NewGuid().ToString();
 
 			// We need to set a base url so that we can check the session ID values.
 			runner.RestClientMock.SetupAllProperties();
-			runner.RestClientMock.SetupGet(c => c.BaseUrl)
-				.Returns(new Uri("http://example.org/"));
+            runner.RestClientMock.Setup(c => c.BaseUrl)
+                .Returns(new Uri("http://example.org/"));
+            {
+                var options = new RestClientOptions();
+                options.BaseUrl = runner.RestClientMock.Object.BaseUrl;
+                runner.RestClientMock.Setup(m => m.Options).Returns(options);
+                var cookieContainer = new CookieContainer();
+                runner.RestClientMock.Setup(m => m.CookieContainer).Returns(cookieContainer);
+            }
 
-			// Set up the response to include the session Id.
-			runner.RestClientMock
-				.Setup(c => c.ExecuteAsync(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) =>
+            // Set up the response to include the session Id.
+            runner.RestClientMock
+				.Setup(c => c.ExecuteAsync(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) =>
 				{
-					Assert.AreEqual(Method.GET, m, $"HTTP method {Method.GET} expected, but {m} was executed.");
+					Assert.AreEqual(Method.Get, r.Method, $"HTTP method {Method.Get} expected, but {r.Method} was executed.");
 
 					var vaultParameter = r.Parameters.FirstOrDefault(p => p.Type == ParameterType.QueryString && p.Name == "vault");
 					Assert.IsNotNull(vaultParameter, "Vault parameter was not found on the request.");
@@ -111,18 +129,22 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-					var response = new Mock<IRestResponse>();
-					response.SetupGet(r => r.Cookies)
-						.Returns(new List<RestResponseCookie>()
-						{
-							new RestResponseCookie() {
-								Name = "ASP.NET_SessionId",
-								Value = sessionId,
-								Path = "/",
-								Domain = "example.org"
+					return Task.FromResult
+					(
+						Mock.Of<RestResponse>
+						(
+							r => r.Cookies == new CookieCollection()
+                            {
+								new Cookie()
+								{
+									Name = "ASP.NET_SessionId",
+									Value = sessionId,
+									Path = "/",
+									Domain = "example.org"
+	                            }
 							}
-						});
-					return Task.FromResult(response.Object);
+                        )
+					);
 				});
 
 			// Execute.
@@ -154,7 +176,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogOutAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.DELETE, "/REST/session.aspx");
+			var runner = new RestApiTestRunner(Method.Delete, "/REST/session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.LogOutAsync();
@@ -176,7 +198,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void AuthenticateUsingCredentials()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<string>>(Method.POST, "/REST/server/authenticationtokens");
+			var runner = new RestApiTestRunner<PrimitiveType<string>>(Method.Post, "/REST/server/authenticationtokens");
 
 			// When the execute method is called, return a dummy authentication token.
 			runner.ResponseData = new PrimitiveType<string>()
@@ -218,7 +240,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AuthenticateUsingCredentialsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<string>>(Method.POST, "/REST/server/authenticationtokens");
+			var runner = new RestApiTestRunner<PrimitiveType<string>>(Method.Post, "/REST/server/authenticationtokens");
 
 			// When the execute method is called, return a dummy authentication token.
 			runner.ResponseData = new PrimitiveType<string>()
@@ -264,7 +286,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetOnlineVaults()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<Vault>>(Method.GET, "/REST/server/vaults?online=true");
+			var runner = new RestApiTestRunner<List<Vault>>(Method.Get, "/REST/server/vaults?online=true");
 
 			// Execute.
 			runner.MFWSClient.GetOnlineVaults();
@@ -282,7 +304,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetOnlineVaultsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<Vault>>(Method.GET, "/REST/server/vaults?online=true");
+			var runner = new RestApiTestRunner<List<Vault>>(Method.Get, "/REST/server/vaults?online=true");
 
 			// Execute.
 			await runner.MFWSClient.GetOnlineVaultsAsync();

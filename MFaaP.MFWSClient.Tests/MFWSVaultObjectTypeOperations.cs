@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace MFaaP.MFWSClient.Tests
@@ -19,10 +20,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectTypeIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/objecttypes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/objecttypes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -40,10 +41,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectTypeIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/objecttypes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/objecttypes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -61,10 +62,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectTypeIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/objecttypes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/objecttypes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -82,10 +83,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectTypeIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/objecttypes/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/objecttypes/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -107,7 +108,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetObjectTypesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ObjType>>(Method.GET, "/REST/structure/objecttypes.aspx");
+			var runner = new RestApiTestRunner<List<ObjType>>(Method.Get, "/REST/structure/objecttypes.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectTypeOperations.GetObjectTypesAsync();
@@ -124,7 +125,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetObjectTypes()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ObjType>>(Method.GET, "/REST/structure/objecttypes.aspx");
+			var runner = new RestApiTestRunner<List<ObjType>>(Method.Get, "/REST/structure/objecttypes.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectTypeOperations.GetObjectTypes();

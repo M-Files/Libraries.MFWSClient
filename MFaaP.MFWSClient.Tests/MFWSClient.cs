@@ -20,7 +20,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetMetadataStructureIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<VaultStructureAliasResponse>(Method.POST, "/REST/structure/metadatastructure/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<VaultStructureAliasResponse>(Method.Post, "/REST/structure/metadatastructure/itemidbyalias.aspx");
 
 			// Set up the expected body.
 			var body = new VaultStructureAliasRequest();
@@ -41,7 +41,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetMetadataStructureIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<VaultStructureAliasResponse>(Method.POST, "/REST/structure/metadatastructure/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<VaultStructureAliasResponse>(Method.Post, "/REST/structure/metadatastructure/itemidbyalias.aspx");
 
 			// Set up the expected body.
 			var body = new VaultStructureAliasRequest();
@@ -89,11 +89,9 @@ namespace MFaaP.MFWSClient.Tests
 			// Ensure that we have a default parameter collection, if it's not been mocked already.
 			if (null == restClientMoq.Object.DefaultParameters)
 			{
-#pragma warning disable CS0618 // Type or member is obsolete
-				var defaultParameters = new List<Parameter>();
-#pragma warning restore CS0618 // Type or member is obsolete
-				restClientMoq
-					.SetupGet(p => p.DefaultParameters)
+                var defaultParameters = new ParametersCollection();
+                restClientMoq
+                    .SetupGet(p => p.DefaultParameters)
 					.Returns(defaultParameters);
 			}
 
@@ -113,7 +111,7 @@ namespace MFaaP.MFWSClient.Tests
 				: base(restClient)
 			{
 			}
-			protected override void OnAfterExecuteRequest(IRestResponse e)
+			protected override void OnAfterExecuteRequest(RestResponse e)
 			{
 				// If the response is null it's because we were testing for the wrong endpoint details.
 				if (null == e)

@@ -20,7 +20,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetExternalViewFolderAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/umyrepository%3A12%2B3456/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/umyrepository%3A12%2B3456/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync(new FolderContentItem()
@@ -49,7 +49,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetRootViewContentsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetRootFolderContentsAsync();
@@ -66,7 +66,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetRootViewContents()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/items");
 
 			// Execute.
 			runner.MFWSClient.ViewOperations.GetRootFolderContents();
@@ -87,7 +87,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync();
@@ -104,7 +104,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetViewContents()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/items");
 
 			// Execute.
 			runner.MFWSClient.ViewOperations.GetFolderContents();
@@ -121,7 +121,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_WithView()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v15/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v15/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync(new FolderContentItem()
@@ -146,7 +146,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetViewContents_WithView()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v15/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v15/items");
 
 			// Execute.
 			runner.MFWSClient.ViewOperations.GetFolderContents(new FolderContentItem()
@@ -171,7 +171,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_WithView_OneGrouping()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v216/L4/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v216/L4/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync(new FolderContentItem()
@@ -207,7 +207,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetViewContents_WithView_OneGrouping()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v216/L4/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v216/L4/items");
 
 			// Execute.
 			runner.MFWSClient.ViewOperations.GetFolderContents(new FolderContentItem()
@@ -243,7 +243,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_WithView_TwoGroupings()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v216/L4/L19/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v216/L4/L19/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync(new FolderContentItem()
@@ -290,7 +290,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetViewContents_WithView_TwoGroupings()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v216/L4/L19/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v216/L4/L19/items");
 
 			// Execute.
 			runner.MFWSClient.ViewOperations.GetFolderContents(new FolderContentItem()
@@ -337,7 +337,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_WithView_OneGrouping_UrlEncoded()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v216/TIntelligent+Metadata+Layer/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v216/TIntelligent+Metadata+Layer/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync(new FolderContentItem()
@@ -370,7 +370,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_WithView_OneGrouping_UrlEncoded_WithSlashes()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v216/TOne%2FTwo+Options/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v216/TOne%2FTwo+Options/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync(new FolderContentItem()
@@ -403,7 +403,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_CorrectResource_ViewPathMustEndWithSlash()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v123/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v123/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync("v123");
@@ -420,7 +420,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetViewContentsAsync_CorrectResource_ViewPathMustNotStartWithSlash()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<FolderContentItems>(Method.GET, $"/REST/views/v123/items");
+			var runner = new RestApiTestRunner<FolderContentItems>(Method.Get, $"/REST/views/v123/items");
 
 			// Execute.
 			await runner.MFWSClient.ViewOperations.GetFolderContentsAsync("/v123/");

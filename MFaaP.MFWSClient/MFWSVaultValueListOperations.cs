@@ -30,7 +30,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no value lists have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<int> GetValueListIDByAliasAsync(string alias, CancellationToken token = default(CancellationToken))
+		public async Task<int> GetValueListIDByAliasAsync(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = await this.GetValueListIDsByAliasesAsync(token, aliases: new string[] { alias });
@@ -47,7 +47,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no value lists have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<List<int>> GetValueListIDsByAliasesAsync(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public async Task<List<int>> GetValueListIDsByAliasesAsync(CancellationToken token = default, params string[] aliases)
 		{
 			// Sanity.
 			if (null == aliases)
@@ -76,7 +76,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no value lists have the alias, or more than one does).</remarks>
-		public List<int> GetValueListIDsByAliases(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public List<int> GetValueListIDsByAliases(CancellationToken token = default, params string[] aliases)
 		{
 			// Execute the async method.
 			return this.GetValueListIDsByAliasesAsync(token, aliases)
@@ -93,7 +93,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no value lists have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public int GetValueListIDByAlias(string alias, CancellationToken token = default(CancellationToken))
+		public int GetValueListIDByAlias(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = this.GetValueListIDsByAliases(token, aliases: new string[] { alias });
@@ -110,7 +110,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All value lists in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public async Task<List<ObjType>> GetValueListsAsync(CancellationToken token = default(CancellationToken))
+		public async Task<List<ObjType>> GetValueListsAsync(CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/valuelists.aspx");
@@ -129,7 +129,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All value lists in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public List<ObjType> GetValueLists(CancellationToken token = default(CancellationToken))
+		public List<ObjType> GetValueLists(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetValueListsAsync(token)

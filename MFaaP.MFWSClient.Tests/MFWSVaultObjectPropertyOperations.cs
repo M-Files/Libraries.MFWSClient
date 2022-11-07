@@ -21,7 +21,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertiesAsync_ExternalObject_LatestVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.GET, $"/REST/objects/0/umyrepository%3A12%2B3456/latest/properties.aspx");
+			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.Get, $"/REST/objects/0/umyrepository%3A12%2B3456/latest/properties.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.GetPropertiesAsync(new ObjVer()
@@ -44,7 +44,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertiesAsync_ExternalObject_SpecificVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.GET, $"/REST/objects/0/umyrepository%3A12%2B3456/uabc%253A123/properties.aspx");
+			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.Get, $"/REST/objects/0/umyrepository%3A12%2B3456/uabc%253A123/properties.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.GetPropertiesAsync(new ObjVer()
@@ -73,7 +73,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetProperties_ObjVer()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.GET, "/REST/objects/1/2/4/properties.aspx");
+			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.Get, "/REST/objects/1/2/4/properties.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.GetProperties(1, 2, 4);
@@ -91,7 +91,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertiesAsync_ObjVer()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.GET, "/REST/objects/1/2/4/properties.aspx");
+			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.Get, "/REST/objects/1/2/4/properties.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.GetPropertiesAsync(1, 2, 4);
@@ -109,7 +109,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetProperties_ObjID()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.GET, "/REST/objects/1/2/latest/properties.aspx");
+			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.Get, "/REST/objects/1/2/latest/properties.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.GetProperties(1, 2);
@@ -127,7 +127,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertiesAsync_ObjID()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.GET, "/REST/objects/1/2/latest/properties.aspx");
+			var runner = new RestApiTestRunner<List<PropertyValue>>(Method.Get, "/REST/objects/1/2/latest/properties.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.GetPropertiesAsync(1, 2);
@@ -149,7 +149,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetPropertiesOfMultipleObjects()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.POST, "/REST/objects/properties.aspx");
+			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.Post, "/REST/objects/properties.aspx");
 
 			// Create the object to send in the body.
 			var body = new ObjVer()
@@ -178,7 +178,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertiesOfMultipleObjectsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.POST, "/REST/objects/properties.aspx");
+			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.Post, "/REST/objects/properties.aspx");
 
 			// Create the object to send in the body.
 			var body = new ObjVer()
@@ -208,7 +208,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetPropertiesOfMultipleObjects_ExceptionForNoVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.POST, "/REST/objects/properties.aspx");
+			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.Post, "/REST/objects/properties.aspx");
 
 			// Create the object to send in the body.
 			var body = new ObjVer()
@@ -237,7 +237,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertiesOfMultipleObjectsAsync_ExceptionForNoVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.POST, "/REST/objects/properties.aspx");
+			var runner = new RestApiTestRunner<List<List<PropertyValue>>>(Method.Post, "/REST/objects/properties.aspx");
 
 			// Create the object to send in the body.
 			var body = new ObjVer()
@@ -269,7 +269,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetProperty()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, "/REST/objects/1/2/latest/properties/0");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Put, "/REST/objects/1/2/latest/properties/0");
 
 			// Create the object to send in the body.
 			var body = new PropertyValue()
@@ -299,7 +299,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetPropertyAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, "/REST/objects/1/2/latest/properties/0");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Put, "/REST/objects/1/2/latest/properties/0");
 
 			// Create the object to send in the body.
 			var body = new PropertyValue()
@@ -333,7 +333,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void RemoveProperty()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, "/REST/objects/1/2/latest/properties/0.aspx");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Delete, "/REST/objects/1/2/latest/properties/0.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.RemoveProperty(1, 2, 0);
@@ -351,7 +351,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RemovePropertyAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, "/REST/objects/1/2/latest/properties/0.aspx");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Delete, "/REST/objects/1/2/latest/properties/0.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.RemovePropertyAsync(1, 2, 0);
@@ -373,7 +373,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetProperties_ReplaceAllProperties()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, "/REST/objects/1/2/latest/properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Put, "/REST/objects/1/2/latest/properties");
 
 			// Create the object to send in the body.
 			var body = new[]
@@ -406,7 +406,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetProperties_UpdateProperties()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.POST, "/REST/objects/1/2/latest/properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Post, "/REST/objects/1/2/latest/properties");
 
 			// Create the object to send in the body.
 			var body = new[]
@@ -439,7 +439,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetPropertiesAsync_ReplaceAllProperties()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, "/REST/objects/1/2/latest/properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Put, "/REST/objects/1/2/latest/properties");
 
 			// Create the object to send in the body.
 			var body = new[]
@@ -472,7 +472,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetPropertiesAsync_UpdateProperties()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.POST, "/REST/objects/1/2/latest/properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Post, "/REST/objects/1/2/latest/properties");
 
 			// Create the object to send in the body.
 			var body = new[]
@@ -508,7 +508,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetPropertiesOfMultipleObjectsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/setmultipleobjproperties");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/setmultipleobjproperties");
 
 			// Create the expected body.
 			var body = new ObjectsUpdateInfo()
@@ -583,7 +583,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetPropertiesOfMultipleObjects()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.PUT, "/REST/objects/setmultipleobjproperties");
+			var runner = new RestApiTestRunner<List<ExtendedObjectVersion>>(Method.Put, "/REST/objects/setmultipleobjproperties");
 
 			// Create the expected body.
 			var body = new ObjectsUpdateInfo()
@@ -663,7 +663,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task CanCompleteAssignmentAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/123/latest/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/123/latest/canCompleteAssignment.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(123);
@@ -681,7 +681,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void CanCompleteAssignment()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/123/latest/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/123/latest/canCompleteAssignment.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(123);
@@ -699,7 +699,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task CanCompleteAssignmentAsync_ObjID()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/987/latest/canCompleteAssignment.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjID()
@@ -721,7 +721,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void CanCompleteAssignment_ObjID()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/987/latest/canCompleteAssignment.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjID()
@@ -744,7 +744,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task CanCompleteAssignmentAsync_ObjID_ThrowsForOtherObjectType()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/987/latest/canCompleteAssignment.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjID()
@@ -767,7 +767,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void CanCompleteAssignment_ObjID_ThrowsForOtherObjectType()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/latest/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/987/latest/canCompleteAssignment.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjID()
@@ -789,7 +789,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task CanCompleteAssignmentAsync_ObjVer()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/123/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/987/123/canCompleteAssignment.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignmentAsync(new ObjVer()
@@ -812,7 +812,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void CanCompleteAssignment_ObjVer()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.GET, "/REST/objects/987/123/canCompleteAssignment.aspx");
+			var runner = new RestApiTestRunner<PrimitiveType<bool>>(Method.Get, "/REST/objects/987/123/canCompleteAssignment.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.CanCompleteAssignment(new ObjVer()
@@ -839,7 +839,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ApproveAssignmentAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/456/complete.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/456/complete.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.ApproveAssignmentAsync(new ObjVer()
@@ -862,7 +862,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ApproveAssignment()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/456/complete.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/456/complete.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.ApproveAssignment(new ObjVer()
@@ -885,7 +885,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ApproveOrRejectAssignmentAsync_Approve()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/complete.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/latest/complete.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignmentAsync
@@ -908,7 +908,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ApproveOrRejectAssignment_Approve()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/complete.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/latest/complete.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignment
@@ -935,7 +935,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RejectAssignmentAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/876/reject.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/876/reject.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.RejectAssignmentAsync(new ObjVer()
@@ -958,7 +958,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void RejectAssignment()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/876/reject.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/876/reject.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.RejectAssignment(new ObjVer()
@@ -981,7 +981,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ApproveOrRejectAssignmentAsync_Reject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/reject.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/latest/reject.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignmentAsync
@@ -1004,7 +1004,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ApproveOrRejectAssignment_Reject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, "/REST/objects/10/123/latest/reject.aspx");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, "/REST/objects/10/123/latest/reject.aspx");
 
 			// Execute.
 			runner.MFWSClient.ObjectPropertyOperations.ApproveOrRejectAssignment
@@ -1025,7 +1025,7 @@ namespace MFaaP.MFWSClient.Tests
 		[TestMethod]
 		public async Task SetWorkflowStateAsync()
 		{
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Put, $"/REST/objects/0/1/2/workflowstate");
 
 			runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
 			// Execute.
@@ -1043,7 +1043,7 @@ namespace MFaaP.MFWSClient.Tests
 		[TestMethod]
 		public void SetWorkflowState()
 		{
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/workflowstate");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Put, $"/REST/objects/0/1/2/workflowstate");
 
 			runner.SetExpectedRequestBody(new ObjectWorkflowState() { StateID = 2 });
 			// Execute.

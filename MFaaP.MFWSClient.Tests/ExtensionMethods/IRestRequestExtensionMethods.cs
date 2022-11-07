@@ -6,7 +6,7 @@ using RestSharp;
 namespace MFaaP.MFWSClient.Tests.ExtensionMethods
 {
 	// ReSharper disable once InconsistentNaming
-	internal static class IRestRequestExtensionMethods
+	internal static class RestRequestExtensionMethods
 	{
 		/// <summary>
 		/// Extracts the body from the request and attempts to deserialize it to the provided type.
@@ -14,7 +14,7 @@ namespace MFaaP.MFWSClient.Tests.ExtensionMethods
 		/// <typeparam name="T">The body type.</typeparam>
 		/// <param name="request">The request.</param>
 		/// <returns>The value, or null.</returns>
-		public static T DeserializeBody<T>(this IRestRequest request)
+		public static T DeserializeBody<T>(this RestRequest request)
 		{
 			// Sanity.
 			if(null == request)

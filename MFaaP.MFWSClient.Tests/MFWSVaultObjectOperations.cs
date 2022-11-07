@@ -25,7 +25,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RenameObjectAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/1/2/latest/title");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/1/2/latest/title");
 
 			// Set the expected body.
 			var newObjectName = new PrimitiveType<string>()
@@ -54,7 +54,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RenameObjectAsync_Unmanaged()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/uhello%3Aworld/uagain/title");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/uhello%3Aworld/uagain/title");
 
 			// Set the expected body.
 			var newObjectName = new PrimitiveType<string>()
@@ -85,7 +85,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RenameObjectAsync_Unmanaged_Latest()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/uhello%3Aworld/latest/title");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/uhello%3Aworld/latest/title");
 
 			// Set the expected body.
 			var newObjectName = new PrimitiveType<string>()
@@ -114,7 +114,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void RenameObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/1/2/latest/title");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/1/2/latest/title");
 
 			// Set the expected body.
 			var newObjectName = new PrimitiveType<string>()
@@ -146,7 +146,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetLatestObjectVersionAndPropertiesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.GET, "/REST/objects/0/123/latest.aspx?include=properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Get, "/REST/objects/0/123/latest.aspx?include=properties");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.GetLatestObjectVersionAndPropertiesAsync(0, 123);
@@ -163,7 +163,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetLatestObjectVersionAndProperties()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.GET, "/REST/objects/0/123/latest.aspx?include=properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Get, "/REST/objects/0/123/latest.aspx?include=properties");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.GetLatestObjectVersionAndProperties(0, 123);
@@ -181,7 +181,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetLatestObjectVersionAndPropertiesAsync_External()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.GET, "/REST/objects/0/uhello%2Bworld%3A123%2525123/latest.aspx?include=properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Get, "/REST/objects/0/uhello%2Bworld%3A123%2525123/latest.aspx?include=properties");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.GetLatestObjectVersionAndPropertiesAsync(new ObjID()
@@ -204,7 +204,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetLatestObjectVersionAndProperties_External()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.GET, "/REST/objects/0/uhello%2Bworld%3A123%2525123/latest.aspx?include=properties");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Get, "/REST/objects/0/uhello%2Bworld%3A123%2525123/latest.aspx?include=properties");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.GetLatestObjectVersionAndProperties(new ObjID()
@@ -230,7 +230,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task CreateNewObjectAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.POST, $"/REST/objects/0");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Post, $"/REST/objects/0");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.CreateNewObjectAsync(0, new ObjectCreationInfo());
@@ -247,7 +247,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void CreateNewObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.POST, $"/REST/objects/0");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Post, $"/REST/objects/0");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.CreateNewObject(0, new ObjectCreationInfo());
@@ -268,7 +268,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetCheckoutStatusAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.GET, $"/REST/objects/0/1/2/checkedout");
+			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.Get, $"/REST/objects/0/1/2/checkedout");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.GetCheckoutStatusAsync(new ObjVer()
@@ -290,7 +290,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetCheckoutStatus()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.GET, $"/REST/objects/0/1/2/checkedout");
+			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.Get, $"/REST/objects/0/1/2/checkedout");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.GetCheckoutStatus(new ObjVer()
@@ -313,7 +313,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetCheckoutStatusAsync_External()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.GET, $"/REST/objects/0/umy+repository:hello+world/latest/checkedout");
+			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.Get, $"/REST/objects/0/umy+repository:hello+world/latest/checkedout");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.GetCheckoutStatusAsync(new ObjVer()
@@ -336,7 +336,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetCheckoutStatus_External()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.GET, $"/REST/objects/0/umy+repository:hello+world/latest/checkedout");
+			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.Get, $"/REST/objects/0/umy+repository:hello+world/latest/checkedout");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.GetCheckoutStatus(new ObjVer()
@@ -359,7 +359,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetCheckoutStatusAsync_External_WithVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.GET, $"/REST/objects/0/umy+repository:hello+world/myversionid/checkedout");
+			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.Get, $"/REST/objects/0/umy+repository:hello+world/myversionid/checkedout");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.GetCheckoutStatusAsync(new ObjVer()
@@ -383,7 +383,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetCheckoutStatus_External_WithVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.GET, $"/REST/objects/0/umy+repository:hello+world/myversionid/checkedout");
+			var runner = new RestApiTestRunner<PrimitiveType<MFCheckOutStatus>>(Method.Get, $"/REST/objects/0/umy+repository:hello+world/myversionid/checkedout");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.GetCheckoutStatus(new ObjVer()
@@ -410,7 +410,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void UndoCheckout()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.DELETE, $"/REST/objects/0/1/2?force=false");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Delete, $"/REST/objects/0/1/2?force=false");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.UndoCheckout(0, 1, 2);
@@ -427,7 +427,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ForceUndoCheckout()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.DELETE, $"/REST/objects/0/1/2?force=true");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Delete, $"/REST/objects/0/1/2?force=true");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.ForceUndoCheckout(0, 1, 2);
@@ -448,7 +448,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void UndeleteObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/deleted");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/deleted");
 
 			// Set the expected request body.
 			runner.SetExpectedRequestBody(new PrimitiveType<bool>()
@@ -475,7 +475,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void DeleteObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/deleted");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/deleted");
 
 			// Set the expected request body.
 			runner.SetExpectedRequestBody(new PrimitiveType<bool>()
@@ -502,7 +502,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void DestroyObject()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.DELETE, $"/REST/objects/0/1/latest?allVersions=true");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Delete, $"/REST/objects/0/1/latest?allVersions=true");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.DestroyObject(0, 1, true, -1);
@@ -523,7 +523,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetCheckoutStatusAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/2/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -548,7 +548,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetCheckoutStatus()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/2/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/2/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -574,7 +574,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetCheckoutStatusAsync_External()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/urepository%2Bname%3Amy%2Bobject/uversion%2B1/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/urepository%2Bname%3Amy%2Bobject/uversion%2B1/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -601,7 +601,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetCheckoutStatus_External()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/urepository%2Bname%3Amy%2Bobject/uversion%2B1/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/urepository%2Bname%3Amy%2Bobject/uversion%2B1/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -628,7 +628,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetCheckoutStatus_External_Latest()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/urepository%2Bname%3Amy%2Bobject/latest/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/urepository%2Bname%3Amy%2Bobject/latest/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -654,7 +654,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task SetCheckoutStatusAsync_LatestVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/latest/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/latest/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -679,7 +679,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetCheckoutStatus_LatestVersion()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/latest/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/latest/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -704,7 +704,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetCheckoutStatus_CheckIn()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/latest/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/latest/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedIn });
@@ -729,7 +729,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetCheckoutStatus_CheckedOutToMe()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ObjectVersion>(Method.PUT, $"/REST/objects/0/1/latest/checkedout");
+			var runner = new RestApiTestRunner<ObjectVersion>(Method.Put, $"/REST/objects/0/1/latest/checkedout");
 
 			// Set the expected body.
 			runner.SetExpectedRequestBody(new PrimitiveType<MFCheckOutStatus>() { Value = MFCheckOutStatus.CheckedOutToMe });
@@ -757,7 +757,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetHistoryAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ObjectVersion>>(Method.GET, $"/REST/objects/0/1/history");
+			var runner = new RestApiTestRunner<List<ObjectVersion>>(Method.Get, $"/REST/objects/0/1/history");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.GetHistoryAsync(new ObjID()
@@ -778,7 +778,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetHistory()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ObjectVersion>>(Method.GET, $"/REST/objects/0/1/history");
+			var runner = new RestApiTestRunner<List<ObjectVersion>>(Method.Get, $"/REST/objects/0/1/history");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.GetHistory(new ObjID()
@@ -803,7 +803,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task RemoveFromFavoritesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, $"/REST/favorites/1/2");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Delete, $"/REST/favorites/1/2");
 
 			// Execute.
 			await runner.MFWSClient.ObjectOperations.RemoveFromFavoritesAsync(new ObjID()
@@ -824,7 +824,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void RemoveFromFavorites()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.DELETE, $"/REST/favorites/1/2");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Delete, $"/REST/favorites/1/2");
 
 			// Execute.
 			runner.MFWSClient.ObjectOperations.RemoveFromFavorites(new ObjID()
@@ -849,7 +849,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task AddToFavoritesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.POST, $"/REST/favorites");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Post, $"/REST/favorites");
 
 			// Set the expected body.
 			var objId = new ObjID()
@@ -874,7 +874,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void AddToFavorites()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.POST, $"/REST/favorites");
+			var runner = new RestApiTestRunner<ExtendedObjectVersion>(Method.Post, $"/REST/favorites");
 
 			// Set the expected body.
 			var objId = new ObjID()

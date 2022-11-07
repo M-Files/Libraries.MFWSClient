@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace MFaaP.MFWSClient.Tests
@@ -21,10 +22,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/valuelists/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/valuelists/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -42,10 +43,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/valuelists/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/valuelists/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -63,10 +64,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueListIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/valuelists/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/valuelists/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -84,10 +85,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueListIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/valuelists/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/valuelists/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -109,7 +110,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetValueListsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ObjType>>(Method.GET, "/REST/valuelists.aspx");
+			var runner = new RestApiTestRunner<List<ObjType>>(Method.Get, "/REST/valuelists.aspx");
 
 			// Set up the expected body.
 
@@ -128,7 +129,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetValueLists()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ObjType>>(Method.GET, "/REST/valuelists.aspx");
+			var runner = new RestApiTestRunner<List<ObjType>>(Method.Get, "/REST/valuelists.aspx");
 
 			// Set up the expected body.
 

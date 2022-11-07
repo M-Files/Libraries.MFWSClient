@@ -20,7 +20,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ExecuteExtensionMethodAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionMethodOperations.ExecuteVaultExtensionMethodAsync("HelloWorld");
@@ -37,7 +37,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ExecuteExtensionMethod()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Execute.
 			runner.MFWSClient.ExtensionMethodOperations.ExecuteVaultExtensionMethod("HelloWorld");
@@ -54,7 +54,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ExecuteExtensionMethodAsync_CorrectRequestBody()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			const string inputValue = "this is my test input value";
@@ -75,7 +75,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ExecuteExtensionMethod_CorrectRequestBody()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			const string inputValue = "this is my test input value";
@@ -96,7 +96,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ExecuteExtensionMethodAsync_CorrectOutput()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			const string inputValue = "this is my test input value";
@@ -124,7 +124,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ExecuteExtensionMethod_CorrectOutput()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			const string inputValue = "this is my test input value";
@@ -156,7 +156,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ExecuteExtensionMethodAsync_InputSerialisation()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			var inputValue = new MySerialisableObject
@@ -188,7 +188,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ExecuteExtensionMethod_InputSerialisation()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			var inputValue = new MySerialisableObject
@@ -224,7 +224,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task ExecuteExtensionMethodAsync_OutputDeserialisation()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<MySerialisableObject>(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner<MySerialisableObject>(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			var inputValue = new MySerialisableObject
@@ -262,7 +262,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void ExecuteExtensionMethod_OutputDeserialisation()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<MySerialisableObject>(Method.POST, "/REST/vault/extensionmethod/HelloWorld.aspx");
+			var runner = new RestApiTestRunner<MySerialisableObject>(Method.Post, "/REST/vault/extensionmethod/HelloWorld.aspx");
 
 			// Set the request body.
 			var inputValue = new MySerialisableObject
@@ -296,8 +296,8 @@ namespace MFaaP.MFWSClient.Tests
 
 		public class MySerialisableObject
 		{
-			public string a = "b";
-			public int x = 7;
+			public string a { get; set; } = "b";
+			public int x { get; set; } = 7;
 
 			public string ToSerializedString()
 			{

@@ -2905,37 +2905,37 @@ namespace MFaaP.MFWSClient
 		/// List of temporary file upload ids.
 		/// </summary>
 		/// <remarks>May be empty.</remarks>
-		public List<int> UploadIds = new List<int>();
+		public List<int> UploadIds { get; set; } = new List<int>();
 
 		/// <summary>
 		/// Array of object's current property values.
 		/// </summary>
 		/// <remarks>May be empty.</remarks>
-		public List<PropertyValue> PropertyValues = new List<PropertyValue>();
+		public List<PropertyValue> PropertyValues { get; set; } = new List<PropertyValue>();
 
 		/// <summary>
 		/// Object type.
 		/// </summary>
-		public int ObjectType;
+		public int ObjectType { get; set; }
 
-		/// <summary>
-		/// ObjVer of current object.
-		/// </summary>
-		/// <remarks>May be empty.</remarks>
-		public ObjVer ObjVer;
+        /// <summary>
+        /// ObjVer of current object.
+        /// </summary>
+        /// <remarks>May be empty.</remarks>
+        public ObjVer ObjVer { get; set; }
 
-		/// <summary>
-		/// List of metadata provider ids.
-		/// </summary>
-		/// <remarks>May be empty to return all data, or include values to filter.</remarks>
-		public List<string> MetadataProviderIds = new List<string>();
+        /// <summary>
+        /// List of metadata provider ids.
+        /// </summary>
+        /// <remarks>May be empty to return all data, or include values to filter.</remarks>
+        public List<string> MetadataProviderIds { get; set; }  = new List<string>();
 
 		/// <summary>
 		/// Custom data.
 		/// </summary>
 		/// <remarks>May be empty.</remarks>
-		public string CustomData;
-	}
+		public string CustomData { get; set; }
+    }
 	
 	/// <summary>
 	/// Based on M-Files API.
@@ -3103,7 +3103,7 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Info for multiple objects.
 		/// </summary>
-		public List<ObjectVersionUpdateInformation> MultipleObjectInfo;
+		public List<ObjectVersionUpdateInformation> MultipleObjectInfo { get; set; }
 	}
 
 	/// <summary>
@@ -3115,8 +3115,8 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Flag to denote if operation is allowed to change name of the object.
 		/// </summary> 
-		public bool AllowNameChange;
-	}
+		public bool AllowNameChange { get; set; }
+    }
 
 	/// <summary>
 	/// Based on M-Files API.

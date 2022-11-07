@@ -34,7 +34,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An array of items that match the search term.</returns>
 		/// <remarks>For more comprehensive search options, construct a series of <see cref="ISearchCondition"/> objects and use the <see cref="SearchForObjectsByString"/> method.</remarks>
-		public Task<ObjectVersion[]> SearchForObjectsByStringAsync(string searchTerm, int? objectTypeId = null, int limit = defaultSearchLimit, CancellationToken token = default(CancellationToken))
+		public Task<ObjectVersion[]> SearchForObjectsByStringAsync(string searchTerm, int? objectTypeId = null, int limit = defaultSearchLimit, CancellationToken token = default)
 		{
 			// Create a collection of conditions.
 			var conditions = new List<ISearchCondition>
@@ -62,7 +62,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An array of items that match the search term.</returns>
 		/// <remarks>For more comprehensive search options, construct a series of <see cref="ISearchCondition"/> objects and use the <see cref="SearchForObjectsByString"/> method.</remarks>
-		public ObjectVersion[] SearchForObjectsByString(string searchTerm, int? objectTypeId = null, int limit = defaultSearchLimit, CancellationToken token = default(CancellationToken))
+		public ObjectVersion[] SearchForObjectsByString(string searchTerm, int? objectTypeId = null, int limit = defaultSearchLimit, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SearchForObjectsByStringAsync(searchTerm, objectTypeId, limit, token)

@@ -1,20 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net46;net48</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net48;net50;net60</TargetFrameworks>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+	
+	<PropertyGroup>
+		<LangVersion>9.0</LangVersion>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="RestSharp" Version="106.12.0" />
+
+	<ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <PackageReference Include="RestSharp" Version="108.0.2" />
   </ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net48'))">
+		<Reference Include="System.Web.dll" />
+		<Reference Include="System.Net.Http" Version="4.0.0.0" />
+	</ItemGroup>
   
   <PropertyGroup>
-    <Version>1.3.0-alpha</Version>
     <Authors>M-Files Corporation</Authors>
     <Description>Sample .NET wrapper for the M-Files Web Service.  Not designed for production use.</Description>
     <Copyright>Copyright (c) 2020 onwards, M-Files Corporation</Copyright>
@@ -28,6 +38,8 @@
     <RepositoryUrl>https://github.com/M-Files/Libraries.MFWSClient</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes></PackageReleaseNotes>
+	<VersionPrefix>2.0.0</VersionPrefix>
+	<VersionSuffix>issue-20</VersionSuffix>
   </PropertyGroup>
   
   <Target Name="PostBuild" AfterTargets="Pack" Condition=" '$(Configuration)' == 'Release'">

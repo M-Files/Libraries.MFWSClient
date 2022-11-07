@@ -29,7 +29,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="objectsToDemote">The Ids of the objects to demote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public async Task<List<ExtendedObjectVersion>> DemoteObjectsAsync(CancellationToken token = default(CancellationToken), params ObjID[] objectsToDemote)
+		public async Task<List<ExtendedObjectVersion>> DemoteObjectsAsync(CancellationToken token = default, params ObjID[] objectsToDemote)
 		{
 			// Sanity.
 			if (null == objectsToDemote)
@@ -66,7 +66,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectsToDemote">The Ids of the objects to demote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The ObjectVersion, if it is visible to the user.</returns>
-		public List<ExtendedObjectVersion> DemoteObjects(CancellationToken token = default(CancellationToken), params ObjID[] objectsToDemote)
+		public List<ExtendedObjectVersion> DemoteObjects(CancellationToken token = default, params ObjID[] objectsToDemote)
 		{
 			// Execute the async method.
 			return this.DemoteObjectsAsync(token, objectsToDemote)
@@ -80,7 +80,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="objID">The Id of the object to demote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public Task<List<ExtendedObjectVersion>> DemoteObjectAsync(ObjID objID, CancellationToken token = default(CancellationToken))
+		public Task<List<ExtendedObjectVersion>> DemoteObjectAsync(ObjID objID, CancellationToken token = default)
 		{
 			return this.DemoteObjectsAsync(token, objID);
 		}
@@ -91,7 +91,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objID">The Id of the object to demote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The ObjectVersion, if it is visible to the user.</returns>
-		public List<ExtendedObjectVersion> DemoteObject(ObjID objID, CancellationToken token = default(CancellationToken))
+		public List<ExtendedObjectVersion> DemoteObject(ObjID objID, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.DemoteObjectAsync(objID, token)
@@ -110,7 +110,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersionUpdateInformation">Information on the objects to promote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>The property values must be valid for the class, as they would if an object were being created.</remarks>
-		public Task<List<ExtendedObjectVersion>> PromoteObjectsAsync(CancellationToken token = default(CancellationToken), params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
+		public Task<List<ExtendedObjectVersion>> PromoteObjectsAsync(CancellationToken token = default, params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
 		{
 			// Use the "SetPropertiesOfMultipleObjects" method to perform this.
 			return this.MFWSClient.ObjectPropertyOperations.SetPropertiesOfMultipleObjectsAsync(
@@ -124,7 +124,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersionUpdateInformation">Information on the objects to promote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>The property values must be valid for the class, as they would if an object were being created.</remarks>
-		public List<ExtendedObjectVersion> PromoteObjects(CancellationToken token = default(CancellationToken), params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
+		public List<ExtendedObjectVersion> PromoteObjects(CancellationToken token = default, params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
 		{
 			// Execute the async method.
 			return this.PromoteObjectsAsync(token, objectVersionUpdateInformation)
@@ -140,7 +140,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyValues">The object's new properties.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>The property values must be valid for the class, as they would if an object were being created.</remarks>
-		public async Task<ExtendedObjectVersion> PromoteObjectAsync(ObjVer objVer, PropertyValue[] propertyValues, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectVersion> PromoteObjectAsync(ObjVer objVer, PropertyValue[] propertyValues, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -168,7 +168,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyValues">The object's new properties.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>The property values must be valid for the class, as they would if an object were being created.</remarks>
-		public ExtendedObjectVersion PromoteObject(ObjVer objVer, PropertyValue[] propertyValues, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion PromoteObject(ObjVer objVer, PropertyValue[] propertyValues, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.PromoteObjectAsync(objVer, propertyValues, token)
