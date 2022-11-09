@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472;net48;net50;net60</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472;net48;net50;net60;net70</TargetFrameworks>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 	
@@ -38,7 +38,7 @@
     <RepositoryUrl>https://github.com/M-Files/Libraries.MFWSClient</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes></PackageReleaseNotes>
-	<VersionPrefix>2.0.1</VersionPrefix>
+	<VersionPrefix>2.0.2</VersionPrefix>
 	<VersionSuffix>issue-20</VersionSuffix>
   </PropertyGroup>
   
