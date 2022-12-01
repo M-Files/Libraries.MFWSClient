@@ -1,12 +1,13 @@
 using System;
+using System.Net.Http;
+using System.Web;
 
 namespace MFaaP.MFWSClient
 {
-	/// <summary>
-	/// Represents a search condition that restricts by a Date property value.
-	/// </summary>
-	
-	public class DatePropertyValueSearchCondition
+    /// <summary>
+    /// Represents a search condition that restricts by a Date property value.
+    /// </summary>
+    public class DatePropertyValueSearchCondition
 		: PropertyValueSearchConditionBase<DateTime>
 	{
 		/// <summary>
@@ -27,5 +28,5 @@ namespace MFaaP.MFWSClient
 
 		/// <inheritdoc />
 		public override string EncodedValue => this.Value.ToString("yyyy-MM-dd");
-	}
+    }
 }

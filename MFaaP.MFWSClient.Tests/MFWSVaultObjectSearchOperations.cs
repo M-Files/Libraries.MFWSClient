@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace MFaaP.MFWSClient.Tests
@@ -453,15 +455,73 @@ namespace MFaaP.MFWSClient.Tests
 			runner.Verify();
 		}
 
-		#endregion
+        #endregion
 
-		#region DatePropertyValueSearchCondition
+        #region TimestampPropertyValueSearchCondition
 
-		/// <summary>
-		/// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
-		/// requests the correct resource address.
-		/// </summary>
-		[TestMethod]
+        /// <summary>
+        /// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
+        /// requests the correct resource address.
+        /// </summary>
+        [TestMethod]
+        public async Task SearchForObjectsByConditionsAsync_TimestampPropertyValueSearchCondition_Zulu_Equals()
+        {
+            // Create our test runner.
+            var runner = new RestApiTestRunner<Results<ObjectVersion>>
+            (
+                Method.Get,
+                $"/REST/objects?p21=2017-01-01T11%3A12%3A03.0000000%2B00%3A00"
+            );
+
+            // Execute.
+            await runner
+                .MFWSClient
+                .ObjectSearchOperations
+                .SearchForObjectsByConditionsAsync
+                (
+                    new TimestampPropertyValueSearchCondition(21, new DateTimeOffset(2017, 01, 01, 11, 12, 03, TimeSpan.Zero))
+                );
+
+            // Verify.
+            runner.Verify();
+        }
+
+        /// <summary>
+        /// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
+        /// requests the correct resource address.
+        /// </summary>
+        [TestMethod]
+        public async Task SearchForObjectsByConditionsAsync_TimestampPropertyValueSearchCondition_WithTwoHourOffset_Equals()
+        {
+            // Create our test runner.
+            var runner = new RestApiTestRunner<Results<ObjectVersion>>
+            (
+                Method.Get,
+                $"/REST/objects?p21=2017-01-01T11%3A12%3A03.0000000%2B02%3A00"
+            );
+
+            // Execute.
+            await runner
+                .MFWSClient
+                .ObjectSearchOperations
+                .SearchForObjectsByConditionsAsync
+                (
+                    new TimestampPropertyValueSearchCondition(21, new DateTimeOffset(2017, 01, 01, 11, 12, 03, TimeSpan.FromHours(2)))
+                );
+
+            // Verify.
+            runner.Verify();
+        }
+
+        #endregion
+
+        #region DatePropertyValueSearchCondition
+
+        /// <summary>
+        /// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectSearchOperations.SearchForObjectsByConditions(MFaaP.MFWSClient.ISearchCondition[])"/>
+        /// requests the correct resource address.
+        /// </summary>
+        [TestMethod]
 		public async Task SearchForObjectsByConditionsAsync_DatePropertyValueSearchCondition_Equals()
 		{
 			// Create our test runner.
