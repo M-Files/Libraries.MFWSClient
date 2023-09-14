@@ -104,6 +104,12 @@ namespace MFaaP.MFWSClient
 			request.AddParameter( "grant_type", pluginConfiguration.GrantType );
 			request.AddParameter( "redirect_uri", pluginConfiguration.GetAppropriateRedirectUri() );
 
+			// If we are using PKCE then include the verifier code.
+			if(pluginConfiguration.UsePkceWithAuthorizationCode)
+			{
+				request.AddParameter("code_verifier", pluginConfiguration.CodeVerifier);
+			}
+
 			// Add the client id.  If there's a realm then use that here too.
 			request.AddParameter(
 				"client_id",
@@ -272,7 +278,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration configuration,
 			Uri redirectionUri,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+            CancellationToken token = default(CancellationToken))
 		{
 			// Sanity.
 			if (null == configuration)
@@ -301,7 +307,7 @@ namespace MFaaP.MFWSClient
 			OAuth2Configuration configuration,
 			Uri redirectionUri,
 			bool setHttpHeaders = true,
-			CancellationToken token = default(CancellationToken))
+            CancellationToken token = default(CancellationToken))
 		{
 			// Sanity.
 			if (null == configuration)
@@ -345,6 +351,8 @@ namespace MFaaP.MFWSClient
 				if(Guid.TryParse(configuration.VaultGuid, out Guid vaultGuid))
 					this.AddDefaultHeader("X-Vault", vaultGuid.ToString("B"));
 				this.AddAuthorizationHeader(configuration, tokens, clearAuthenticationToken: false);
+				if (!string.IsNullOrWhiteSpace(configuration.PluginInfo?.Name))
+					this.AddDefaultHeader("X-AuthConfig", configuration.PluginInfo.Name);
 			}
 
 			// Return the tokens.

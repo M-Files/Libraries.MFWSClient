@@ -32,25 +32,44 @@ namespace MFaaP.MFWSClient
 			// Use the other overload.
 			OAuth2Configuration configuration;
 			return pluginInfoConfiguration.TryGetOAuth2Configuration(out configuration);
-		}
+        }
 
-		/// <summary>
-		/// Obtains the plugin configuration for the OAuth 2.0 authentication process.
-		/// </summary>
-		/// <param name="pluginInfoConfiguration">The list of defined authentication plugins defined.</param>
-		/// <param name="oAuth2Configuration">The configuration, if found, or null otherwise.</param>
-		/// <returns>True if OAuth is found, false otherwise.</returns>
-		public static bool TryGetOAuth2Configuration(this IEnumerable<PluginInfoConfiguration> pluginInfoConfiguration, out OAuth2Configuration oAuth2Configuration)
-		{
-			// Is OAuth 2.0 specified?
-			oAuth2Configuration = pluginInfoConfiguration?
-				.Where(pic => pic.Protocol == IEnumerablePluginInfoConfigurationExtensionMethods.OAuth2PluginConfigurationProtocol)?
-				.Select(pic => OAuth2Configuration.ParseFrom(pic.Configuration, pic.VaultGuid))?
-				.FirstOrDefault();
+        /// <summary>
+        /// Obtains the plugin configuration for the OAuth 2.0 authentication process.
+        /// </summary>
+        /// <param name="pluginInfoConfiguration">The list of defined authentication plugins defined.</param>
+        /// <param name="oAuth2Configuration">The configuration, if found, or null otherwise.</param>
+        /// <returns>True if OAuth is found, false otherwise.</returns>
+        public static bool TryGetOAuth2Configuration(this IEnumerable<PluginInfoConfiguration> pluginInfoConfiguration, out OAuth2Configuration oAuth2Configuration)
+        {
+            // Is OAuth 2.0 specified?
+            oAuth2Configuration = pluginInfoConfiguration?
+                .Where(pic => pic.Protocol == IEnumerablePluginInfoConfigurationExtensionMethods.OAuth2PluginConfigurationProtocol)?
+                .Select(pic => OAuth2Configuration.ParseFrom(pic))?
+                .FirstOrDefault();
 
-			// Did we get a value?
-			return oAuth2Configuration != null;
+            // Did we get a value?
+            return oAuth2Configuration != null;
 
-		}
-	}
+        }
+
+        /// <summary>
+        /// Obtains the plugin configuration for the OAuth 2.0 authentication process.
+        /// </summary>
+        /// <param name="pluginInfoConfiguration">The list of defined authentication plugins defined.</param>
+        /// <param name="oAuth2Configuration">The configuration, if found, or null otherwise.</param>
+        /// <returns>True if OAuth is found, false otherwise.</returns>
+        public static bool TryGetOAuth2Configuration(this IEnumerable<PluginInfoConfiguration> pluginInfoConfiguration, string configurationName, out OAuth2Configuration oAuth2Configuration)
+        {
+            // Is OAuth 2.0 specified?
+            oAuth2Configuration = pluginInfoConfiguration?
+                .Where(pic => pic.Protocol == IEnumerablePluginInfoConfigurationExtensionMethods.OAuth2PluginConfigurationProtocol && pic.Name == configurationName)?
+                .Select(pic => OAuth2Configuration.ParseFrom(pic))?
+                .FirstOrDefault();
+
+            // Did we get a value?
+            return oAuth2Configuration != null;
+
+        }
+    }
 }
