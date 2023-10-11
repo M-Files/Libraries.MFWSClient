@@ -38,13 +38,11 @@
     <RepositoryUrl>https://github.com/M-Files/Libraries.MFWSClient</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes></PackageReleaseNotes>
-	<VersionPrefix>2.0.2</VersionPrefix>
-	<VersionSuffix>issue-20</VersionSuffix>
   </PropertyGroup>
   
-  <Target Name="PostBuild" AfterTargets="Pack" Condition=" '$(Configuration)' == 'Release'">
+  <Target Name="PostBuild" AfterTargets="Pack">
     <RemoveDir Directories="..\current" />
-    <Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFolder="..\current" />
+    <Copy SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg" DestinationFiles="..\current\MFWSClient.nupkg" />
 </Target>
 
 </Project>

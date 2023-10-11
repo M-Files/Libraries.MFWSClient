@@ -1132,14 +1132,16 @@ namespace MFaaP.MFWSClient
 				var bytesRead = await fileToUpload.ReadAsync(buffer, 0, blockSize, token);
 
 				// Upload the block.
-				await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, buffer, token);
+				var ui = await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, buffer, token);
+				uploadInfo = ui;
 
 				// Move onwards.
 				offset += bytesRead;
 			} while (offset < totalSizeInBytes);
 
 			// Commit the file.
-			await this.UploadTemporaryFileCommitAsync(uploadInfo, token);
+			// FILE SHOULD BE COMMITTED AS PART OF THE OBJECT CREATION.
+			//await this.UploadTemporaryFileCommitAsync(uploadInfo, token);
 
 			// Return the upload information.
 			return uploadInfo;
@@ -1156,7 +1158,7 @@ namespace MFaaP.MFWSClient
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
 		public async Task<UploadInfo> UploadTemporaryFileInBlocksAsync(
 			FileInfo fileToUpload,
-			CancellationToken token = default,
+            CancellationToken token = default,
 			int blockSize = 1024 * 1024 * 2)
 		{
 			// Sanity.

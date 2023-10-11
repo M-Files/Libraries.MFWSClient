@@ -1,6 +1,8 @@
 ﻿using MFaaP.MFWSClient.ExtensionMethods;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MFaaP.MFWSClient.OAuth2
 {
@@ -9,6 +11,8 @@ namespace MFaaP.MFWSClient.OAuth2
 	/// </summary>
 	public class OAuth2Configuration
 	{
+		public PluginInfoConfiguration PluginInfo { get; set; }
+
 		/// <summary>
 		/// The fallback redirect uri, if no others are specified.
 		/// </summary>
@@ -109,9 +113,17 @@ namespace MFaaP.MFWSClient.OAuth2
 		public bool UseIdTokenAsAccessToken { get; set; } = false;
 
 		/// <summary>
-		/// The site realm to provide.
+		/// Whether to use PKCE.
 		/// </summary>
-		public string SiteRealm { get; set; }
+		public bool UsePkceWithAuthorizationCode { get; set; } = false;
+
+		protected internal string CodeVerifier = null;
+		protected string CodeChallenge = null;
+
+        /// <summary>
+        /// The site realm to provide.
+        /// </summary>
+        public string SiteRealm { get; set; }
 
 		/// <summary>
 		/// The OAuth state to provide and verify.  Defaults to a new GUID.
@@ -141,15 +153,18 @@ namespace MFaaP.MFWSClient.OAuth2
 		/// <param name="pluginConfiguration">The dictionary containing plugin configuration settings.</param>
 		/// <param name="vaultGuid">The GUID of the vault.</param>
 		/// <param name="forceLogin">If true, the user will be prompted to log in even if they have done so already (<see cref="ForceLogin"/>).</param>
-		public OAuth2Configuration(Dictionary<string, string> pluginConfiguration, string vaultGuid, bool forceLogin = false)
+		public OAuth2Configuration(PluginInfoConfiguration plugin, bool forceLogin = false)
 			: this(forceLogin)
 		{
-			// Sanity.
-			if (null == pluginConfiguration)
-				throw new ArgumentNullException(nameof(pluginConfiguration));
+            // Sanity.
+            if (null == plugin)
+                throw new ArgumentNullException(nameof(plugin));
+			var pluginConfiguration = plugin.Configuration ?? new Dictionary<string, string>();
+			var vaultGuid = plugin.VaultGuid;
 
 			// Extract data.
-			this.AuthorizationEndpoint = pluginConfiguration.GetValueOrDefault("AuthorizationEndpoint");
+			this.PluginInfo = plugin;
+            this.AuthorizationEndpoint = pluginConfiguration.GetValueOrDefault("AuthorizationEndpoint");
 			this.ClientID = pluginConfiguration.GetValueOrDefault("ClientID");
 			this.Protocol = pluginConfiguration.GetValueOrDefault("Protocol");
 			this.RedirectURIForWeb = pluginConfiguration.GetValueOrDefault("RedirectURIForWeb");
@@ -166,14 +181,20 @@ namespace MFaaP.MFWSClient.OAuth2
 			try { this.MFServerVersion = Version.Parse(pluginConfiguration.GetValueOrDefault("MFServerVersion")); }
 			catch { }
 
-			// If the configuration tells us to use the id token instead of the access token then we should.
-			this.UseIdTokenAsAccessToken = string.Equals(
-				pluginConfiguration.GetValueOrDefault("UseIdTokenAsAccessToken"),
-				"true",
-				StringComparison.InvariantCultureIgnoreCase);
+            // If the configuration tells us to use the id token instead of the access token then we should.
+            this.UseIdTokenAsAccessToken = string.Equals(
+                pluginConfiguration.GetValueOrDefault("UseIdTokenAsAccessToken"),
+                "true",
+                StringComparison.InvariantCultureIgnoreCase);
 
-			// If the configuration asks us to force the login then do so.
-			if (pluginConfiguration.GetValueOrDefault("PromptLoginParameter") == "login")
+            // If the configuration tells us to use PKCE then we should.
+            this.UsePkceWithAuthorizationCode = string.Equals(
+                pluginConfiguration.GetValueOrDefault("UsePkceWithAuthorizationCode"),
+                "true",
+                StringComparison.InvariantCultureIgnoreCase);
+
+            // If the configuration asks us to force the login then do so.
+            if (pluginConfiguration.GetValueOrDefault("PromptLoginParameter") == "login")
 			{
 				this.ForceLogin = true;
 			}
@@ -185,9 +206,9 @@ namespace MFaaP.MFWSClient.OAuth2
 		/// <param name="pluginConfiguration">The dictionary containing plugin configuration settings.</param>
 		/// <param name="vaultGuid">The GUID of the vault.</param>
 		/// <returns>A configuration class representing the provided details.</returns>
-		public static OAuth2Configuration ParseFrom(Dictionary<string, string> pluginConfiguration, string vaultGuid)
+		public static OAuth2Configuration ParseFrom(PluginInfoConfiguration plugin)
 		{
-			return new OAuth2Configuration(pluginConfiguration, vaultGuid);
+			return new OAuth2Configuration(plugin);
 		}
 
 		/// <summary>
@@ -243,8 +264,48 @@ namespace MFaaP.MFWSClient.OAuth2
 			uriBuilder.SetQueryParamIfNotNullOrWhitespace("prompt", this.PromptType);
 			uriBuilder.SetQueryParamIfNotNullOrWhitespace("resource", this.Resource);
 
-			// Return the generated URI.
-			return uriBuilder.Uri;
+			// If using PKCE then add the required data.
+			if(this.UsePkceWithAuthorizationCode)
+			{
+				// Create the verifier and challenge.
+				this.CodeVerifier = this.CreateCodeVerifier();
+				this.CodeChallenge = this.CreateCodeChallenge();
+
+                // Add the challenge to the URI.
+                uriBuilder.SetQueryParam("code_challenge", this.CodeChallenge);
+                uriBuilder.SetQueryParam("code_challenge_method", "S256");
+            }
+
+            // Return the generated URI.
+            return uriBuilder.Uri;
 		}
+
+		protected string CreateCodeVerifier(int size = 32)
+		{
+			if (size > 1024)
+				size = 32;
+            using (var cryptoProvider = new RNGCryptoServiceProvider())
+            {
+                byte[] bytes = new byte[size];
+                cryptoProvider.GetBytes(bytes);
+
+                return Convert.ToBase64String(bytes)
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Replace("=", "");
+            }
+        }
+
+		protected string CreateCodeChallenge(string codeVerifier = null)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var challengeBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(codeVerifier ?? this.CodeVerifier));
+                return Convert.ToBase64String(challengeBytes)
+                    .Replace('+', '-')
+                    .Replace('/', '_')
+                    .Replace("=", "");
+            }
+        }
 	}
 }
