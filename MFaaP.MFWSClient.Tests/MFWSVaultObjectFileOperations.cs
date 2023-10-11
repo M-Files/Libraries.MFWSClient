@@ -178,7 +178,7 @@ namespace MFaaP.MFWSClient.Tests
         public async Task UploadFilesAsync()
         {
             // Create our test runner.
-            var runner = new FileRestApiTestRunner<List<UploadInfo>>(Method.Post, "/REST/files.aspx");
+            var runner = new FileRestApiTestRunner<UploadInfo>(Method.Post, "/REST/files.aspx");
 
             // Create a temporary file.
             var tempFile = new FileInfo(@"test.txt");
@@ -188,17 +188,14 @@ namespace MFaaP.MFWSClient.Tests
 
                 // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
                 // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
-                tempFile = new FileInfo(@"test.txt");
+                tempFile.Refresh();
             }
 
             // When the execute method is called, return dummy upload information.
-            runner.ResponseData = new[]
-            {
-                new UploadInfo()
+            runner.ResponseData = new UploadInfo()
                 {
                     UploadID = 1
-                }
-            }.ToList();
+                };
 
             // Execute.
             await runner.MFWSClient.ObjectFileOperations.UploadFilesAsync(tempFile);
@@ -214,6 +211,53 @@ namespace MFaaP.MFWSClient.Tests
         }
 
         /// <summary>
+        /// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectFileOperations.UploadFilesAsync(System.IO.FileInfo[])"/>
+        /// requests the correct resource address using the correct method, with the correct request body.
+        /// </summary>
+        [TestMethod]
+        public async Task UploadFilesAsync_Multiple()
+        {
+            // Create our test runner.
+            var runner = new FileRestApiTestRunner<List<UploadInfo>>(Method.Post, "/REST/files.aspx");
+
+            // Create a temporary file.
+            var tempFile = new FileInfo(@"test.txt");
+            if (false == tempFile.Exists)
+            {
+                tempFile.Create();
+
+                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
+                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
+                tempFile.Refresh();
+            }
+
+            // When the execute method is called, return dummy upload information.
+            runner.ResponseData = new[]
+            {
+                new UploadInfo()
+                {
+                    UploadID = 1
+                },
+                new UploadInfo()
+                {
+                    UploadID = 2
+                }
+            }.ToList();
+
+            // Execute.
+            await runner.MFWSClient.ObjectFileOperations.UploadFilesAsync(tempFile, tempFile);
+
+            // Verify.
+            runner.Verify();
+
+            // Ensure the file data was passed.
+            Assert.IsNotNull(runner.RequestFiles);
+            Assert.AreEqual(2, runner.RequestFiles.Count);
+            Assert.AreEqual(tempFile.Name, runner.RequestFiles.ElementAt(0).Name);
+            Assert.AreEqual(tempFile.Length, runner.RequestFiles.ElementAt(0).GetFile().Length);
+        }
+
+        /// <summary>
         /// Ensures that a call to <see cref="MFaaP.MFWSClient.MFWSVaultObjectFileOperations.UploadFiles(System.IO.FileInfo[])"/>
         /// requests the correct resource address using the correct method, with the correct request body.
         /// </summary>
@@ -221,7 +265,7 @@ namespace MFaaP.MFWSClient.Tests
         public void UploadFiles()
         {
             // Create our test runner.
-            var runner = new FileRestApiTestRunner<List<UploadInfo>>(Method.Post, "/REST/files.aspx");
+            var runner = new FileRestApiTestRunner<UploadInfo>(Method.Post, "/REST/files.aspx");
 
             // Create a temporary file.
             var tempFile = new FileInfo(@"test.txt");
@@ -235,13 +279,10 @@ namespace MFaaP.MFWSClient.Tests
             }
 
             // When the execute method is called, return dummy upload information.
-            runner.ResponseData = new[]
+            runner.ResponseData = new UploadInfo()
             {
-                new UploadInfo()
-                {
-                    UploadID = 1
-                }
-            }.ToList();
+                UploadID = 1
+            };
 
             // Execute.
             runner.MFWSClient.ObjectFileOperations.UploadFiles(tempFile);
@@ -394,22 +435,19 @@ namespace MFaaP.MFWSClient.Tests
 
             // We also need to handle the upload file call or our tests will except.
             mock
-                .Setup(c => c.ExecuteAsync<List<UploadInfo>>(It.IsAny<RestRequest>(),  It.IsAny<CancellationToken>()))
+                .Setup(c => c.ExecuteAsync<UploadInfo>(It.IsAny<RestRequest>(),  It.IsAny<CancellationToken>()))
                 // Return a mock response.
                 .Returns(() =>
                 {
                     // Create the mock response.
                     return Task.FromResult
                     (
-                        Mock.Of<RestResponse<List<UploadInfo>>>
+                        Mock.Of<RestResponse<UploadInfo>>
                         (
-                            m => m.Data == new[]
-                        {
-                            new UploadInfo()
+                            m => m.Data == new UploadInfo()
                             {
                                 UploadID = 1
                             }
-                        }.ToList()
                         )
                     );
                 });
@@ -472,22 +510,19 @@ namespace MFaaP.MFWSClient.Tests
 
             // We also need to handle the upload file call or our tests will except.
             mock
-                .Setup(c => c.ExecuteAsync<List<UploadInfo>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(c => c.ExecuteAsync<UploadInfo>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
                 // Return a mock response.
                 .Returns(() =>
                 {
                     // Create the mock response.
                     return Task.FromResult
                     (
-                        Mock.Of<RestResponse<List<UploadInfo>>>
+                        Mock.Of<RestResponse<UploadInfo>>
                         (
-                            m => m.Data == new[]
-                        {
-                            new UploadInfo()
+                            m => m.Data == new UploadInfo()
                             {
                                 UploadID = 1
                             }
-                        }.ToList()
                         )
                     );
                 });
@@ -555,22 +590,19 @@ namespace MFaaP.MFWSClient.Tests
 
             // We also need to handle the upload file call or our tests will except.
             mock
-                .Setup(c => c.ExecuteAsync<List<UploadInfo>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(c => c.ExecuteAsync<UploadInfo>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
                 // Return a mock response.
                 .Returns(() =>
                 {
                     // Create the mock response.
                     return Task.FromResult
                     (
-                        Mock.Of<RestResponse<List<UploadInfo>>>
+                        Mock.Of<RestResponse<UploadInfo>>
                         (
-                            m => m.Data == new[]
-                        {
-                            new UploadInfo()
+                            m => m.Data == new UploadInfo()
                             {
                                 UploadID = 1
                             }
-                        }.ToList()
                         )
                     );
                 });
@@ -634,22 +666,19 @@ namespace MFaaP.MFWSClient.Tests
 
             // We also need to handle the upload file call or our tests will except.
             mock
-                .Setup(c => c.ExecuteAsync<List<UploadInfo>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+                .Setup(c => c.ExecuteAsync<UploadInfo>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
                 // Return a mock response.
                 .Returns(() =>
                 {
                     //Return the mock object.
                     return Task.FromResult
                     (
-                        Mock.Of<RestResponse<List<UploadInfo>>>
+                        Mock.Of<RestResponse<UploadInfo>>
                         (
-                            m => m.Data == new[]
-                        {
-                            new UploadInfo()
+                            m => m.Data == new UploadInfo()
                             {
                                 UploadID = 1
                             }
-                        }.ToList()
                         )
                     );
                 });
