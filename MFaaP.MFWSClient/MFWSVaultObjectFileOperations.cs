@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -411,14 +412,30 @@ namespace MFaaP.MFWSClient
                 request.AddFile(file.Name, file.FullName);
             }
 
-            // Make the request and get the response.
-            var response = await this.MFWSClient.Post<List<UploadInfo>>(request, token)
-                .ConfigureAwait(false);
+			// If we are only uploading one file then
+			// the server responds with a single item, not an array.
+			List<UploadInfo> data = new List<UploadInfo>();
+			if (files.Length == 1)
+			{
+				{
+					// Make the request and get the response.
+					var item = (await this.MFWSClient.Post<UploadInfo>(request, token)
+						.ConfigureAwait(false))?.Data;
+					if (null != item)
+						data.Add(item);
+				}
+            }
+			else
+			{
+				// Make the request and get the response.
+				data = (await this.MFWSClient.Post<List<UploadInfo>>(request, token)
+					.ConfigureAwait(false))?.Data;
+            }
 
-            // Ensure the uploadinfo is updated.
-            for (var i = 0; i < response.Data?.Count; i++)
+            // Ensure the upload info is updated.
+            for (var i = 0; i < data?.Count; i++)
             {
-                var uploadInfo = response.Data[i];
+                var uploadInfo = data[i];
                 var file = files[i];
                 uploadInfo.Title = file.Name;
                 uploadInfo.Extension = file.Extension.Substring(1); // Remove the dot.
@@ -426,7 +443,7 @@ namespace MFaaP.MFWSClient
             }
 
             // Return the data.
-            return response.Data?.ToArray();
+            return data?.ToArray();
 
         }
 
