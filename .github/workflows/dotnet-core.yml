@@ -58,6 +58,12 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
+      
+    - name: Create nuget package
+      run: dotnet pack ./MFaaP.MFWSClient/MFaaP.MFWSClient.csproj --configuration Release -p:Version=${{ env.versionNumber }}
+
+    - name: Build with dotnet
+      run: dotnet build
 
     - name: Push with dotnet
       run: dotnet nuget push current/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
