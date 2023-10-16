@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace MFaaP.MFWSClient.Tests
@@ -21,10 +22,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertyDefIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/properties/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/properties/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -42,10 +43,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetPropertyDefIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/properties/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/properties/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -63,10 +64,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetPropertyDefIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/properties/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/properties/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -84,10 +85,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetPropertyDefIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/properties/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/properties/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -118,23 +119,23 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					resourceAddress = r.Resource;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<List<PropertyDef>>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new List<PropertyDef>());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
-				});
+                    // Create the mock response.
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<List<PropertyDef>>>
+                        (
+                            m => m.Data == new List<PropertyDef>()
+                        )
+                    );
+                });
 
 			/* Act */
 
@@ -147,7 +148,7 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Resource must be correct.
 			Assert.AreEqual("/REST/structure/properties", resourceAddress);
@@ -170,23 +171,23 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					resourceAddress = r.Resource;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<List<PropertyDef>>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new List<PropertyDef>());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
-				});
+                    // Create the mock response.
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<List<PropertyDef>>>
+                        (
+                            m => m.Data == new List<PropertyDef>()
+                        )
+                    );
+                });
 
 			/* Act */
 
@@ -199,7 +200,7 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Resource must be correct.
 			Assert.AreEqual("/REST/structure/properties", resourceAddress);
@@ -222,23 +223,23 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					methodUsed = r.Method;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<List<PropertyDef>>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new List<PropertyDef>());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
-				});
+                    // Create the mock response.
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<List<PropertyDef>>>
+                        (
+                            m => m.Data == new List<PropertyDef>()
+                        )
+                    );
+                });
 
 			/* Act */
 
@@ -251,10 +252,10 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Method must be correct.
-			Assert.AreEqual(Method.GET, methodUsed);
+			Assert.AreEqual(Method.Get, methodUsed);
 		}
 
 		/// <summary>
@@ -274,22 +275,21 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					methodUsed = r.Method;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<List<PropertyDef>>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new List<PropertyDef>());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<List<PropertyDef>>>
+                        (
+                            m => m.Data == new List<PropertyDef>()
+                        )
+                    );
 				});
 
 			/* Act */
@@ -303,10 +303,10 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<List<PropertyDef>>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Method must be correct.
-			Assert.AreEqual(Method.GET, methodUsed);
+			Assert.AreEqual(Method.Get, methodUsed);
 		}
 
 		#endregion
@@ -330,23 +330,22 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					resourceAddress = r.Resource;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<PropertyDef>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new PropertyDef());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
-				});
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<PropertyDef>>
+                        (
+                            m => m.Data == new PropertyDef()
+                        )
+                    );
+                });
 
 			/* Act */
 
@@ -359,7 +358,7 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Resource must be correct.
 			Assert.AreEqual("/REST/structure/properties/123", resourceAddress);
@@ -382,23 +381,22 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					resourceAddress = r.Resource;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<PropertyDef>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new PropertyDef());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
-				});
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<PropertyDef>>
+                        (
+                            m => m.Data == new PropertyDef()
+                        )
+                    );
+                });
 
 			/* Act */
 
@@ -411,7 +409,7 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Resource must be correct.
 			Assert.AreEqual("/REST/structure/properties/567", resourceAddress);
@@ -434,23 +432,22 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					methodUsed = r.Method;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<PropertyDef>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new PropertyDef());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
-				});
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<PropertyDef>>
+                        (
+                            m => m.Data == new PropertyDef()
+                        )
+                    );
+                });
 
 			/* Act */
 
@@ -463,10 +460,10 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Method must be correct.
-			Assert.AreEqual(Method.GET, methodUsed);
+			Assert.AreEqual(Method.Get, methodUsed);
 		}
 
 		/// <summary>
@@ -486,22 +483,21 @@ namespace MFaaP.MFWSClient.Tests
 
 			// When the execute method is called, log the resource requested.
 			mock
-				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					methodUsed = r.Method;
 				})
 				// Return a mock response.
 				.Returns(() =>
 				{
-					// Create the mock response.
-					var response = new Mock<IRestResponse<PropertyDef>>();
-
-					// Setup the return data.
-					response.SetupGet(r => r.Data)
-						.Returns(new PropertyDef());
-
-					//Return the mock object.
-					return Task.FromResult(response.Object);
+                    // Create the mock response.
+                    return Task.FromResult
+                    (
+                        Mock.Of<RestResponse<PropertyDef>>
+                        (
+                            m => m.Data == new PropertyDef()
+                        )
+                    );
 				});
 
 			/* Act */
@@ -515,10 +511,10 @@ namespace MFaaP.MFWSClient.Tests
 			/* Assert */
 
 			// Execute must be called once.
-			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			mock.Verify(c => c.ExecuteAsync<PropertyDef>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Method must be correct.
-			Assert.AreEqual(Method.GET, methodUsed);
+			Assert.AreEqual(Method.Get, methodUsed);
 		}
 
 		#endregion

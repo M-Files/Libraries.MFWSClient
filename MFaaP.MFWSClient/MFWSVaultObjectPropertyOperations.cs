@@ -34,7 +34,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyDef">The property to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property value.</returns>
-		public async Task<PropertyValue> GetPropertyAsync(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		public async Task<PropertyValue> GetPropertyAsync(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default)
 		{
 			// Sanity.
 			if (objectTypeId < 0)
@@ -46,7 +46,7 @@ namespace MFaaP.MFWSClient
 
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}");
-			request.Method = Method.GET;
+			request.Method = Method.Get;
 
 			// Make the request and get the response.
 			var response = await this.MFWSClient.Get<PropertyValue>(request, token)
@@ -63,7 +63,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyDef">The property to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property value.</returns>
-		public Task<PropertyValue> GetPropertyAsync(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		public Task<PropertyValue> GetPropertyAsync(ObjVer objVer, int propertyDef, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.GetPropertyAsync(objVer.Type, objVer.ID, propertyDef, objVer.Version, token);
@@ -76,7 +76,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyDef">The property to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property value.</returns>
-		public Task<PropertyValue> GetPropertyAsync(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		public Task<PropertyValue> GetPropertyAsync(ObjID objId, int propertyDef, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.GetPropertyAsync(objId.Type, objId.ID, propertyDef, null, token);
@@ -91,7 +91,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyDef">The property to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property value.</returns>
-		public PropertyValue GetProperty(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		public PropertyValue GetProperty(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertyAsync(objectTypeId, objectId, propertyDef, version, token)
@@ -107,7 +107,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyDef">The property to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property value.</returns>
-		public PropertyValue GetProperty(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		public PropertyValue GetProperty(ObjVer objVer, int propertyDef, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertyAsync(objVer, propertyDef, token)
@@ -123,7 +123,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="propertyDef">The property to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property value.</returns>
-		public PropertyValue GetProperty(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		public PropertyValue GetProperty(ObjID objId, int propertyDef, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertyAsync(objId, propertyDef, token)
@@ -220,7 +220,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="version">The version (or null for latest).</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of property values for the supplied object.</returns>
-		public PropertyValue[] GetProperties(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+		public PropertyValue[] GetProperties(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertiesAsync(objectTypeId, objectId, version, token)
@@ -237,7 +237,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="version">The version (or null for latest).</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of property values for the supplied object.</returns>
-		public Task<PropertyValue[]> GetPropertiesAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+		public Task<PropertyValue[]> GetPropertiesAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
 		{
 			// Use the other method.
 			return this.GetPropertiesAsync(new ObjVer()
@@ -254,7 +254,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objID">The object to retrieve the properties of.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of property values for the supplied object.</returns>
-		public PropertyValue[] GetProperties(ObjID objID, CancellationToken token = default(CancellationToken))
+		public PropertyValue[] GetProperties(ObjID objID, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertiesAsync(objID, token)
@@ -269,7 +269,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objID">The object to retrieve the properties of.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of property values for the supplied object.</returns>
-		public Task<PropertyValue[]> GetPropertiesAsync(ObjID objID, CancellationToken token = default(CancellationToken))
+		public Task<PropertyValue[]> GetPropertiesAsync(ObjID objID, CancellationToken token = default)
 		{
 			// Use the other method.
 			return this.GetPropertiesAsync(objID.Type, objID.ID, version: null, token: token);
@@ -281,7 +281,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objVer">The object to retrieve the properties of.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of property values for the supplied object.</returns>
-		public PropertyValue[] GetProperties(ObjVer objVer, CancellationToken token = default(CancellationToken))
+		public PropertyValue[] GetProperties(ObjVer objVer, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertiesAsync(objVer, token)
@@ -296,7 +296,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objVer">The object to retrieve the properties of.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of property values for the supplied object.</returns>
-		public async Task<PropertyValue[]> GetPropertiesAsync(ObjVer objVer, CancellationToken token = default(CancellationToken))
+		public async Task<PropertyValue[]> GetPropertiesAsync(ObjVer objVer, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -334,7 +334,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public async Task<ExtendedObjectVersion> SetPropertyAsync(int objectTypeId, int objectId, PropertyValue newPropertyValue, int? version = null, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectVersion> SetPropertyAsync(int objectTypeId, int objectId, PropertyValue newPropertyValue, int? version = null, CancellationToken token = default)
 		{
 			// Sanity.
 			if (objectTypeId < 0)
@@ -348,7 +348,7 @@ namespace MFaaP.MFWSClient
 
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{newPropertyValue.PropertyDef}");
-			request.Method = Method.PUT;
+			request.Method = Method.Put;
 
 			// Set the request body.
 			request.AddJsonBody(newPropertyValue);
@@ -369,7 +369,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public Task<ExtendedObjectVersion> SetPropertyAsync(ObjVer objVer, PropertyValue newPropertyValue, CancellationToken token = default(CancellationToken))
+		public Task<ExtendedObjectVersion> SetPropertyAsync(ObjVer objVer, PropertyValue newPropertyValue, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.SetPropertyAsync(objVer.Type, objVer.ID, newPropertyValue, objVer.Version, token);
@@ -383,7 +383,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public Task<ExtendedObjectVersion> SetPropertyAsync(ObjID objId, PropertyValue newPropertyValue, CancellationToken token = default(CancellationToken))
+		public Task<ExtendedObjectVersion> SetPropertyAsync(ObjID objId, PropertyValue newPropertyValue, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.SetPropertyAsync(objId.Type, objId.ID, newPropertyValue, null, token);
@@ -399,7 +399,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public ExtendedObjectVersion SetProperty(int objectTypeId, int objectId, PropertyValue newPropertyValue, int? version = null, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion SetProperty(int objectTypeId, int objectId, PropertyValue newPropertyValue, int? version = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SetPropertyAsync(objectTypeId, objectId, newPropertyValue, version, token)
@@ -416,7 +416,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public ExtendedObjectVersion SetProperty(ObjVer objVer, PropertyValue newPropertyValue, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion SetProperty(ObjVer objVer, PropertyValue newPropertyValue, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SetPropertyAsync(objVer, newPropertyValue, token)
@@ -433,7 +433,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public ExtendedObjectVersion SetProperty(ObjID objId, PropertyValue newPropertyValue, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion SetProperty(ObjID objId, PropertyValue newPropertyValue, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SetPropertyAsync(objId, newPropertyValue, token)
@@ -457,7 +457,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>If <see paramref="replaceAllProperties"/> is true then <see paramref="propertyValues"/> must contain values for property 0 (name or title), property 100 (class), property 22 (is single file), and any other mandatory properties for the given class.</remarks>
-		public async Task<ExtendedObjectVersion> SetPropertiesAsync(int objectTypeId, int objectId, PropertyValue[] propertyValues, bool replaceAllProperties, int? version = null, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectVersion> SetPropertiesAsync(int objectTypeId, int objectId, PropertyValue[] propertyValues, bool replaceAllProperties, int? version = null, CancellationToken token = default)
 		{
 			// Sanity.
 			if (objectTypeId < 0)
@@ -470,8 +470,8 @@ namespace MFaaP.MFWSClient
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties");
 			request.Method = replaceAllProperties
-				? Method.PUT // If we wish to replace all properties then we need to use a PUT.
-				: Method.POST; // A POST will add or replace just the properties provided.
+				? Method.Put // If we wish to replace all properties then we need to use a PUT.
+				: Method.Post; // A POST will add or replace just the properties provided.
 
 			// Set the request body.
 			request.AddJsonBody(propertyValues);
@@ -494,7 +494,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>If <see paramref="replaceAllProperties"/> is true then <see paramref="propertyValues"/> must contain values for property 0 (name or title), property 100 (class), property 22 (is single file), and any other mandatory properties for the given class.</remarks>
-		public Task<ExtendedObjectVersion> SetPropertiesAsync(ObjVer objVer, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default(CancellationToken))
+		public Task<ExtendedObjectVersion> SetPropertiesAsync(ObjVer objVer, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.SetPropertiesAsync(objVer.Type, objVer.ID, propertyValues, replaceAllProperties, objVer.Version, token);
@@ -509,7 +509,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>If <see paramref="replaceAllProperties"/> is true then <see paramref="propertyValues"/> must contain values for property 0 (name or title), property 100 (class), property 22 (is single file), and any other mandatory properties for the given class.</remarks>
-		public Task<ExtendedObjectVersion> SetPropertiesAsync(ObjID objId, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default(CancellationToken))
+		public Task<ExtendedObjectVersion> SetPropertiesAsync(ObjID objId, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.SetPropertiesAsync(objId.Type, objId.ID, propertyValues, replaceAllProperties, null, token);
@@ -526,7 +526,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>If <see paramref="replaceAllProperties"/> is true then <see paramref="propertyValues"/> must contain values for property 0 (name or title), property 100 (class), property 22 (is single file), and any other mandatory properties for the given class.</remarks>
-		public ExtendedObjectVersion SetProperties(int objectTypeId, int objectId, PropertyValue[] propertyValues, bool replaceAllProperties, int? version = null, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion SetProperties(int objectTypeId, int objectId, PropertyValue[] propertyValues, bool replaceAllProperties, int? version = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SetPropertiesAsync(objectTypeId, objectId, propertyValues, replaceAllProperties, version, token)
@@ -544,7 +544,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>If <see paramref="replaceAllProperties"/> is true then <see paramref="propertyValues"/> must contain values for property 0 (name or title), property 100 (class), property 22 (is single file), and any other mandatory properties for the given class.</remarks>
-		public ExtendedObjectVersion SetProperties(ObjVer objVer, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion SetProperties(ObjVer objVer, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SetPropertiesAsync(objVer, propertyValues, replaceAllProperties, token)
@@ -562,7 +562,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>If <see paramref="replaceAllProperties"/> is true then <see paramref="propertyValues"/> must contain values for property 0 (name or title), property 100 (class), property 22 (is single file), and any other mandatory properties for the given class.</remarks>
-		public ExtendedObjectVersion SetProperties(ObjID objId, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion SetProperties(ObjID objId, PropertyValue[] propertyValues, bool replaceAllProperties, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.SetPropertiesAsync(objId, propertyValues, replaceAllProperties, token)
@@ -581,7 +581,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersionUpdateInformation">Information on the objects to promote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>Will also promote objects if they are external and a class property value is provided (see <see cref="MFWSVaultExternalObjectOperations.PromoteObjectsAsync"/>).</remarks>
-		public async Task<List<ExtendedObjectVersion>> SetPropertiesOfMultipleObjectsAsync(CancellationToken token = default(CancellationToken), params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
+		public async Task<List<ExtendedObjectVersion>> SetPropertiesOfMultipleObjectsAsync(CancellationToken token = default, params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
 		{
 			// Sanity.
 			if (null == objectVersionUpdateInformation)
@@ -613,7 +613,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersionUpdateInformation">Information on the objects to promote.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>The property values must be valid for the class, as they would if an object were being created.</remarks>
-		public List<ExtendedObjectVersion> SetPropertiesOfMultipleObjects(CancellationToken token = default(CancellationToken), params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
+		public List<ExtendedObjectVersion> SetPropertiesOfMultipleObjects(CancellationToken token = default, params ObjectVersionUpdateInformation[] objectVersionUpdateInformation)
 		{
 			// Execute the async method.
 			return this.SetPropertiesOfMultipleObjectsAsync(token, objectVersionUpdateInformation)
@@ -636,7 +636,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public async Task<ExtendedObjectVersion> RemovePropertyAsync(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectVersion> RemovePropertyAsync(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default)
 		{
 			// Sanity.
 			if (objectTypeId < 0)
@@ -648,7 +648,7 @@ namespace MFaaP.MFWSClient
 
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{version?.ToString() ?? "latest"}/properties/{propertyDef}.aspx");
-			request.Method = Method.DELETE;
+			request.Method = Method.Delete;
 
 			// Make the request and get the response.
 			var response = await this.MFWSClient.Delete<ExtendedObjectVersion>(request, token)
@@ -666,7 +666,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public Task<ExtendedObjectVersion> RemovePropertyAsync(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		public Task<ExtendedObjectVersion> RemovePropertyAsync(ObjVer objVer, int propertyDef, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.RemovePropertyAsync(objVer.Type, objVer.ID, propertyDef, objVer.Version, token);
@@ -680,7 +680,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public Task<ExtendedObjectVersion> RemovePropertyAsync(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		public Task<ExtendedObjectVersion> RemovePropertyAsync(ObjID objId, int propertyDef, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.RemovePropertyAsync(objId.Type, objId.ID, propertyDef, null, token);
@@ -696,7 +696,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public ExtendedObjectVersion RemoveProperty(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion RemoveProperty(int objectTypeId, int objectId, int propertyDef, int? version = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.RemovePropertyAsync(objectTypeId, objectId, propertyDef, version, token)
@@ -713,7 +713,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public ExtendedObjectVersion RemoveProperty(ObjVer objVer, int propertyDef, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion RemoveProperty(ObjVer objVer, int propertyDef, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.RemovePropertyAsync(objVer, propertyDef, token)
@@ -730,7 +730,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The new object version.</returns>
 		/// <remarks>The object must be checked out to perform this action.</remarks>
-		public ExtendedObjectVersion RemoveProperty(ObjID objId, int propertyDef, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion RemoveProperty(ObjID objId, int propertyDef, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.RemovePropertyAsync(objId, propertyDef, token)
@@ -755,12 +755,12 @@ namespace MFaaP.MFWSClient
 		(
 			int assignmentObjectId,
 			int? version = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{assignmentObjectId}/{version?.ToString() ?? "latest"}/canCompleteAssignment.aspx");
-			request.Method = Method.GET;
+			request.Method = Method.Get;
 
 			// Make the request and get the response.
 			var response = await this.MFWSClient.Get<PrimitiveType<bool>>(request, token)
@@ -778,7 +778,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="version">The version of the assignment object, or null to use the latest.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Whether the user can complete the assignment.</returns>
-		public PrimitiveType<bool> CanCompleteAssignment(int assignmentObjectId, int? version = null, CancellationToken token = default(CancellationToken))
+		public PrimitiveType<bool> CanCompleteAssignment(int assignmentObjectId, int? version = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.CanCompleteAssignmentAsync(assignmentObjectId, version, token)
@@ -799,7 +799,7 @@ namespace MFaaP.MFWSClient
 		(
 			ObjID objId,
 			int? version = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -822,7 +822,7 @@ namespace MFaaP.MFWSClient
 		(
 			ObjID objId, 
 			int? version = null, 
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -842,7 +842,7 @@ namespace MFaaP.MFWSClient
 		public Task<PrimitiveType<bool>> CanCompleteAssignmentAsync
 		(
 			ObjVer objVer,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -863,7 +863,7 @@ namespace MFaaP.MFWSClient
 		public PrimitiveType<bool> CanCompleteAssignment
 		(
 			ObjVer objVer,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -890,7 +890,7 @@ namespace MFaaP.MFWSClient
 			int objectId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			return this.ApproveOrRejectAssignmentAsync
@@ -917,7 +917,7 @@ namespace MFaaP.MFWSClient
 			int objectId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -940,7 +940,7 @@ namespace MFaaP.MFWSClient
 			ObjID objId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -964,7 +964,7 @@ namespace MFaaP.MFWSClient
 			ObjID objId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -985,7 +985,7 @@ namespace MFaaP.MFWSClient
 		(
 			ObjVer objVer,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -1007,7 +1007,7 @@ namespace MFaaP.MFWSClient
 		(
 			ObjVer objVer,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -1030,7 +1030,7 @@ namespace MFaaP.MFWSClient
 			int objectId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			return this.ApproveOrRejectAssignmentAsync
@@ -1057,7 +1057,7 @@ namespace MFaaP.MFWSClient
 			int objectId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -1080,7 +1080,7 @@ namespace MFaaP.MFWSClient
 			ObjID objId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -1104,7 +1104,7 @@ namespace MFaaP.MFWSClient
 			ObjID objId,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -1125,7 +1125,7 @@ namespace MFaaP.MFWSClient
 		(
 			ObjVer objVer,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -1147,7 +1147,7 @@ namespace MFaaP.MFWSClient
 		(
 			ObjVer objVer,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -1174,7 +1174,7 @@ namespace MFaaP.MFWSClient
 			bool approve,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Sanity.
@@ -1188,7 +1188,7 @@ namespace MFaaP.MFWSClient
 
 			// Create the request.
 			var request = new RestRequest(uri);
-			request.Method = Method.PUT;
+			request.Method = Method.Put;
 
 			// If we are rejecting then we need the MFWA extension...
 			if (false == approve)
@@ -1225,7 +1225,7 @@ namespace MFaaP.MFWSClient
 			bool approve,
 			int? version = null,
 			string comment = null,
-			CancellationToken token = default(CancellationToken)
+			CancellationToken token = default
 		)
 		{
 			// Execute the async method.
@@ -1246,7 +1246,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="stateId">workflow State ID which needs to be set</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A representation of the updated object version</returns>
-		public async Task<ObjectVersion> SetWorkflowStateAsync(ObjVer objVer, int stateId, CancellationToken token = default(CancellationToken))
+		public async Task<ObjectVersion> SetWorkflowStateAsync(ObjVer objVer, int stateId, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -1254,7 +1254,7 @@ namespace MFaaP.MFWSClient
 
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/{objVer.Type}/{objVer.ID}/{objVer.Version}/workflowstate");
-			request.Method = Method.PUT;
+			request.Method = Method.Put;
 			request.AddJsonBody(new ObjectWorkflowState() { StateID = stateId });
 			// Execute the request and parse the response.
 			var response = await this.MFWSClient.Put<ExtendedObjectVersion>(request, token).ConfigureAwait(false);
@@ -1269,7 +1269,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="stateId">workflow State ID which needs to be set</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A representation of the updated object version</returns>
-		public ObjectVersion SetWorkflowState(ObjVer objVer, int stateId, CancellationToken token = default(CancellationToken))
+		public ObjectVersion SetWorkflowState(ObjVer objVer, int stateId, CancellationToken token = default)
 		{
 			return this.SetWorkflowStateAsync(objVer, stateId, token)
 				.ConfigureAwait(false)

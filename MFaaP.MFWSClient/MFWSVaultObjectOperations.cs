@@ -34,7 +34,7 @@ namespace MFaaP.MFWSClient
         /// <returns>Information on the renamed object.</returns>
         public async Task<ObjectVersion> RenameObjectAsync(ObjVer objVer,
             string newObjectName,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -67,7 +67,7 @@ namespace MFaaP.MFWSClient
         public Task<ObjectVersion> RenameObjectAsync(
             ObjID objId,
             string newObjectName,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             return this.RenameObjectAsync(new ObjVer()
             {
@@ -91,7 +91,7 @@ namespace MFaaP.MFWSClient
         /// <remarks>ref: http://developer.m-files.com/APIs/REST-API/Reference/resources/objects/type/objectid/version/title/ </remarks>
         public ObjectVersion RenameObject(ObjVer objVer,
             string newObjectName,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Execute the async method.
             return this.RenameObjectAsync(objVer, newObjectName, token)
@@ -110,7 +110,7 @@ namespace MFaaP.MFWSClient
         public ObjectVersion RenameObject(
             ObjID objId,
             string newObjectName,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Use the other overload.
             return this.RenameObject(new ObjVer()
@@ -135,7 +135,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is visible to the user.</returns>
-        public async Task<ExtendedObjectVersion> GetLatestObjectVersionAndPropertiesAsync(ObjID objId, CancellationToken token = default(CancellationToken))
+        public async Task<ExtendedObjectVersion> GetLatestObjectVersionAndPropertiesAsync(ObjID objId, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -165,7 +165,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is visible to the user.</returns>
-        public Task<ExtendedObjectVersion> GetLatestObjectVersionAndPropertiesAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<ExtendedObjectVersion> GetLatestObjectVersionAndPropertiesAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the other overload.
             return this.GetLatestObjectVersionAndPropertiesAsync(new ObjID()
@@ -181,7 +181,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is visible to the user.</returns>
-        public ExtendedObjectVersion GetLatestObjectVersionAndProperties(ObjID objId, CancellationToken token = default(CancellationToken))
+        public ExtendedObjectVersion GetLatestObjectVersionAndProperties(ObjID objId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetLatestObjectVersionAndPropertiesAsync(objId, token)
@@ -197,7 +197,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The ID of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is visible to the user.</returns>
-        public ExtendedObjectVersion GetLatestObjectVersionAndProperties(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public ExtendedObjectVersion GetLatestObjectVersionAndProperties(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the other overload.
             return this.GetLatestObjectVersionAndProperties(new ObjID()
@@ -218,7 +218,7 @@ namespace MFaaP.MFWSClient
         /// <param name="creationInfo">The creation information for the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>Information on the created object.</returns>
-        public async Task<ObjectVersion> CreateNewObjectAsync(int objectTypeId, ObjectCreationInfo creationInfo, CancellationToken token = default(CancellationToken))
+        public async Task<ObjectVersion> CreateNewObjectAsync(int objectTypeId, ObjectCreationInfo creationInfo, CancellationToken token = default)
         {
             // Sanity.
             if (null == creationInfo)
@@ -262,7 +262,7 @@ namespace MFaaP.MFWSClient
         /// <param name="creationInfo">The creation information for the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>Information on the created object.</returns>
-        public ObjectVersion CreateNewObject(int objectTypeId, ObjectCreationInfo creationInfo, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CreateNewObject(int objectTypeId, ObjectCreationInfo creationInfo, CancellationToken token = default)
         {
             // Execute the async method.
             return this.CreateNewObjectAsync(objectTypeId, creationInfo, token)
@@ -285,7 +285,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
         public Task<ObjectVersion> SetCheckoutStatusAsync(int objectTypeId, int objectId, MFCheckOutStatus status, int? version = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Sanity.
             if (objectTypeId < 0)
@@ -311,7 +311,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
         public ObjectVersion SetCheckoutStatus(int objectTypeId, int objectId, MFCheckOutStatus status, int? version = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Execute the async method.
             return this.SetCheckoutStatusAsync(objectTypeId, objectId, status, version, token)
@@ -329,7 +329,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
         public Task<ObjectVersion> SetCheckoutStatusAsync(ObjID objId, MFCheckOutStatus status, int? version = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -359,7 +359,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
         public ObjectVersion SetCheckoutStatus(ObjID objId, MFCheckOutStatus status, int? version = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Execute the async method.
             return this.SetCheckoutStatusAsync(objId, status, version, token)
@@ -375,7 +375,7 @@ namespace MFaaP.MFWSClient
         /// <param name="status">The checkout status.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public async Task<ObjectVersion> SetCheckoutStatusAsync(ObjVer objVer, MFCheckOutStatus status, CancellationToken token = default(CancellationToken))
+        public async Task<ObjectVersion> SetCheckoutStatusAsync(ObjVer objVer, MFCheckOutStatus status, CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -405,7 +405,7 @@ namespace MFaaP.MFWSClient
         /// <param name="status">The checkout status.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion SetCheckoutStatus(ObjVer objVer, MFCheckOutStatus status, CancellationToken token = default(CancellationToken))
+        public ObjectVersion SetCheckoutStatus(ObjVer objVer, MFCheckOutStatus status, CancellationToken token = default)
         {
             // Execute the async method.
             return this.SetCheckoutStatusAsync(objVer, status, token)
@@ -422,7 +422,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<MFCheckOutStatus?> GetCheckoutStatusAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+        public Task<MFCheckOutStatus?> GetCheckoutStatusAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
         {
 
             // Sanity.
@@ -459,7 +459,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public MFCheckOutStatus? GetCheckoutStatus(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+        public MFCheckOutStatus? GetCheckoutStatus(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetCheckoutStatusAsync(objectTypeId, objectId, version, token)
@@ -475,7 +475,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<MFCheckOutStatus?> GetCheckoutStatusAsync(ObjID objId, int? version = null, CancellationToken token = default(CancellationToken))
+        public Task<MFCheckOutStatus?> GetCheckoutStatusAsync(ObjID objId, int? version = null, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -501,7 +501,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public MFCheckOutStatus? GetCheckoutStatus(ObjID objId, int? version = null, CancellationToken token = default(CancellationToken))
+        public MFCheckOutStatus? GetCheckoutStatus(ObjID objId, int? version = null, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetCheckoutStatusAsync(objId, version, token)
@@ -516,7 +516,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id and version of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public async Task<MFCheckOutStatus?> GetCheckoutStatusAsync(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public async Task<MFCheckOutStatus?> GetCheckoutStatusAsync(ObjVer objVer, CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -547,7 +547,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id and version of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public MFCheckOutStatus? GetCheckoutStatus(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public MFCheckOutStatus? GetCheckoutStatus(ObjVer objVer, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetCheckoutStatusAsync(objVer, token)
@@ -564,7 +564,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<ObjectVersion> CheckOutAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> CheckOutAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
         {
             return this.SetCheckoutStatusAsync(objectTypeId, objectId, MFCheckOutStatus.CheckedOutToMe, version, token);
         }
@@ -577,7 +577,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion CheckOut(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CheckOut(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
         {
             // Execute the async method.
             return this.CheckOutAsync(objectTypeId, objectId, version, token)
@@ -593,7 +593,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion CheckOut(ObjID objId, int? version = null, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CheckOut(ObjID objId, int? version = null, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -612,7 +612,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id and version of the object to check out.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<ObjectVersion> CheckOutAsync(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> CheckOutAsync(ObjVer objVer, CancellationToken token = default)
         {
             return this.SetCheckoutStatusAsync(objVer, MFCheckOutStatus.CheckedOutToMe, token);
         }
@@ -623,7 +623,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id and version of the object to check out.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion CheckOut(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CheckOut(ObjVer objVer, CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -643,7 +643,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<ObjectVersion> CheckOutAsync(ObjID objId, int? version = null, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> CheckOutAsync(ObjID objId, int? version = null, CancellationToken token = default)
         {
             return this.SetCheckoutStatusAsync(objId, MFCheckOutStatus.CheckedOutToMe, version, token);
         }
@@ -656,7 +656,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<ObjectVersion> CheckInAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> CheckInAsync(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
         {
             return this.SetCheckoutStatusAsync(objectTypeId, objectId, MFCheckOutStatus.CheckedIn, version, token);
         }
@@ -669,7 +669,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion CheckIn(int objectTypeId, int objectId, int? version = null, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CheckIn(int objectTypeId, int objectId, int? version = null, CancellationToken token = default)
         {
             // Execute the async method.
             return this.CheckInAsync(objectTypeId, objectId, version, token)
@@ -684,7 +684,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id and version of the object to check out.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<ObjectVersion> CheckInAsync(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> CheckInAsync(ObjVer objVer, CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -699,7 +699,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id and version of the object to check out.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion CheckIn(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CheckIn(ObjVer objVer, CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -719,7 +719,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<ObjectVersion> CheckInAsync(ObjID objId, int? version = null, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> CheckInAsync(ObjID objId, int? version = null, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -735,7 +735,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version (or null for latest).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public ObjectVersion CheckIn(ObjID objId, int? version = null, CancellationToken token = default(CancellationToken))
+        public ObjectVersion CheckIn(ObjID objId, int? version = null, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -755,7 +755,7 @@ namespace MFaaP.MFWSClient
         /// <param name="force">If true, will undo checkout even if this object isn't checked out to this user on this machine (subject to user rights).</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        protected async Task<ObjectVersion> UndoCheckoutAsync(ObjVer objVer, bool force, CancellationToken token = default(CancellationToken))
+        protected async Task<ObjectVersion> UndoCheckoutAsync(ObjVer objVer, bool force, CancellationToken token = default)
         {
 
             // Sanity.
@@ -764,7 +764,7 @@ namespace MFaaP.MFWSClient
 
             // Create the request.
             var request = new RestRequest($"/REST/objects/{objVer.Type}/{objVer.ID}/{objVer.Version}?force={force.ToString().ToLower()}");
-            request.Method = Method.DELETE;
+            request.Method = Method.Delete;
 
             // Make the request and get the response.
             var response = await this.MFWSClient.Delete<ObjectVersion>(request, token)
@@ -780,7 +780,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id, type and version of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        public Task<ObjectVersion> UndoCheckoutAsync(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> UndoCheckoutAsync(ObjVer objVer, CancellationToken token = default)
         {
             // Use the other overload.
             return this.UndoCheckoutAsync(objVer, force: false, token: token);
@@ -794,7 +794,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        public Task<ObjectVersion> UndoCheckoutAsync(int objectTypeId, int objectId, int version, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> UndoCheckoutAsync(int objectTypeId, int objectId, int version, CancellationToken token = default)
         {
             // Use the other overload.
             return this.UndoCheckoutAsync(new ObjVer()
@@ -817,7 +817,7 @@ namespace MFaaP.MFWSClient
             int objectTypeId,
             int objectId,
             int version,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Execute the async method.
             return this.UndoCheckoutAsync(new ObjVer()
@@ -837,7 +837,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id, type and version of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        public ObjectVersion UndoCheckout(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public ObjectVersion UndoCheckout(ObjVer objVer, CancellationToken token = default)
         {
             // Sanity.
             if (null == objVer)
@@ -857,7 +857,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objVer">The Id, type and version of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        public Task<ObjectVersion> ForceUndoCheckoutAsync(ObjVer objVer, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> ForceUndoCheckoutAsync(ObjVer objVer, CancellationToken token = default)
         {
             // Use the other overload.
             return this.UndoCheckoutAsync(objVer, force: true, token: token);
@@ -872,7 +872,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        public Task<ObjectVersion> ForceUndoCheckoutAsync(int objectTypeId, int objectId, int version, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> ForceUndoCheckoutAsync(int objectTypeId, int objectId, int version, CancellationToken token = default)
         {
             // Use the other overload.
             return this.ForceUndoCheckoutAsync(new ObjVer()
@@ -892,7 +892,7 @@ namespace MFaaP.MFWSClient
         /// <param name="version">The version.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The new ObjectVersion information if it is still visible to the user.</returns>
-        public ObjectVersion ForceUndoCheckout(int objectTypeId, int objectId, int version, CancellationToken token = default(CancellationToken))
+        public ObjectVersion ForceUndoCheckout(int objectTypeId, int objectId, int version, CancellationToken token = default)
         {
             // Execute the async method.
             return this.ForceUndoCheckoutAsync(objectTypeId, objectId, version, token)
@@ -912,7 +912,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public Task<bool?> GetDeletedStatusAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<bool?> GetDeletedStatusAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
 
             // Sanity.
@@ -936,7 +936,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public bool? GetDeletedStatus(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public bool? GetDeletedStatus(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetDeletedStatusAsync(objectTypeId, objectId, token)
@@ -951,7 +951,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public async Task<bool?> GetDeletedStatusAsync(ObjID objId, CancellationToken token = default(CancellationToken))
+        public async Task<bool?> GetDeletedStatusAsync(ObjID objId, CancellationToken token = default)
         {
 
             // Sanity.
@@ -980,7 +980,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A representation of the checked-in object version/</returns>
-        public bool? GetDeletedStatus(ObjID objId, CancellationToken token = default(CancellationToken))
+        public bool? GetDeletedStatus(ObjID objId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetDeletedStatusAsync(objId, token)
@@ -999,7 +999,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public async Task<ObjectVersion> UndeleteObjectAsync(ObjID objId, CancellationToken token = default(CancellationToken))
+        public async Task<ObjectVersion> UndeleteObjectAsync(ObjID objId, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -1012,7 +1012,7 @@ namespace MFaaP.MFWSClient
 
             // Create the request.
             var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/deleted");
-            request.Method = Method.PUT;
+            request.Method = Method.Put;
 
             // Add the body.
             request.AddJsonBody(new PrimitiveType<bool>() { Value = false });
@@ -1032,7 +1032,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public Task<ObjectVersion> UndeleteObjectAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> UndeleteObjectAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Sanity.
             if (objectTypeId < 0)
@@ -1055,7 +1055,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public ObjectVersion UndeleteObject(ObjID objId, CancellationToken token = default(CancellationToken))
+        public ObjectVersion UndeleteObject(ObjID objId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.UndeleteObjectAsync(objId, token)
@@ -1071,7 +1071,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public ObjectVersion UndeleteObject(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public ObjectVersion UndeleteObject(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.UndeleteObjectAsync(new ObjID()
@@ -1094,7 +1094,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public async Task<ObjectVersion> DeleteObjectAsync(ObjID objId, CancellationToken token = default(CancellationToken))
+        public async Task<ObjectVersion> DeleteObjectAsync(ObjID objId, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -1107,7 +1107,7 @@ namespace MFaaP.MFWSClient
 
             // Create the request.
             var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/deleted");
-            request.Method = Method.PUT;
+            request.Method = Method.Put;
 
             // Add the body.
             request.AddJsonBody(new PrimitiveType<bool>() { Value = true });
@@ -1127,7 +1127,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public Task<ObjectVersion> DeleteObjectAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<ObjectVersion> DeleteObjectAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Sanity.
             if (objectTypeId < 0)
@@ -1149,7 +1149,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public ObjectVersion DeleteObject(ObjID objId, CancellationToken token = default(CancellationToken))
+        public ObjectVersion DeleteObject(ObjID objId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.DeleteObjectAsync(objId, token)
@@ -1165,7 +1165,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The ObjectVersion, if it is still visible to the user.</returns>
-        public ObjectVersion DeleteObject(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public ObjectVersion DeleteObject(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.DeleteObjectAsync(new ObjID()
@@ -1192,7 +1192,7 @@ namespace MFaaP.MFWSClient
         /// <returns>True if 204 was received from the server.</returns>
         /// <remarks>Unlike the COM API method (https://www.m-files.com/api/documentation/latest/index.html#MFilesAPI~VaultObjectOperations~DestroyObject.html),
         /// the REST API only supports destroying all versions.</remarks>
-        public async Task<bool> DestroyObjectAsync(ObjID objId, bool destroyAllVersions, int version, CancellationToken token = default(CancellationToken))
+        public async Task<bool> DestroyObjectAsync(ObjID objId, bool destroyAllVersions, int version, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -1204,7 +1204,7 @@ namespace MFaaP.MFWSClient
 
             // Create the request.
             var request = new RestRequest($"/REST/objects/{objId.Type}/{objId.ID}/latest?allVersions=true");
-            request.Method = Method.DELETE;
+            request.Method = Method.Delete;
 
             // Make the request and get the response.
             var response = await this.MFWSClient.Delete<ObjectVersion>(request, token)
@@ -1224,7 +1224,7 @@ namespace MFaaP.MFWSClient
         /// <returns>True if 204 was received from the server.</returns>
         /// <remarks>Unlike the COM API method (https://www.m-files.com/api/documentation/latest/index.html#MFilesAPI~VaultObjectOperations~DestroyObject.html),
         /// the REST API only supports destroying all versions.</remarks>
-        public Task<bool> DestroyObjectAsync(int objectTypeId, int objectId, bool destroyAllVersions, int version, CancellationToken token = default(CancellationToken))
+        public Task<bool> DestroyObjectAsync(int objectTypeId, int objectId, bool destroyAllVersions, int version, CancellationToken token = default)
         {
             // Sanity.
             if (objectTypeId < 0)
@@ -1253,7 +1253,7 @@ namespace MFaaP.MFWSClient
         /// <returns>True if 204 was received from the server.</returns>
         /// <remarks>Unlike the COM API method (https://www.m-files.com/api/documentation/latest/index.html#MFilesAPI~VaultObjectOperations~DestroyObject.html),
         /// the REST API only supports destroying all versions.</remarks>
-        public bool DestroyObject(ObjID objId, bool destroyAllVersions, int version, CancellationToken token = default(CancellationToken))
+        public bool DestroyObject(ObjID objId, bool destroyAllVersions, int version, CancellationToken token = default)
         {
             // Execute the async method.
             return this.DestroyObjectAsync(objId, destroyAllVersions, version, token)
@@ -1273,7 +1273,7 @@ namespace MFaaP.MFWSClient
         /// <returns>True if 204 was received from the server.</returns>
         /// <remarks>Unlike the COM API method (https://www.m-files.com/api/documentation/latest/index.html#MFilesAPI~VaultObjectOperations~DestroyObject.html),
         /// the REST API only supports destroying all versions.</remarks>
-        public bool DestroyObject(int objectTypeId, int objectId, bool destroyAllVersions, int version, CancellationToken token = default(CancellationToken))
+        public bool DestroyObject(int objectTypeId, int objectId, bool destroyAllVersions, int version, CancellationToken token = default)
         {
             // Execute the async method.
             return this.DestroyObjectAsync(new ObjID()
@@ -1298,7 +1298,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A collection of <see cref="ObjectVersion"/>s representing the object history.</returns>
         /// <remarks>Note that not all versions may be shown: http://www.m-files.com/mfws/resources/objects/type/objectid/history.html</remarks>
-        public Task<List<ObjectVersion>> GetHistoryAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<List<ObjectVersion>> GetHistoryAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
             return this.GetHistoryAsync(new ObjID()
             {
@@ -1316,7 +1316,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A collection of <see cref="ObjectVersion"/>s representing the object history.</returns>
         /// <remarks>Note that not all versions may be shown: http://www.m-files.com/mfws/resources/objects/type/objectid/history.html</remarks>
-        public List<ObjectVersion> GetHistory(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public List<ObjectVersion> GetHistory(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetHistoryAsync(objectTypeId, objectId, token)
@@ -1332,7 +1332,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A collection of <see cref="ObjectVersion"/>s representing the object history.</returns>
         /// <remarks>Note that not all versions may be shown: http://www.m-files.com/mfws/resources/objects/type/objectid/history.html</remarks>
-        public async Task<List<ObjectVersion>> GetHistoryAsync(ObjID objID, CancellationToken token = default(CancellationToken))
+        public async Task<List<ObjectVersion>> GetHistoryAsync(ObjID objID, CancellationToken token = default)
         {
             // Sanity.
             if (null == objID)
@@ -1357,7 +1357,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>A collection of <see cref="ObjectVersion"/>s representing the object history.</returns>
         /// <remarks>Note that not all versions may be shown: http://www.m-files.com/mfws/resources/objects/type/objectid/history.html</remarks>
-        public List<ObjectVersion> GetHistory(ObjID objID, CancellationToken token = default(CancellationToken))
+        public List<ObjectVersion> GetHistory(ObjID objID, CancellationToken token = default)
         {
             // Execute the async method.
             return this.GetHistoryAsync(objID, token)
@@ -1377,7 +1377,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The <see cref="ObjID"/> of the item to add to the favourites.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was added.</returns>
-        public async Task<ExtendedObjectVersion> AddToFavoritesAsync(ObjID objId, CancellationToken token = default(CancellationToken))
+        public async Task<ExtendedObjectVersion> AddToFavoritesAsync(ObjID objId, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -1401,7 +1401,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The <see cref="ObjID"/> of the item to add to the favourites.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was added.</returns>
-        public ExtendedObjectVersion AddToFavorites(ObjID objId, CancellationToken token = default(CancellationToken))
+        public ExtendedObjectVersion AddToFavorites(ObjID objId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.AddToFavoritesAsync(objId, token)
@@ -1417,7 +1417,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was added.</returns>
-        public Task<ExtendedObjectVersion> AddToFavoritesAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<ExtendedObjectVersion> AddToFavoritesAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
             return this.AddToFavoritesAsync(new ObjID()
             {
@@ -1433,7 +1433,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was added.</returns>
-        public ExtendedObjectVersion AddToFavorites(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public ExtendedObjectVersion AddToFavorites(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.AddToFavoritesAsync(objectTypeId, objectId, token)
@@ -1448,7 +1448,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The <see cref="ObjID"/> of the item to remove from the favourites.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was removed.</returns>
-        public async Task<ExtendedObjectVersion> RemoveFromFavoritesAsync(ObjID objId, CancellationToken token = default(CancellationToken))
+        public async Task<ExtendedObjectVersion> RemoveFromFavoritesAsync(ObjID objId, CancellationToken token = default)
         {
             // Sanity.
             if (null == objId)
@@ -1471,7 +1471,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objId">The <see cref="ObjID"/> of the item to remove from the favourites.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was removed.</returns>
-        public ExtendedObjectVersion RemoveFromFavorites(ObjID objId, CancellationToken token = default(CancellationToken))
+        public ExtendedObjectVersion RemoveFromFavorites(ObjID objId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.RemoveFromFavoritesAsync(objId, token)
@@ -1487,7 +1487,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was removed.</returns>
-        public Task<ExtendedObjectVersion> RemoveFromFavoritesAsync(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public Task<ExtendedObjectVersion> RemoveFromFavoritesAsync(int objectTypeId, int objectId, CancellationToken token = default)
         {
             return this.RemoveFromFavoritesAsync(new ObjID()
             {
@@ -1503,7 +1503,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectId">The Id of the object.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The item that was removed.</returns>
-        public ExtendedObjectVersion RemoveFromFavorites(int objectTypeId, int objectId, CancellationToken token = default(CancellationToken))
+        public ExtendedObjectVersion RemoveFromFavorites(int objectTypeId, int objectId, CancellationToken token = default)
         {
             // Execute the async method.
             return this.RemoveFromFavoritesAsync(objectTypeId, objectId, token)

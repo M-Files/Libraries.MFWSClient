@@ -43,7 +43,7 @@ namespace MFaaP.MFWSClient
 				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.XAuthenticationHttpHeaderName)
 					.ToArray())
 				{
-					this.DefaultParameters.Remove(parameter);
+					this.DefaultParameters.RemoveParameter(parameter);
 				}
 
 				// Add the new one.
@@ -81,7 +81,7 @@ namespace MFaaP.MFWSClient
 			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.VaultHttpHeaderName)
 				.ToArray())
 			{
-				this.DefaultParameters.Remove(parameter);
+				this.DefaultParameters.RemoveParameter(parameter);
 			}
 		}
 
@@ -95,14 +95,23 @@ namespace MFaaP.MFWSClient
 			this.AuthenticationToken = null;
 
 			// Clear any cookies that are held (e.g. SSO) too.
-			this.CookieContainer = new CookieContainer();
+			{
+				if(null != this.BaseUrl)
+					foreach (var cookie in (this.CookieContainer ?? new CookieContainer()).GetCookies(this.BaseUrl).Cast<Cookie>() ?? Enumerable.Empty<Cookie>())
+					{
+						// Expire the cookies.
+						cookie.Expired = true;
+						this.CookieContainer.Add(cookie);
+					}
+			}
 
 			// Remove the authorisation header.
-			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
-				.ToArray())
-			{
-				this.DefaultParameters.Remove(parameter);
-			}
+			if(null != this.DefaultParameters)
+				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
+					.ToArray())
+				{
+					this.DefaultParameters.RemoveParameter(parameter);
+				}
 		}
 
 		/// <summary>
@@ -110,7 +119,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="vaultId">The id of the vault to authenticate to.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public async Task AuthenticateUsingSingleSignOnAsync(Guid vaultId, CancellationToken token = default(CancellationToken))
+		public async Task AuthenticateUsingSingleSignOnAsync(Guid vaultId, CancellationToken token = default)
 		{
 			// Clear any current tokens.
 			this.ClearAuthenticationToken();
@@ -121,30 +130,43 @@ namespace MFaaP.MFWSClient
 			var request = new RestRequest("/WebServiceSSO.aspx?popup=1&vault=" + vaultId.ToString("D").ToUpper());
 
 			// Set the credentials of the request to be our current network credentials.
-			request.Credentials = CredentialCache.DefaultNetworkCredentials;
+			var credentials = base.RestClient.Options.Credentials;
+			var useDefaultCredentials = base.RestClient.Options.UseDefaultCredentials;
+            base.RestClient.Options.Credentials = CredentialCache.DefaultNetworkCredentials;
+			base.RestClient.Options.UseDefaultCredentials = true;
 
 			// Execute the request and store the response.
-			IRestResponse response = await this.Get(request, token)
+			RestResponse response = await this.Get(request, token)
 				.ConfigureAwait(false);
 
 			// Save the response cookies in our persistent RestClient cookie container.
 			// Note: We should have at least one returned which is the ASP.NET session Id.
-			this.CookieContainer = new CookieContainer();
-			if (null != response.Cookies)
-			{
-				foreach (var cookie in response.Cookies)
+			if(null != this.CookieContainer && null != this.BaseUrl)
+				foreach(var cookie in this.CookieContainer.GetCookies(this.BaseUrl).Cast<Cookie>())
 				{
-					this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
+					cookie.Expired = true;
+					this.CookieContainer.Add(cookie);
+				}
+
+			if (null != response.Cookies && null != this.BaseUrl)
+			{
+				foreach (var cookie in response.Cookies.Cast<Cookie>())
+				{
+					this.CookieContainer.Add(this.BaseUrl, cookie);
 				}
 			}
-		}
+
+            // Set the credentials back.
+            base.RestClient.Options.Credentials = credentials;
+            base.RestClient.Options.UseDefaultCredentials = useDefaultCredentials;
+        }
 
 		/// <summary>
 		/// Attempts SSO (Single Sign On) authentication with the remote web server.
 		/// </summary>
 		/// <param name="vaultId">The id of the vault to authenticate to.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingSingleSignOn(Guid vaultId, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingSingleSignOn(Guid vaultId, CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.AuthenticateUsingSingleSignOnAsync(vaultId, token)
@@ -162,7 +184,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="expiration">The date and time that the token should expire.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public Task AuthenticateUsingCredentialsAsync(Guid? vaultId, string username, string password, DateTime? expiration = null, string sessionID = null, CancellationToken token = default(CancellationToken))
+		public Task AuthenticateUsingCredentialsAsync(Guid? vaultId, string username, string password, DateTime? expiration = null, string sessionID = null, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.AuthenticateUsingCredentialsAsync(new Authentication()
@@ -183,7 +205,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="password">The password to use.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, string sessionID = null, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, string sessionID = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, null, sessionID, token)
@@ -201,7 +223,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="expiration">The date and time that the token should expire.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, DateTime expiration, string sessionID = null, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, DateTime expiration, string sessionID = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.AuthenticateUsingCredentialsAsync(vaultId, username, password, expiration, sessionID, token)
@@ -219,7 +241,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="expiration">The duration of time (from now) in which the token should expire.</param>
 		/// <param name="sessionID">The ID of the session.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, TimeSpan expiration, string sessionID = null, CancellationToken token = default(CancellationToken))
+		public void AuthenticateUsingCredentials(Guid? vaultId, string username, string password, TimeSpan expiration, string sessionID = null, CancellationToken token = default)
 		{
 			// Use the other overload.
 			this.AuthenticateUsingCredentials(vaultId, username, password, DateTime.Now.Add(expiration), sessionID, token);
@@ -230,7 +252,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="authentication">The authentication details to use.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		public async Task AuthenticateUsingCredentialsAsync(Authentication authentication, CancellationToken token = default(CancellationToken))
+		public async Task AuthenticateUsingCredentialsAsync(Authentication authentication, CancellationToken token = default)
 		{
 			// Clear any current tokens.
 			this.ClearAuthenticationToken();
@@ -253,12 +275,19 @@ namespace MFaaP.MFWSClient
 
 				// Save the response cookies in our persistent RestClient cookie container.
 				// This is required for multi-server-mode compatibility.
-				this.CookieContainer = new CookieContainer();
-				if (null != response.Cookies)
+				if (null != this.CookieContainer && null != this.BaseUrl)
 				{
-					foreach (var cookie in response.Cookies)
+					foreach (var cookie in this.CookieContainer.GetCookies(this.BaseUrl).Cast<Cookie>())
 					{
-						this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
+						cookie.Expired = true;
+						this.CookieContainer.Add(cookie);
+					}
+					if (null != response.Cookies)
+					{
+						foreach (var cookie in response.Cookies.Cast<Cookie>())
+						{
+							this.CookieContainer.Add(this.BaseUrl, cookie);
+						}
 					}
 				}
 			}
@@ -270,7 +299,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="authentication">The authentication details to use.</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		protected void AuthenticateUsingCredentials(Authentication authentication, CancellationToken token = default(CancellationToken))
+		protected void AuthenticateUsingCredentials(Authentication authentication, CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.AuthenticateUsingCredentialsAsync(authentication, token)
@@ -284,7 +313,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A list of online vaults.</returns>
-		public async Task<List<Vault>> GetOnlineVaultsAsync(CancellationToken token = default(CancellationToken))
+		public async Task<List<Vault>> GetOnlineVaultsAsync(CancellationToken token = default)
 		{
 			// Build the request to authenticate to the vault.
 			var request = new RestRequest("/REST/server/vaults?online=true");
@@ -302,7 +331,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A list of online vaults.</returns>
-		public List<Vault> GetOnlineVaults(CancellationToken token = default(CancellationToken))
+		public List<Vault> GetOnlineVaults(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetOnlineVaultsAsync(token)
@@ -318,24 +347,28 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the task.</param>
 		/// <returns>The authentication plugin configuration.</returns>
 		public async Task<List<MFaaP.MFWSClient.PluginInfoConfiguration>> GetAuthenticationPluginsAsync(
-			Guid vaultGuid = default(Guid),
-			CancellationToken token = default(CancellationToken))
+			Guid vaultGuid = default,
+			CancellationToken token = default)
 		{
 			// Create the request, include vault if GUID was defined.
 			string requestUrl = "/REST/server/authenticationprotocols";
-			if( vaultGuid != default(Guid) )
+			if( vaultGuid != default )
 				requestUrl += "?vault=" + vaultGuid.ToString( "B" );
-			var request = new RestRequest( requestUrl, Method.GET);
+			var request = new RestRequest( requestUrl, Method.Get);
 			var response = await base.Get<List<MFaaP.MFWSClient.PluginInfoConfiguration>>(request, token);
 
-			// Save the response cookies in our persistent RestClient cookie container.
-			// This is required for multi-server-mode compatibility.
-			this.CookieContainer = new CookieContainer();
-			if (null != response.Cookies)
+            // Save the response cookies in our persistent RestClient cookie container.
+            // This is required for multi-server-mode compatibility.
+            foreach (var cookie in this.CookieContainer.GetCookies(this.BaseUrl).Cast<Cookie>())
+            {
+                cookie.Expired = true;
+                this.CookieContainer.Add(cookie);
+            }
+            if (null != response.Cookies)
 			{
-				foreach (var cookie in response.Cookies)
+				foreach (var cookie in response.Cookies.Cast<Cookie>())
 				{
-					this.CookieContainer.Add(this.BaseUrl, new Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain));
+					this.CookieContainer.Add(this.BaseUrl, cookie);
 				}
 			}
 
@@ -350,8 +383,8 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the task.</param>
 		/// <returns>The authentication plugin configuration.</returns>
 		public List<MFaaP.MFWSClient.PluginInfoConfiguration> GetAuthenticationPlugins( 
-			Guid vaultGuid = default(Guid),
-			CancellationToken token = default(CancellationToken))
+			Guid vaultGuid = default,
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetAuthenticationPluginsAsync( vaultGuid, token )
@@ -367,7 +400,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>https://developer.m-files.com/APIs/REST-API/Reference/resources/session/</remarks>
-		public async Task LogOutAsync(CancellationToken token = default(CancellationToken))
+		public async Task LogOutAsync(CancellationToken token = default)
 		{
 			// Build the request to authenticate to the server.
 			{
@@ -387,7 +420,7 @@ namespace MFaaP.MFWSClient
 		/// Logs the current session out from the server.
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
-		public void LogOut(CancellationToken token = default(CancellationToken))
+		public void LogOut(CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.LogOutAsync(token)

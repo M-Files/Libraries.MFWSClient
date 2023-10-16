@@ -31,7 +31,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no property definitions have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<int> GetPropertyDefIDByAliasAsync(string alias, CancellationToken token = default(CancellationToken))
+		public async Task<int> GetPropertyDefIDByAliasAsync(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = await this.GetPropertyDefIDsByAliasesAsync(token, aliases: new string[] { alias });
@@ -48,7 +48,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no property definitions have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<List<int>> GetPropertyDefIDsByAliasesAsync(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public async Task<List<int>> GetPropertyDefIDsByAliasesAsync(CancellationToken token = default, params string[] aliases)
 		{
 			// Sanity.
 			if(null == aliases)
@@ -77,7 +77,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>A collection of resolved IDs.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no property definitions have the alias, or more than one does).</remarks>
-		public List<int> GetPropertyDefIDsByAliases(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public List<int> GetPropertyDefIDsByAliases(CancellationToken token = default, params string[] aliases)
 		{
 			// Execute the async method.
 			return this.GetPropertyDefIDsByAliasesAsync(token, aliases)
@@ -94,7 +94,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no property definitions have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public int GetPropertyDefIDByAlias(string alias, CancellationToken token = default(CancellationToken))
+		public int GetPropertyDefIDByAlias(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = this.GetPropertyDefIDsByAliases(token, aliases: new string[] { alias });
@@ -111,7 +111,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All property definitions in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public async Task<List<PropertyDef>> GetPropertyDefsAsync(CancellationToken token = default(CancellationToken))
+		public async Task<List<PropertyDef>> GetPropertyDefsAsync(CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/structure/properties");
@@ -130,7 +130,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All property definitions in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public List<PropertyDef> GetPropertyDefs(CancellationToken token = default(CancellationToken))
+		public List<PropertyDef> GetPropertyDefs(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertyDefsAsync(token)
@@ -146,7 +146,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property definition.</returns>
 		/// <remarks>This may be affected by the user's permissions.</remarks>
-		public async Task<PropertyDef> GetPropertyDefAsync(int propertyDefId, CancellationToken token = default(CancellationToken))
+		public async Task<PropertyDef> GetPropertyDefAsync(int propertyDefId, CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/structure/properties/{propertyDefId}");
@@ -166,7 +166,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The property definition.</returns>
 		/// <remarks>This may be affected by the user's permissions.</remarks>
-		public PropertyDef GetPropertyDef(int propertyDefId, CancellationToken token = default(CancellationToken))
+		public PropertyDef GetPropertyDef(int propertyDefId, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetPropertyDefAsync(propertyDefId, token)

@@ -28,7 +28,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="limit">If 0, uses Mfiles default at server (default 500 items returned)</param>
 		/// <returns>The contents of the value list.</returns>
 		/// <remarks>Note that this may be limited.</remarks>
-		public async Task<Results<ValueListItem>> GetValueListItemsAsync(int valueListId, string nameFilter = null, CancellationToken token = default(CancellationToken), int limit = 0)
+		public async Task<Results<ValueListItem>> GetValueListItemsAsync(int valueListId, string nameFilter = null, CancellationToken token = default, int limit = 0)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/valuelists/{valueListId}/items");
@@ -63,7 +63,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="limit">If 0, uses Mfiles default at server (default 500 items returned)</param>
 		/// <returns>The contents of the value list.</returns>
 		/// <remarks>Note that this may be limited.</remarks>
-		public Results<ValueListItem> GetValueListItems(int valueListId, string nameFilter = null, CancellationToken token = default(CancellationToken), int limit = 0)
+		public Results<ValueListItem> GetValueListItems(int valueListId, string nameFilter = null, CancellationToken token = default, int limit = 0)
 		{
 			// Execute the async method.
 			return this.GetValueListItemsAsync(valueListId, nameFilter, token, limit)
@@ -80,7 +80,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="newItemName">Name of the new value list item to create.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The newly created value list item</returns>
-		public Task<ValueListItem> AddValueListItemAsync(int valueListId, string newItemName, CancellationToken token = default(CancellationToken))
+		public Task<ValueListItem> AddValueListItemAsync(int valueListId, string newItemName, CancellationToken token = default)
 		{
 			// Sanity.
 			if (string.IsNullOrWhiteSpace(newItemName))
@@ -103,7 +103,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="newItemName">Name of the new value list item to create.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The newly created value list item</returns>
-		public ValueListItem AddValueListItem(int valueListId, string newItemName, CancellationToken token = default(CancellationToken))
+		public ValueListItem AddValueListItem(int valueListId, string newItemName, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.AddValueListItemAsync(valueListId, newItemName, token)
@@ -119,7 +119,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="valueListItem">The value list item to create.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The newly created value list item</returns>
-		public async Task<ValueListItem> AddValueListItemAsync(int valueListId, ValueListItem valueListItem, CancellationToken token = default(CancellationToken))
+		public async Task<ValueListItem> AddValueListItemAsync(int valueListId, ValueListItem valueListItem, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == valueListItem)
@@ -147,7 +147,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="valueListItem">The value list item to create.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The newly created value list item</returns>
-		public ValueListItem AddValueListItem(int valueListId, ValueListItem valueListItem, CancellationToken token = default(CancellationToken))
+		public ValueListItem AddValueListItem(int valueListId, ValueListItem valueListItem, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.AddValueListItemAsync(valueListId, valueListItem, token)

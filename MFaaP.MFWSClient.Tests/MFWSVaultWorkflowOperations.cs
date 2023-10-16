@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace MFaaP.MFWSClient.Tests
@@ -18,7 +19,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowStatesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.GET, "/REST/structure/workflows/1234/states.aspx");
+			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.Get, "/REST/structure/workflows/1234/states.aspx");
 
 			// Execute.
 			await runner.MFWSClient.WorkflowOperations.GetWorkflowStatesAsync(1234);
@@ -35,7 +36,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStates()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.GET, "/REST/structure/workflows/12345/states.aspx");
+			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.Get, "/REST/structure/workflows/12345/states.aspx");
 
 			// Execute.
 			runner.MFWSClient.WorkflowOperations.GetWorkflowStates(12345);
@@ -52,7 +53,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStateByName_IncludesWorkflow()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.GET, "/REST/structure/workflows/12345/states.aspx");
+			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.Get, "/REST/structure/workflows/12345/states.aspx");
 
 			// Set up the response to include
 			runner.ResponseData = new List<WorkflowState>
@@ -88,7 +89,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStateByName_DoesNotIncludeWorkflow()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.GET, "/REST/structure/workflows/123/states.aspx");
+			var runner = new RestApiTestRunner<List<WorkflowState>>(Method.Get, "/REST/structure/workflows/123/states.aspx");
 
 			// Set up the response to include
 			runner.ResponseData = new List<WorkflowState>
@@ -127,10 +128,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflows/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflows/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -148,10 +149,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflows/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflows/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -169,10 +170,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflows/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflows/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -190,10 +191,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflows/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflows/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -215,10 +216,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowStateIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflowstates/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflowstates/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -236,10 +237,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowStateIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflowstates/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflowstates/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -257,10 +258,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStateIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflowstates/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflowstates/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -278,10 +279,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStateIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/workflowstates/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/workflowstates/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -303,10 +304,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowStateTransitionIDByAliasAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/statetransitions/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/statetransitions/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -324,10 +325,10 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetWorkflowStateTransitionIDsByAliasesAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/statetransitions/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/statetransitions/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -345,10 +346,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStateTransitionIDsByAliases()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/statetransitions/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/statetransitions/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello", "world", "third option" };
+			var body = new JArray { "hello", "world", "third option" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.
@@ -366,10 +367,10 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetWorkflowStateTransitionIDByAlias()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.POST, "/REST/structure/statetransitions/itemidbyalias.aspx");
+			var runner = new RestApiTestRunner<Dictionary<string, int>>(Method.Post, "/REST/structure/statetransitions/itemidbyalias.aspx");
 
 			// Set up the expected body.
-			var body = new JsonArray { "hello world" };
+			var body = new JArray { "hello world" };
 			runner.SetExpectedRequestBody(body);
 
 			// Execute.

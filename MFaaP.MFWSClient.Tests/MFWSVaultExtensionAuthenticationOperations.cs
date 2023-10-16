@@ -21,7 +21,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetExtensionAuthenticationTargetsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<RepositoryAuthenticationTarget>>(Method.GET, "/REST/repositories.aspx");
+			var runner = new RestApiTestRunner<List<RepositoryAuthenticationTarget>>(Method.Get, "/REST/repositories.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.GetExtensionAuthenticationTargetsAsync();
@@ -38,7 +38,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetExtensionAuthenticationTargets()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<RepositoryAuthenticationTarget>>(Method.GET, "/REST/repositories.aspx");
+			var runner = new RestApiTestRunner<List<RepositoryAuthenticationTarget>>(Method.Get, "/REST/repositories.aspx");
 
 			// Execute.
 			runner.MFWSClient.ExtensionAuthenticationOperations.GetExtensionAuthenticationTargets();
@@ -62,7 +62,7 @@ namespace MFaaP.MFWSClient.Tests
 			var targetID = "hello world";
 
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
 
 			// Create the body.
 			var authentication = new RepositoryAuthentication()
@@ -89,7 +89,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogInWithExtensionAuthenticationAsync_NullTarget()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories//session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories//session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogInWithExtensionAuthenticationAsync(null, new RepositoryAuthentication());
@@ -106,7 +106,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogInWithExtensionAuthenticationAsync_EmptyTarget()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories//session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories//session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogInWithExtensionAuthenticationAsync("", new RepositoryAuthentication());
@@ -123,7 +123,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogInWithExtensionAuthenticationAsync_NullAuthentication()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories//session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories//session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogInWithExtensionAuthenticationAsync("hello world", null);
@@ -140,7 +140,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogInWithExtensionAuthenticationAsync_EmptyAuthenticationConfiguration()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories//session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories//session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogInWithExtensionAuthenticationAsync("hello world", new RepositoryAuthentication());
@@ -159,7 +159,7 @@ namespace MFaaP.MFWSClient.Tests
 			var targetID = "hello world";
 
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
 
 			// Create the body.
 			var authentication = new RepositoryAuthentication()
@@ -192,7 +192,7 @@ namespace MFaaP.MFWSClient.Tests
 			var targetID = "hello world";
 
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.DELETE, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
+			var runner = new RestApiTestRunner(Method.Delete, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogOutWithExtensionAuthenticationAsync(targetID);
@@ -210,7 +210,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogOutWithExtensionAuthenticationAsync_NullTarget()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories//session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories//session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogOutWithExtensionAuthenticationAsync(null);
@@ -227,7 +227,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task LogOutWithExtensionAuthenticationAsync_EmptyTarget()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.POST, $"/REST/repositories//session.aspx");
+			var runner = new RestApiTestRunner<RepositoryAuthenticationStatus>(Method.Post, $"/REST/repositories//session.aspx");
 
 			// Execute.
 			await runner.MFWSClient.ExtensionAuthenticationOperations.LogOutWithExtensionAuthenticationAsync("");
@@ -246,7 +246,7 @@ namespace MFaaP.MFWSClient.Tests
 			var targetID = "hello world";
 
 			// Create our test runner.
-			var runner = new RestApiTestRunner(Method.DELETE, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
+			var runner = new RestApiTestRunner(Method.Delete, $"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
 
 			// Execute.
 			runner.MFWSClient.ExtensionAuthenticationOperations.LogOutWithExtensionAuthentication(targetID);

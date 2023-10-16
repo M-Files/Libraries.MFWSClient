@@ -18,10 +18,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="client">The client to interact with the server.</param>
 		internal MFWSVaultOperationsBase(MFWSClientBase client)
 		{
-			// Sanity.
-			if (null == client)
-				throw new ArgumentNullException(nameof(client));
-			this.MFWSClient = client;
+            this.MFWSClient = client ?? throw new ArgumentNullException(nameof(client));
 		}
 	}
 }

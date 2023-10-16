@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -31,7 +32,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task.</returns>
-		public async Task<List<RepositoryAuthenticationTarget>> GetExtensionAuthenticationTargetsAsync(CancellationToken token = default(CancellationToken))
+		public async Task<List<RepositoryAuthenticationTarget>> GetExtensionAuthenticationTargetsAsync(CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/repositories.aspx");
@@ -49,7 +50,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The authentication targets.</returns>
-		public List<RepositoryAuthenticationTarget> GetExtensionAuthenticationTargets(CancellationToken token = default(CancellationToken))
+		public List<RepositoryAuthenticationTarget> GetExtensionAuthenticationTargets(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetExtensionAuthenticationTargetsAsync(token)
@@ -72,7 +73,7 @@ namespace MFaaP.MFWSClient
 		public async Task<RepositoryAuthenticationStatus> LogInWithExtensionAuthenticationAsync(
 			string targetID,
 			RepositoryAuthentication authentication,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == targetID)
@@ -85,7 +86,7 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentException("The authentication plugin configuration name must be provided.", nameof(authentication));
 
 			// Create the request.
-			var request = new RestRequest($"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
+			var request = new RestRequest($"/REST/repositories/{WebUtility.UrlEncode(targetID)}/session.aspx");
 
 			// If authentication token is a blank string, replace it with null.
 			// This is because the remote end tests against null.
@@ -113,7 +114,7 @@ namespace MFaaP.MFWSClient
 		public RepositoryAuthenticationStatus LogInWithExtensionAuthentication(
 			string targetID,
 			RepositoryAuthentication authentication,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.LogInWithExtensionAuthenticationAsync(targetID, authentication, token)
@@ -134,7 +135,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task.</returns>
 		public async Task LogOutWithExtensionAuthenticationAsync(
 			string targetID,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			if (null == targetID)
 				throw new ArgumentNullException(nameof(targetID));
@@ -142,7 +143,7 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentException("The target cannot be null or empty.", nameof(targetID));
 
 			// Create the request.
-			var request = new RestRequest($"/REST/repositories/{HttpUtility.UrlEncode(targetID)}/session.aspx");
+			var request = new RestRequest($"/REST/repositories/{WebUtility.UrlEncode(targetID)}/session.aspx");
 
 			// Make the request and get the response.
 			await this.MFWSClient.Delete(request, token)
@@ -156,7 +157,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		public void LogOutWithExtensionAuthentication(
 			string targetID,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.LogOutWithExtensionAuthenticationAsync(targetID, token)

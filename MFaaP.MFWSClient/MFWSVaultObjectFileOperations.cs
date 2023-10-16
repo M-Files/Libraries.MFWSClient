@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -29,7 +30,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="fileVer">The file to download.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public async Task<byte[]> DownloadFileAsync(ObjVer objVer, FileVer fileVer, CancellationToken token = default(CancellationToken))
+		public async Task<byte[]> DownloadFileAsync(ObjVer objVer, FileVer fileVer, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -62,7 +63,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="fileVer">The file to download.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public byte[] DownloadFile(ObjVer objVer, FileVer fileVer, CancellationToken token = default(CancellationToken))
+		public byte[] DownloadFile(ObjVer objVer, FileVer fileVer, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.DownloadFileAsync(objVer, fileVer, token)
@@ -80,7 +81,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersion">The version of the object, or null for the latest.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public Task<byte[]> DownloadFileAsync(int objectType, int objectId, int fileId, int? objectVersion = null, CancellationToken token = default(CancellationToken))
+		public Task<byte[]> DownloadFileAsync(int objectType, int objectId, int fileId, int? objectVersion = null, CancellationToken token = default)
         {
 			// Use the other overload.
 			return this.DownloadFileAsync(new ObjVer()
@@ -103,7 +104,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectVersion">The version of the object, or null for the latest.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The raw response from the HTTP request.</returns>
-        public byte[] DownloadFile(int objectType, int objectId, int fileId, int? objectVersion = null, CancellationToken token = default(CancellationToken))
+        public byte[] DownloadFile(int objectType, int objectId, int fileId, int? objectVersion = null, CancellationToken token = default)
         {
             // Execute the async method.
             return this.DownloadFileAsync(objectType, objectId, fileId, objectVersion, token)
@@ -120,7 +121,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="outputStream">The output stream for the response to be written to.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public async Task DownloadFileAsync(ObjVer objVer, FileVer fileVer, System.IO.Stream outputStream, CancellationToken token = default(CancellationToken))
+		public async Task DownloadFileAsync(ObjVer objVer, FileVer fileVer, System.IO.Stream outputStream, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -136,10 +137,10 @@ namespace MFaaP.MFWSClient
 			fileVer.GetUriParameters(out fileId, out fileVersionId);
 
 			// Build up the request.
-			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{objectVersionId}/files/{fileId}/content");
-
-			// Output the response to the given stream.
-			request.ResponseWriter = (responseStream) => responseStream.CopyTo(outputStream);
+			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{objectVersionId}/files/{fileId}/content")
+			{
+                ResponseWriter = (responseStream) => outputStream
+            };
 
 			// Execute the request.
 			await this.MFWSClient.Get(request, token)
@@ -154,7 +155,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="outputStream">The output stream for the response to be written to.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public void DownloadFile(ObjVer objVer, FileVer fileVer, System.IO.Stream outputStream, CancellationToken token = default(CancellationToken))
+		public void DownloadFile(ObjVer objVer, FileVer fileVer, System.IO.Stream outputStream, CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.DownloadFileAsync(objVer, fileVer, outputStream, token)
@@ -173,7 +174,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersion">The version of the object, or null for the latest.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public Task DownloadFileAsync(int objectType, int objectId, int fileId, System.IO.Stream outputStream, int? objectVersion = null, CancellationToken token = default(CancellationToken))
+		public Task DownloadFileAsync(int objectType, int objectId, int fileId, System.IO.Stream outputStream, int? objectVersion = null, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.DownloadFileAsync(new ObjVer()
@@ -199,7 +200,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersion">The version of the object, or null for the latest.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public void DownloadFile(int objectType, int objectId, int fileId, System.IO.Stream outputStream, int? objectVersion = null, CancellationToken token = default(CancellationToken))
+		public void DownloadFile(int objectType, int objectId, int fileId, System.IO.Stream outputStream, int? objectVersion = null, CancellationToken token = default)
         {
             // Execute the async method.
             this.DownloadFileAsync(objectType, objectId, fileId, outputStream, objectVersion, token)
@@ -218,7 +219,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectVersion">The version of the object, or null for the latest.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>An awaitable task for the download process.</returns>
-        public Task DownloadFileAsync(int objectType, int objectId, int fileId, string outputFileName, int? objectVersion = null, CancellationToken token = default(CancellationToken))
+        public Task DownloadFileAsync(int objectType, int objectId, int fileId, string outputFileName, int? objectVersion = null, CancellationToken token = default)
         {
             // Create a FileInfo for the output.
             var outputFileInfo = new System.IO.FileInfo(outputFileName);
@@ -235,7 +236,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="outputFileName">The full path to the file to output to.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public void DownloadFile(ObjVer objVer, FileVer fileVer, string outputFileName, CancellationToken token = default(CancellationToken))
+		public void DownloadFile(ObjVer objVer, FileVer fileVer, string outputFileName, CancellationToken token = default)
 		{
 			// Create a FileInfo for the output.
 			var outputFileInfo = new System.IO.FileInfo(outputFileName);
@@ -257,7 +258,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="objectVersion">The version of the object, or null for the latest.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for the download process.</returns>
-		public void DownloadFile(int objectType, int objectId, int fileId, string outputFileName, int? objectVersion = null, CancellationToken token = default(CancellationToken))
+		public void DownloadFile(int objectType, int objectId, int fileId, string outputFileName, int? objectVersion = null, CancellationToken token = default)
         {
             // Execute the async method.
             this.DownloadFileAsync(objectType, objectId, fileId, outputFileName, objectVersion, token)
@@ -277,7 +278,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>An awaitable task for the download process.</returns>
         public Task DownloadFileAsync(int objectType, int objectId, int fileId, System.IO.FileInfo outputFileInfo, int? objectVersion = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Sanity.
             if (null == outputFileInfo)
@@ -306,7 +307,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>An awaitable task for the download process.</returns>
         public void DownloadFile(int objectType, int objectId, int fileId, System.IO.FileInfo outputFileInfo, int? objectVersion = null,
-            CancellationToken token = default(CancellationToken))
+            CancellationToken token = default)
         {
             // Execute the async method.
             this.DownloadFileAsync(objectType, objectId, fileId, outputFileInfo, objectVersion, token)
@@ -324,7 +325,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for the download process.</returns>
 		public async Task DownloadFileAsync(ObjVer objVer, FileVer fileVer, System.IO.FileInfo outputFileInfo,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == outputFileInfo)
@@ -351,7 +352,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="outputFileInfo">The file to output the content to (will be overwritten if exists).</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The raw response from the HTTP request.</returns>
-		public void DownloadFile(ObjVer objVer, FileVer fileVer, System.IO.FileInfo outputFileInfo, CancellationToken token = default(CancellationToken))
+		public void DownloadFile(ObjVer objVer, FileVer fileVer, System.IO.FileInfo outputFileInfo, CancellationToken token = default)
 		{
 			// Execute the async method.
 			this.DownloadFileAsync(objVer, fileVer, outputFileInfo, token)
@@ -411,14 +412,30 @@ namespace MFaaP.MFWSClient
                 request.AddFile(file.Name, file.FullName);
             }
 
-            // Make the request and get the response.
-            var response = await this.MFWSClient.Post<List<UploadInfo>>(request, token)
-                .ConfigureAwait(false);
+			// If we are only uploading one file then
+			// the server responds with a single item, not an array.
+			List<UploadInfo> data = new List<UploadInfo>();
+			if (files.Length == 1)
+			{
+				{
+					// Make the request and get the response.
+					var item = (await this.MFWSClient.Post<UploadInfo>(request, token)
+						.ConfigureAwait(false))?.Data;
+					if (null != item)
+						data.Add(item);
+				}
+            }
+			else
+			{
+				// Make the request and get the response.
+				data = (await this.MFWSClient.Post<List<UploadInfo>>(request, token)
+					.ConfigureAwait(false))?.Data;
+            }
 
-            // Ensure the uploadinfo is updated.
-            for (var i = 0; i < response.Data?.Count; i++)
+            // Ensure the upload info is updated.
+            for (var i = 0; i < data?.Count; i++)
             {
-                var uploadInfo = response.Data[i];
+                var uploadInfo = data[i];
                 var file = files[i];
                 uploadInfo.Title = file.Name;
                 uploadInfo.Extension = file.Extension.Substring(1); // Remove the dot.
@@ -426,7 +443,7 @@ namespace MFaaP.MFWSClient
             }
 
             // Return the data.
-            return response.Data?.ToArray();
+            return data?.ToArray();
 
         }
 
@@ -459,7 +476,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectVersion">The version of the object, or null for the latest.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The updated object version.</returns>
-        public async Task<ExtendedObjectVersion> AddFilesAsync(int objectType, int objectId, int? objectVersion = null, CancellationToken token = default(CancellationToken), params FileInfo[] files)
+        public async Task<ExtendedObjectVersion> AddFilesAsync(int objectType, int objectId, int? objectVersion = null, CancellationToken token = default, params FileInfo[] files)
         {
             // Sanity.
             if (null == files)
@@ -507,7 +524,7 @@ namespace MFaaP.MFWSClient
         /// <param name="objectVersion">The version of the object, or null for the latest.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>The updated object version.</returns>
-        public ExtendedObjectVersion AddFiles(int objectType, int objectId, int? objectVersion = null, CancellationToken token = default(CancellationToken), params FileInfo[] files)
+        public ExtendedObjectVersion AddFiles(int objectType, int objectId, int? objectVersion = null, CancellationToken token = default, params FileInfo[] files)
         {
             // Execute the async method.
             return this.AddFilesAsync(objectType, objectId, objectVersion, token, files)
@@ -527,7 +544,7 @@ namespace MFaaP.MFWSClient
         public Task<ExtendedObjectVersion> AddFilesAsync(int objectType, int objectId, int? objectVersion = null, params FileInfo[] files)
         {
             // Execute the other overload.
-            return this.AddFilesAsync(objectType, objectId, objectVersion, default(CancellationToken), files);
+            return this.AddFilesAsync(objectType, objectId, objectVersion, default, files);
         }
 
         /// <summary>
@@ -541,7 +558,7 @@ namespace MFaaP.MFWSClient
         public ExtendedObjectVersion AddFiles(int objectType, int objectId, int? objectVersion = null, params FileInfo[] files)
         {
             // Execute the other overload.
-            return this.AddFiles(objectType, objectId, objectVersion, default(CancellationToken), files);
+            return this.AddFiles(objectType, objectId, objectVersion, default, files);
         }
 
         /// <summary>
@@ -557,7 +574,7 @@ namespace MFaaP.MFWSClient
                 throw new ArgumentNullException(nameof(objId));
 
             // Execute the other overload.
-            return this.AddFilesAsync(objId.Type, objId.ID, objectVersion: null, token: default(CancellationToken), files: files);
+            return this.AddFilesAsync(objId.Type, objId.ID, objectVersion: null, token: default, files: files);
         }
 
         /// <summary>
@@ -573,7 +590,7 @@ namespace MFaaP.MFWSClient
                 throw new ArgumentNullException(nameof(objId));
 
             // Execute the other overload.
-            return this.AddFiles(objId.Type, objId.ID, objectVersion: null, token: default(CancellationToken), files: files);
+            return this.AddFiles(objId.Type, objId.ID, objectVersion: null, token: default, files: files);
         }
 
         /// <summary>
@@ -583,7 +600,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <param name="files">The files to attach.</param>
         /// <returns>The updated object version.</returns>
-        public Task<ExtendedObjectVersion> AddFilesAsync(ObjID objId, CancellationToken token = default(CancellationToken), params FileInfo[] files)
+        public Task<ExtendedObjectVersion> AddFilesAsync(ObjID objId, CancellationToken token = default, params FileInfo[] files)
         {
             // Sanity.
             if (null == objId)
@@ -600,7 +617,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <param name="files">The files to attach.</param>
         /// <returns>The updated object version.</returns>
-        public ExtendedObjectVersion AddFiles(ObjID objId, CancellationToken token = default(CancellationToken), params FileInfo[] files)
+        public ExtendedObjectVersion AddFiles(ObjID objId, CancellationToken token = default, params FileInfo[] files)
         {
             // Sanity.
             if (null == objId)
@@ -623,7 +640,7 @@ namespace MFaaP.MFWSClient
                 throw new ArgumentNullException(nameof(objVer));
 
             // Execute the other overload.
-            return this.AddFilesAsync(objVer.Type, objVer.ID, objVer.Version, default(CancellationToken), files);
+            return this.AddFilesAsync(objVer.Type, objVer.ID, objVer.Version, default, files);
         }
 
         /// <summary>
@@ -639,7 +656,7 @@ namespace MFaaP.MFWSClient
                 throw new ArgumentNullException(nameof(objVer));
 
             // Execute the other overload.
-            return this.AddFiles(objVer.Type, objVer.ID, objVer.Version, default(CancellationToken), files);
+            return this.AddFiles(objVer.Type, objVer.ID, objVer.Version, default, files);
         }
 
         /// <summary>
@@ -649,7 +666,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <param name="files">The files to attach.</param>
         /// <returns>The updated object version.</returns>
-        public Task<ExtendedObjectVersion> AddFilesAsync(ObjVer objVer, CancellationToken token = default(CancellationToken), params FileInfo[] files)
+        public Task<ExtendedObjectVersion> AddFilesAsync(ObjVer objVer, CancellationToken token = default, params FileInfo[] files)
         {
             // Sanity.
             if (null == objVer)
@@ -666,7 +683,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <param name="files">The files to attach.</param>
 		/// <returns>The updated object version.</returns>
-		public ExtendedObjectVersion AddFiles(ObjVer objVer, CancellationToken token = default(CancellationToken), params FileInfo[] files)
+		public ExtendedObjectVersion AddFiles(ObjVer objVer, CancellationToken token = default, params FileInfo[] files)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -684,7 +701,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="filePath">The path to the file to upload in its replacement.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The updated object version.</returns>
-		public async Task<ExtendedObjectVersion> UploadFileAsync(ObjVer objVer, FileVer fileVer, string filePath, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectVersion> UploadFileAsync(ObjVer objVer, FileVer fileVer, string filePath, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -732,7 +749,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="filePath">The path to the file to upload in its replacement.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The updated object version.</returns>
-		public ExtendedObjectVersion UploadFile(ObjVer objVer, FileVer fileVer, string filePath, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion UploadFile(ObjVer objVer, FileVer fileVer, string filePath, CancellationToken token = default)
 		{
 			// Use the other overload.
 			return this.UploadFileAsync(objVer, fileVer, filePath, token)
@@ -762,7 +779,7 @@ namespace MFaaP.MFWSClient
 			string newFileName,
 			int? objectVersion = null,
 			int? fileVersion = null,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
         {
 			// Create the version strings to be used for the uri segment.
 			var objectVersionString = objectVersion?.ToString() ?? "latest";
@@ -801,7 +818,7 @@ namespace MFaaP.MFWSClient
 			string newFileName,
 			int? objectVersion = null,
 			int? fileVersion = null,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.RenameFileAsync(objectType, objectId, fileId, newFileName, objectVersion, fileVersion, token)
@@ -822,7 +839,7 @@ namespace MFaaP.MFWSClient
 		public ObjectVersion RenameFile(ObjID objId,
 			FileVer fileVer,
 			string newFileName,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objId)
@@ -849,7 +866,7 @@ namespace MFaaP.MFWSClient
 		public ObjectVersion RenameFile(ObjVer objVer,
 			FileVer fileVer,
 			string newFileName,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -934,7 +951,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
-		public UploadInfo UploadTemporaryFileBlockBegin(FileInfo fileInfo, CancellationToken token = default(CancellationToken))
+		public UploadInfo UploadTemporaryFileBlockBegin(FileInfo fileInfo, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.UploadTemporaryFileBlockBeginAsync(fileInfo, token)
@@ -959,7 +976,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
 		public async Task<UploadInfo> UploadTemporaryFileBlockAsync(int uploadId, long totalSizeInBytes, long offset, byte[] block,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/files/upload/{uploadId}.aspx");
@@ -1000,7 +1017,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
 		public UploadInfo UploadTemporaryFileBlock(int uploadId, long totalSizeInBytes, long offset, byte[] block,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.UploadTemporaryFileBlockAsync(uploadId, totalSizeInBytes, offset, block, token)
@@ -1021,7 +1038,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
-		public async Task<UploadInfo> UploadTemporaryFileCommitAsync(UploadInfo uploadInfo, CancellationToken token = default(CancellationToken))
+		public async Task<UploadInfo> UploadTemporaryFileCommitAsync(UploadInfo uploadInfo, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == uploadInfo)
@@ -1048,7 +1065,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
-		public UploadInfo UploadTemporaryFileCommit(UploadInfo uploadInfo, CancellationToken token = default(CancellationToken))
+		public UploadInfo UploadTemporaryFileCommit(UploadInfo uploadInfo, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.UploadTemporaryFileCommitAsync(uploadInfo, token)
@@ -1170,7 +1187,7 @@ namespace MFaaP.MFWSClient
 		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
 		public UploadInfo UploadTemporaryFileInBlocks(
 			FileInfo fileToUpload,
-            CancellationToken token = default,
+			CancellationToken token = default,
 			int blockSize = 1024 * 1024 * 2)
 		{
 			// Execute the async method.
@@ -1191,7 +1208,7 @@ namespace MFaaP.MFWSClient
 		public UploadInfo UploadTemporaryFileInBlocks(
 			string newFileName,
 			Stream fileToUpload,
-			CancellationToken token = default(CancellationToken),
+			CancellationToken token = default,
 			int blockSize = 1024 * 1024 * 2)
 		{
 			// Execute the async method.
@@ -1206,14 +1223,14 @@ namespace MFaaP.MFWSClient
 		#endregion
 
 		#region Removing files
-		public ExtendedObjectVersion RemoveFile(ObjVer objVer, FileVer fileVer, CancellationToken token = default(CancellationToken))
+		public ExtendedObjectVersion RemoveFile(ObjVer objVer, FileVer fileVer, CancellationToken token = default)
         {
 			return this.RemoveFileAsync(objVer, fileVer)
 				.ConfigureAwait(false)
 				.GetAwaiter()
 				.GetResult();
 		}
-		public async Task<ExtendedObjectVersion> RemoveFileAsync(ObjVer objVer, FileVer fileVer, CancellationToken token = default(CancellationToken))
+		public async Task<ExtendedObjectVersion> RemoveFileAsync(ObjVer objVer, FileVer fileVer, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -1230,7 +1247,7 @@ namespace MFaaP.MFWSClient
 
 			// Build up the request.
 			var request = new RestRequest($"/REST/objects/{objectTypeId}/{objectId}/{objectVersionId}/files/{fileId}");
-			request.Method = Method.DELETE;
+			request.Method = Method.Delete;
 
 			// Execute the request.
 			var response = await this.MFWSClient.Delete<ExtendedObjectVersion>(request, token)

@@ -31,7 +31,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no object types have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<int> GetObjectTypeIDByAliasAsync(string alias, CancellationToken token = default(CancellationToken))
+		public async Task<int> GetObjectTypeIDByAliasAsync(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = await this.GetObjectTypeIDsByAliasesAsync(token, aliases: new string[] { alias });
@@ -48,7 +48,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no object type have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public async Task<List<int>> GetObjectTypeIDsByAliasesAsync(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public async Task<List<int>> GetObjectTypeIDsByAliasesAsync(CancellationToken token = default, params string[] aliases)
 		{
 			// Sanity.
 			if (null == aliases)
@@ -77,7 +77,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no object type have the alias, or more than one does).</remarks>
-		public List<int> GetObjectTypeIDsByAliases(CancellationToken token = default(CancellationToken), params string[] aliases)
+		public List<int> GetObjectTypeIDsByAliases(CancellationToken token = default, params string[] aliases)
 		{
 			// Execute the async method.
 			return this.GetObjectTypeIDsByAliasesAsync(token, aliases)
@@ -94,7 +94,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Returns -1 if the alias cannot be resolved (e.g. no object types have the alias, or more than one does).</remarks>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
-		public int GetObjectTypeIDByAlias(string alias, CancellationToken token = default(CancellationToken))
+		public int GetObjectTypeIDByAlias(string alias, CancellationToken token = default)
 		{
 			// Use the other overload.
 			var output = this.GetObjectTypeIDsByAliases(token, aliases: new string[] { alias });
@@ -111,7 +111,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All object types in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public async Task<List<ObjType>> GetObjectTypesAsync(CancellationToken token = default(CancellationToken))
+		public async Task<List<ObjType>> GetObjectTypesAsync(CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/structure/objecttypes.aspx");
@@ -130,7 +130,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>All object types in the vault.</returns>
 		/// <remarks>This may be filtered by the user's permissions.</remarks>
-		public List<ObjType> GetObjectTypes(CancellationToken token = default(CancellationToken))
+		public List<ObjType> GetObjectTypes(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetObjectTypesAsync(token)
