@@ -36,7 +36,6 @@
     <PackageTags>M-Files REST-API MFWS wrapper</PackageTags>
     <PackageProjectUrl>https://github.com/M-Files/Libraries.MFWSClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/M-Files/Libraries.MFWSClient</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
   
