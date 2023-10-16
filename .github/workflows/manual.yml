@@ -60,9 +60,9 @@ jobs:
         vs-version: '[17.0,)'
 
     - name: Setup dot net
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
 
     - name: Create nuget package
       run: dotnet pack ./MFaaP.MFWSClient/MFaaP.MFWSClient.csproj --configuration Release -p:Version=${{ env.versionNumber }}
