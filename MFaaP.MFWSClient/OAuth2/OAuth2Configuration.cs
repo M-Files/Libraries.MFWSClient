@@ -284,7 +284,8 @@ namespace MFaaP.MFWSClient.OAuth2
 		{
 			if (size > 1024)
 				size = 32;
-            using (var cryptoProvider = new RNGCryptoServiceProvider())
+
+			using (var cryptoProvider = RandomNumberGenerator.Create())
             {
                 byte[] bytes = new byte[size];
                 cryptoProvider.GetBytes(bytes);

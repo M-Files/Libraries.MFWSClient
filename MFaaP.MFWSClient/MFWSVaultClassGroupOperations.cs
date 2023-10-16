@@ -31,7 +31,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>All classes in the vault for the supplied object type.</returns>
         /// <remarks>This may be filtered by the user's permissions.</remarks>
-        public async Task<List<ClassGroup>> GetClassGroupsAsync(int objectTypeId, CancellationToken token = default(CancellationToken))
+        public async Task<List<ClassGroup>> GetClassGroupsAsync(int objectTypeId, CancellationToken token = default)
         {
             // Create the request.
             var request = new RestRequest($"/REST/structure/classes.aspx?objtype={objectTypeId}&bygroup=true");
@@ -51,7 +51,7 @@ namespace MFaaP.MFWSClient
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>All classes in the vault for the supplied object type.</returns>
         /// <remarks>This may be filtered by the user's permissions.</remarks>
-        public List<ClassGroup> GetClassGroups(int objectTypeId, CancellationToken token = default(CancellationToken))
+        public List<ClassGroup> GetClassGroups(int objectTypeId, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetClassGroupsAsync(objectTypeId, token)

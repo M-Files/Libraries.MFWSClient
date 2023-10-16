@@ -12,7 +12,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task.</returns>
-		public async Task<Vault> GetCurrentSessionVaultAsync(CancellationToken token = default(CancellationToken))
+		public async Task<Vault> GetCurrentSessionVaultAsync(CancellationToken token = default)
 		{
 			// Build up the request.
 			var request = new RestRequest("/REST/session/vault");
@@ -30,7 +30,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The vault returned by the request.</returns>
-		public Vault GetCurrentSessionVault(CancellationToken token = default(CancellationToken))
+		public Vault GetCurrentSessionVault(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetCurrentSessionVaultAsync(token)
@@ -44,7 +44,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task.</returns>
-		public async Task<SessionInfo> GetCurrentSessionInfoAsync(CancellationToken token = default(CancellationToken))
+		public async Task<SessionInfo> GetCurrentSessionInfoAsync(CancellationToken token = default)
 		{
 			// Build up the request.
 			var request = new RestRequest("/REST/session");
@@ -62,7 +62,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The vault returned by the request.</returns>
-		public SessionInfo GetCurrentSessionInfo(CancellationToken token = default(CancellationToken))
+		public SessionInfo GetCurrentSessionInfo(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetCurrentSessionInfoAsync(token)

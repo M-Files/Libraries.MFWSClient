@@ -16,13 +16,13 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// The request being executed.
 		/// </summary>
-		public IRestRequest RestRequest { get; private set; }
+		public RestRequest RestRequest { get; private set; }
 
 		/// <summary>
 		/// Instantiates a <see cref="RestRequestEventArgs"/> for the supplied request.
 		/// </summary>
 		/// <param name="restRequest">The request being executed.</param>
-		public RestRequestEventArgs(IRestRequest restRequest)
+		public RestRequestEventArgs(RestRequest restRequest)
 		{
 			this.RestRequest = restRequest;
 		}

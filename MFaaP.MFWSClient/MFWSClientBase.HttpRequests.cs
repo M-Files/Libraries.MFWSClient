@@ -5,8 +5,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
-using RestSharp.Deserializers;
-using RestSharp.Serialization.Json;
 
 namespace MFaaP.MFWSClient
 {
@@ -37,15 +35,10 @@ namespace MFaaP.MFWSClient
 		public event AfterExecuteRequestHandler AfterExecuteRequest;
 
 		/// <summary>
-		/// The deserialiser used for deserialising exception data.
-		/// </summary>
-		private static readonly JsonDeserializer jsonDeserializer = new JsonDeserializer();
-
-		/// <summary>
 		/// Handles any exceptions returned by the web service, throwing exceptions as needed.
 		/// </summary>
 		/// <param name="response">The response returned by the web service.</param>
-		protected virtual void EnsureValidResponse(IRestResponse response)
+		protected virtual void EnsureValidResponse(RestResponse response)
 		{
 			// Sanity.
 			if (null == response)
@@ -78,7 +71,8 @@ namespace MFaaP.MFWSClient
 				case HttpStatusCode.MethodNotAllowed:
 					{
 						// Parse exception information, if we can.
-						var error = MFWSClientBase.jsonDeserializer.Deserialize<WebServiceError>(response);
+						var deserializer = new RestSharp.Serializers.Json.SystemTextJsonSerializer();
+						var error = deserializer.Deserialize<WebServiceError>(response);
 
 						// TODO: Stack doesn't seem to be deserialised properly.
 
@@ -103,7 +97,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="request">The request to execute.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse<T>> Get<T>(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse<T>> Get<T>(RestRequest request, CancellationToken token = default)
 			where T : new()
 		{
 			// Sanity.
@@ -111,12 +105,10 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentNullException(nameof(request));
 
 			// Ensure method is correct.
-			request.Method = Method.GET;
+			request.Method = Method.Get;
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -125,7 +117,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync<T>(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync<T>(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -141,19 +133,17 @@ namespace MFaaP.MFWSClient
 		/// <param name="request">The request to execute.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse> Get(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse> Get(RestRequest request, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == request)
 				throw new ArgumentNullException(nameof(request));
 
 			// Ensure method is correct.
-			request.Method = Method.GET;
+			request.Method = Method.Get;
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -162,7 +152,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -178,19 +168,17 @@ namespace MFaaP.MFWSClient
 		/// <param name="request">The request to execute.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse> Post(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse> Post(RestRequest request, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == request)
 				throw new ArgumentNullException(nameof(request));
 
 			// Ensure method is correct.
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -199,7 +187,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -216,7 +204,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <param name="request">The request to execute.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse<T>> Post<T>(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse<T>> Post<T>(RestRequest request, CancellationToken token = default)
 			where T : new()
 		{
 			// Sanity.
@@ -224,12 +212,10 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentNullException(nameof(request));
 
 			// Ensure method is correct.
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -238,7 +224,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync<T>(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync<T>(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -254,7 +240,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="request">The request to execute.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse> Delete(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse> Delete(RestRequest request, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == request)
@@ -262,13 +248,11 @@ namespace MFaaP.MFWSClient
 
 			// Ensure method is correct.
 			// Note: we don't set the method to DELETE as this is not supported in some IIS instances.
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 			request.AddQueryParameter("_method", "DELETE");
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -277,7 +261,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -294,7 +278,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <param name="request">The request to execute.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse<T>> Delete<T>(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse<T>> Delete<T>(RestRequest request, CancellationToken token = default)
 			where T : new()
 		{
 			// Sanity.
@@ -303,13 +287,11 @@ namespace MFaaP.MFWSClient
 
 			// Ensure method is correct.
 			// Note: we don't set the method to DELETE as this is not supported in some IIS instances.
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 			request.AddQueryParameter("_method", "DELETE");
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -318,7 +300,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync<T>(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync<T>(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -334,7 +316,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="request">The request to execute.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse> Put(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse> Put(RestRequest request, CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == request)
@@ -342,13 +324,11 @@ namespace MFaaP.MFWSClient
 
 			// Ensure method is correct.
 			// Note: we don't set the method to PUT as this is not supported in some IIS instances.
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 			request.AddQueryParameter("_method", "PUT");
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -357,7 +337,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -374,7 +354,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="request">The request to execute.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response.</returns>
-		public async Task<IRestResponse<T>> Put<T>(IRestRequest request, CancellationToken token = default(CancellationToken))
+		public async Task<RestResponse<T>> Put<T>(RestRequest request, CancellationToken token = default)
 			where T : new()
 		{
 			// Sanity.
@@ -383,13 +363,11 @@ namespace MFaaP.MFWSClient
 
 			// Ensure method is correct.
 			// Note: we don't set the method to PUT as this is not supported in some IIS instances.
-			request.Method = Method.POST;
+			request.Method = Method.Post;
 			request.AddQueryParameter("_method", "PUT");
 
 			// We only deal with Json.
-#pragma warning disable CS0618 // Type or member is obsolete
 			request.RequestFormat = DataFormat.Json;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 			// Ensure the extensions headers are specified.
 			this.EnsureEnabledExtensionsAreSpecified(request);
@@ -398,7 +376,7 @@ namespace MFaaP.MFWSClient
 			this.OnBeforeExecuteRequest(request);
 
 			// Execute the request.
-			var response = await this.restClient.ExecuteAsync<T>(request, request.Method, token)
+			var response = await this.RestClient.ExecuteAsync<T>(request, token)
 				.ConfigureAwait(false);
 
 			// Notify after the request.
@@ -413,7 +391,7 @@ namespace MFaaP.MFWSClient
 		/// contained within the <see cref="ExtensionsHttpHeaderName"/> HTTP header on the request.
 		/// </summary>
 		/// <param name="request">The request to alter.</param>
-		public virtual void EnsureEnabledExtensionsAreSpecified(IRestRequest request)
+		public virtual void EnsureEnabledExtensionsAreSpecified(RestRequest request)
 		{
 			// Sanity.
 			if(null == request)
@@ -425,9 +403,7 @@ namespace MFaaP.MFWSClient
 
 			// Retrieve the current X-Extensions values (comma-separated) as an array.
 			// Need to handle various null/empty scenarios here.
-#pragma warning disable CS0618 // Type or member is obsolete
-			var existingExtensions = ((request.Parameters ?? new List<Parameter>())
-#pragma warning restore CS0618 // Type or member is obsolete
+			var existingExtensions = ((request.Parameters ?? new ParametersCollection())
 										.FirstOrDefault(p =>
 											p.Type == ParameterType.HttpHeader
 											&& p.Name == MFWSClientBase.ExtensionsHttpHeaderName)?
@@ -454,8 +430,8 @@ namespace MFaaP.MFWSClient
 			}
 
 			// Remove the existing header, if it exists.
-			request.Parameters?
-				.RemoveAll(p => p.Type == ParameterType.HttpHeader && p.Name == MFWSClientBase.ExtensionsHttpHeaderName);
+			foreach (var h in request.Parameters.Where(p => p.Type == ParameterType.HttpHeader && p.Name == MFWSClientBase.ExtensionsHttpHeaderName))
+				request.Parameters?.RemoveParameter(h.Name);
 
 			// Add the header.
 			request.AddHeader(MFWSClientBase.ExtensionsHttpHeaderName, string.Join(",", existingExtensions));
@@ -466,7 +442,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <param name="e">The request being executed.</param>
 		/// <remarks>Ensures that the request contains any <see cref="EnabledMFWSExtensions"/>.  This base implementation should always be called.</remarks>
-		protected virtual void OnBeforeExecuteRequest(IRestRequest e)
+		protected virtual void OnBeforeExecuteRequest(RestRequest e)
 		{
 #if DEBUG
 			// Output the basic request data.
@@ -498,7 +474,7 @@ namespace MFaaP.MFWSClient
 				// ReSharper disable once PossibleNullReferenceException
 				foreach (var file in e.Files)
 				{
-					System.Diagnostics.Debug.WriteLine($"\tFile {file.Name} ({file.ContentLength}b)");
+					System.Diagnostics.Debug.WriteLine($"\tFile {file.Name} ({file.GetFile().Length}b)");
 				}
 			}
 #endif
@@ -511,7 +487,7 @@ namespace MFaaP.MFWSClient
 		/// Notifies any subscribers of <see cref="AfterExecuteRequest"/>
 		/// </summary>
 		/// <param name="e"></param>
-		protected virtual void OnAfterExecuteRequest(IRestResponse e)
+		protected virtual void OnAfterExecuteRequest(RestResponse e)
 		{
 #if DEBUG
 			if (null != e)

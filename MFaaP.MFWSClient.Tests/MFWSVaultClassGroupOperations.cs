@@ -19,7 +19,7 @@ namespace MFaaP.MFWSClient.Tests
 		public async Task GetClassGroupsAsync()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ClassGroup>>(Method.GET, "/REST/structure/classes.aspx?objtype=0&bygroup=true");
+			var runner = new RestApiTestRunner<List<ClassGroup>>(Method.Get, "/REST/structure/classes.aspx?objtype=0&bygroup=true");
 
 			// Execute.
 			await runner.MFWSClient.ClassGroupOperations.GetClassGroupsAsync(0);
@@ -36,7 +36,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void GetClassGroups()
 		{
 			// Create our test runner.
-			var runner = new RestApiTestRunner<List<ClassGroup>>(Method.GET, "/REST/structure/classes.aspx?objtype=0&bygroup=true");
+			var runner = new RestApiTestRunner<List<ClassGroup>>(Method.Get, "/REST/structure/classes.aspx?objtype=0&bygroup=true");
 
 			// Execute.
 			runner.MFWSClient.ClassGroupOperations.GetClassGroups(0);

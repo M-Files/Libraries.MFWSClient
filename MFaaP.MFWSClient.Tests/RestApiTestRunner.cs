@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json.Linq;
 using RestSharp;
-using RestSharp.Serialization.Json;
 using RestSharp.Serializers;
 
 namespace MFaaP.MFWSClient.Tests
@@ -31,7 +31,7 @@ namespace MFaaP.MFWSClient.Tests
 		/// A collection of tasks that will be passed to <see cref="Mock{T}.Verify(System.Linq.Expressions.Expression{System.Action{T}})"/>
 		/// to verify that the required methods were called on the <see cref="RestClientMock"/>.
 		/// </summary>
-		/// <remarks>By default it will check that <see cref="IRestClient.ExecuteTaskAsync{T}(RestSharp.IRestRequest,System.Threading.CancellationToken)"/> is called exactly once.</remarks>
+		/// <remarks>By default it will check that <see cref="IRestClient.ExecuteTaskAsync{T}(RestSharp.RestRequest,System.Threading.CancellationToken)"/> is called exactly once.</remarks>
 		public Dictionary<Expression<Action<IRestClient>>, Moq.Times> VerifyTasks { get; private set; }
 		= new Dictionary<Expression<Action<IRestClient>>, Moq.Times>();
 
@@ -91,33 +91,18 @@ namespace MFaaP.MFWSClient.Tests
 		/// </summary>
 		public virtual string ResponseData { get; set; }
 			= null;
-		/// <summary>
-		/// The request body which is expected to be passed.
-		/// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-		public Parameter ExpectedRequestBody { get; set; }
-#pragma warning restore CS0618 // Type or member is obsolete
 
-		/// <summary>
-		/// The extensions that must be specified in the <see cref="MFWSClientBase.ExtensionsHttpHeaderName"/>
-		/// HTTP header.
-		/// </summary>
-		public MFWSExtensions ExpectedMFWSExtensions{ get; set; }
+        /// <summary>
+        /// The request body which is expected to be passed.
+        /// </summary>
+        public Parameter ExpectedRequestBody { get; set; }
+
+        /// <summary>
+        /// The extensions that must be specified in the <see cref="MFWSClientBase.ExtensionsHttpHeaderName"/>
+        /// HTTP header.
+        /// </summary>
+        public MFWSExtensions ExpectedMFWSExtensions{ get; set; }
 			= MFWSExtensions.None;
-
-		/// <summary>
-		/// The serialiser to use for Json encoding (should be the same as set up within
-		/// RestSharp, so that the encoded bodies can be compared).
-		/// </summary>
-		public ISerializer JsonSerializer { get; set; }
-		= new JsonSerializer();
-
-		/// <summary>
-		/// The serialiser to use for Xml encoding (should be the same as set up within
-		/// RestSharp, so that the encoded bodies can be compared).
-		/// </summary>
-		public ISerializer XmlSerializer { get; set; }
-		= new RestSharp.Serializers.XmlSerializer();
 
 		/// <summary>
 		/// Creates a <see cref="RestApiTestRunner"/> with the supplied information.
@@ -135,15 +120,15 @@ namespace MFaaP.MFWSClient.Tests
 			this.ExpectedResourceAddress = expectedResourceAddress;
 
 			// Add our basic verification task in.
-			this.VerifyTasks.Add(c => c.ExecuteAsync(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
+			this.VerifyTasks.Add(c => c.ExecuteAsync(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.Exactly(1));
 
 			// Set up our mock.
 			this.RestClientMock
-				.Setup(c => c.ExecuteAsync(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					this.HandleCallback(r);
 				})
-				.Returns((IRestRequest r, Method m, CancellationToken t) => this.HandleReturns(r));
+				.Returns((RestRequest r, CancellationToken t) => this.HandleReturns(r));
 		}
 
 		/// <summary>
@@ -155,25 +140,22 @@ namespace MFaaP.MFWSClient.Tests
 		public void SetExpectedRequestBody(object body, DataFormat dataFormat = DataFormat.Json, string xmlNamespace = "")
 		{
 			// Set up the parameter.
-#pragma warning disable CS0618 // Type or member is obsolete
-			var parameter = new Parameter("Body", "", ParameterType.RequestBody);
-#pragma warning restore CS0618 // Type or member is obsolete
+			BodyParameter parameter = null;
 
-			// Fill in the parameter data based on the data format.
-			ISerializer serializer;
+            // Fill in the parameter data based on the data format.
 			switch (dataFormat)
 			{
 				case DataFormat.Json:
-					serializer = this.JsonSerializer;
-					parameter.ContentType = serializer.ContentType;
-					parameter.Name = serializer.ContentType;
-					if (null != body)
-					{
-						parameter.Value = body is string
+					parameter = new BodyParameter
+					(
+						"application/json",
+						body is JArray jArray
+						? jArray.ToString(Newtonsoft.Json.Formatting.None)
+						: body is string
 							? body
-							: serializer.Serialize(body);
-					}
-
+							: Newtonsoft.Json.JsonConvert.SerializeObject(body),
+						"application/json"
+                    );
 					break;
 				default:
 					throw new ArgumentException("Data format not expected.");
@@ -200,26 +182,26 @@ namespace MFaaP.MFWSClient.Tests
 		/// </summary>
 		/// <param name="r">The request that was made.</param>
 		/// <returns>A task which should verify that the request was correctly structured.</returns>
-		protected virtual void HandleCallback(IRestRequest r)
+		protected virtual void HandleCallback(RestRequest r)
 		{
 			// Ensure the HTTP method is correct.
 			var expectedMethod = this.ExpectedMethod;
 			switch (this.ExpectedMethod)
 			{
-				case Method.GET:
-				case Method.POST:
+				case Method.Get:
+				case Method.Post:
 					// Get and post are fine, but others need to be routed correctly.
 					break;
 				default:
 					// Others should use a "POST" method and should have the appropriate _method querystring parameter.
-					expectedMethod = Method.POST;
+					expectedMethod = Method.Post;
 
 					// Retrieve the method parameter and ensure that it has the original HTTP method.
 					var methodParameter = r.Parameters
 						.FirstOrDefault(p => p.Type == ParameterType.QueryString && p.Name == "_method");
 					Assert.IsNotNull(methodParameter, "A method parameter was not found on the request.");
 					Assert.AreEqual(methodParameter.Value,
-						this.ExpectedMethod.ToString(),
+						this.ExpectedMethod.ToString().ToUpper(),
 						$"The {this.ExpectedMethod} should be routed through a HTTP POST, with the original method available in a querystring parameter named _method.");
 
 					break;
@@ -235,7 +217,7 @@ namespace MFaaP.MFWSClient.Tests
 			var resource = r.Resource;
 			{
 				var addedQuestionMark = false;
-				foreach (var p in r.Parameters.Where(p => p.Type == ParameterType.QueryString || p.Type == ParameterType.QueryStringWithoutEncode))
+				foreach (var p in r.Parameters.Where(p => p.Type == ParameterType.QueryString))
 				{
 					// Skip _method (checked higher).
 					if(p.Name == "_method")
@@ -250,10 +232,7 @@ namespace MFaaP.MFWSClient.Tests
 						resource += "&";
 					}
 
-					var value = p.Type == ParameterType.QueryStringWithoutEncode
-						? p.Value as string
-						: HttpUtility.UrlEncode(p.Value as string);
-					resource += $"{HttpUtility.UrlEncode(p.Name)}={value}";
+					resource += $"{HttpUtility.UrlEncode(p.Name)}={HttpUtility.UrlEncode(p.Value as string)}";
 				}
 			}
 			Assert.AreEqual(
@@ -264,18 +243,14 @@ namespace MFaaP.MFWSClient.Tests
 			// Ensure the data format is correct.
 			Assert.AreEqual(
 				this.ExpectedRequestFormat,
-#pragma warning disable CS0618 // Type or member is obsolete
-				r.RequestFormat);
-#pragma warning restore CS0618 // Type or member is obsolete
+                r.RequestFormat);
 
-			// Was a request body expected?
-			if (null != this.ExpectedRequestBody)
+            // Was a request body expected?
+            if (null != this.ExpectedRequestBody)
 			{
-				// Get the body from the request.
-#pragma warning disable CS0618 // Type or member is obsolete
-				var requestBody = (r.Parameters ?? new List<Parameter>())
-#pragma warning restore CS0618 // Type or member is obsolete
-					.FirstOrDefault(p => p.Type == ParameterType.RequestBody);
+                // Get the body from the request.
+                var requestBody = (r.Parameters ?? new ParametersCollection())
+                    .FirstOrDefault(p => p.Type == ParameterType.RequestBody);
 				if (null == requestBody)
 					Assert.Fail("A request body was expected but none was provided.");
 
@@ -295,7 +270,7 @@ namespace MFaaP.MFWSClient.Tests
 				{
 					Assert.AreEqual(
 						this.ExpectedRequestBody.Value,
-						this.JsonSerializer.Serialize(requestBody.Value));
+						System.Text.Json.JsonSerializer.Serialize(requestBody.Value));
 				}
 			}
 
@@ -337,21 +312,18 @@ namespace MFaaP.MFWSClient.Tests
 		/// Defines the return value
 		/// </summary>
 		/// <returns></returns>
-		public virtual Task<IRestResponse> HandleReturns(IRestRequest r)
+		public virtual Task<RestResponse> HandleReturns(RestRequest r)
 		{
-			// Create the mock response.
-			var response = new Mock<IRestResponse>();
-
-			// Setup the return data.
-			response.SetupGet(re => re.Content)
-				.Returns(this.ResponseData);
-			response.SetupGet(re => re.StatusCode)
-				.Returns(this.ResponseStatusCode);
-			response.SetupGet(re => re.ResponseUri)
-				.Returns(new Uri(r.Resource, UriKind.Relative));
-
-			//Return the mock object.
-			return Task.FromResult(response.Object);
+            // Create the mock response.
+            return Task.FromResult
+            (
+                Mock.Of<RestResponse>
+                (
+                    m => m.Content == this.ResponseData
+                    && m.StatusCode == this.ResponseStatusCode
+                    && m.ResponseUri == new Uri(r.Resource, UriKind.Relative)
+                )
+            );
 
 		}
 	}
@@ -378,33 +350,30 @@ namespace MFaaP.MFWSClient.Tests
 		{
 			// Remove the non-generic verification task.
 			this.VerifyTasks.Clear();
-			this.VerifyTasks.Add(c => c.ExecuteAsync<T>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()), Times.AtLeast(1));
+			this.VerifyTasks.Add(c => c.ExecuteAsync<T>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()), Times.AtLeast(1));
 
 			// Set up the mock for the generic ExecuteTaskAsync method.
 			this.RestClientMock
-				.Setup(c => c.ExecuteAsync<T>(It.IsAny<IRestRequest>(), It.IsAny<Method>(), It.IsAny<CancellationToken>()))
-				.Callback((IRestRequest r, Method m, CancellationToken t) => {
+				.Setup(c => c.ExecuteAsync<T>(It.IsAny<RestRequest>(), It.IsAny<CancellationToken>()))
+				.Callback((RestRequest r, CancellationToken t) => {
 					this.HandleCallback(r);
 				})
-				.Returns((IRestRequest r, Method m, CancellationToken t) => this.HandleReturns(r));
+				.Returns((RestRequest r, CancellationToken t) => this.HandleReturns(r));
 		}
 
 		/// <inheritdoc />
-		public new Task<IRestResponse<T>> HandleReturns(IRestRequest r)
+		public new Task<RestResponse<T>> HandleReturns(RestRequest r)
 		{
 			// Create the mock response.
-			var response = new Mock<IRestResponse<T>>();
-
-			// Setup the return data.
-			response.SetupGet(re => re.Data)
-				.Returns(this.ResponseData);
-			response.SetupGet(re => re.StatusCode)
-				.Returns(this.ResponseStatusCode);
-			response.SetupGet(re => re.ResponseUri)
-				.Returns(new Uri(r.Resource, UriKind.Relative));
-
-			//Return the mock object.
-			return Task.FromResult(response.Object);
+			return Task.FromResult
+			(
+				Mock.Of<RestResponse<T>>
+				(
+					m => m.Data == this.ResponseData
+					&& m.StatusCode == this.ResponseStatusCode
+					&& m.ResponseUri == new Uri(r.Resource, UriKind.Relative)
+				)
+			);
 
 		}
 	}

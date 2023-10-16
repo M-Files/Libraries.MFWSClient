@@ -2,12 +2,70 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
+using RestSharp.Serializers.Xml;
+using RestSharp.Serializers;
 
 namespace MFaaP.MFWSClient
 {
+	public interface IRestClient
+	{
+		CookieContainer CookieContainer { get; }
+		ParametersCollection DefaultParameters { get; }
+        Task<RestResponse> ExecuteAsync(RestRequest request, CancellationToken cancellationToken = default);
+        Task<RestResponse<T>> ExecuteAsync<T>(RestRequest request, CancellationToken cancellationToken = default);
+        bool FollowRedirects { get; set; }
+		bool PreAuthenticate { get; set; }
+		RestClientOptions Options { get; }
+		Uri BaseUrl { get; set; }
+	}
+	public class RestSharpRestClient
+		: RestClient, IRestClient
+    {
+        public RestSharpRestClient(Uri baseUri)
+            : base(baseUri)
+        {
+
+        }
+
+#if NETSTANDARD2_0_OR_GREATER
+        public RestSharpRestClient(HttpClient httpClient, bool disposeHttpClient = false) 
+			: base(httpClient, disposeHttpClient)
+        {
+
+        }
+        public RestSharpRestClient(HttpMessageHandler httpMessageHandler, bool disposeHandler = false)
+            : base(httpMessageHandler, disposeHandler)
+        {
+
+        }
+#endif
+
+        public Task<RestResponse<T>> ExecuteAsync<T>(RestRequest request, CancellationToken cancellationToken = default)
+		{
+			return RestClientExtensions.ExecuteAsync<T>(this, request, request.Method, cancellationToken);
+		}
+
+		public Uri BaseUrl
+		{
+			get => base.Options?.BaseUrl;
+			set => base.Options.BaseUrl = value;
+		}
+
+        public bool FollowRedirects
+		{
+			get => base.Options.FollowRedirects;
+			set => base.Options.FollowRedirects = value;
+		}
+		public bool PreAuthenticate
+        {
+            get => base.Options.PreAuthenticate;
+            set => base.Options.PreAuthenticate = value;
+        }
+    }
 	/// <summary>
 	/// A base class for the M-Files Web Service Client.
 	/// Used primarily to force the IRestClient from being directly used within the actual client.
@@ -40,14 +98,7 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// This is the RestClient which will do the actual requests.
 		/// </summary>
-		private readonly IRestClient restClient;
-
-		/// <summary>
-		/// Returns the default parameters for requests.
-		/// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-		public IList<Parameter> DefaultParameters => this.restClient.DefaultParameters;
-#pragma warning restore CS0618 // Type or member is obsolete
+		protected readonly IRestClient RestClient;
 
 		/// <summary>
 		/// If true, exceptions returned (e.g. Forbidden) by the web service will be converted
@@ -55,19 +106,26 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		public bool ThrowWebServiceResponseExceptions { get; set; } = true;
 
-		/// <summary>
-		/// The cookie container used for requests.
-		/// </summary>
-		public CookieContainer CookieContainer
-		{
-			get { return this.restClient.CookieContainer; }
-			set { this.restClient.CookieContainer = value; }
-		}
+        /// <summary>
+        /// The cookie container used for requests.
+        /// </summary>
+        public CookieContainer CookieContainer
+        {
+            get { return this.RestClient.CookieContainer; }
+        }
+
+        /// <summary>
+        /// The default parameters for all http requests.
+        /// </summary>
+        public ParametersCollection DefaultParameters
+        {
+            get { return this.RestClient.DefaultParameters; }
+        }
 
         /// <summary>
         /// The base rest service url.
         /// </summary>
-	    public Uri BaseUrl => this.restClient.BaseUrl;
+	    public Uri BaseUrl => this.RestClient.Options?.BaseUrl;
 
 		/// <summary>
 		/// Gets the object search operations interface.
@@ -155,15 +213,15 @@ namespace MFaaP.MFWSClient
 		/// <param name="restClient">The <see cref="IRestClient"/> to use for HTTP requests.</param>
 		protected MFWSClientBase(IRestClient restClient)
 		{
-			// Sanity.
-			if (null == restClient)
-				throw new ArgumentNullException(nameof(restClient));
 
 			// Set up the RestClient.
-			this.restClient = restClient;
+			this.RestClient = restClient
+				?? throw new ArgumentNullException(nameof(restClient));
+            this.RestClient.FollowRedirects = true;
+            this.RestClient.PreAuthenticate = true;
 
-			// Set up our sub-objects.
-			this.ObjectSearchOperations = new MFWSVaultObjectSearchOperations(this);
+            // Set up our sub-objects.
+            this.ObjectSearchOperations = new MFWSVaultObjectSearchOperations(this);
 			this.ObjectOperations = new MFWSVaultObjectOperations(this);
 			this.ObjectPropertyOperations = new MFWSVaultObjectPropertyOperations(this);
 			this.ExtensionMethodOperations = new MFWSVaultExtensionMethodOperations(this);
@@ -179,33 +237,39 @@ namespace MFaaP.MFWSClient
 			this.WorkflowOperations = new MFWSVaultWorkflowOperations(this);
 			this.ExternalObjectOperations = new MFWSVaultExternalObjectOperations(this);
 			this.ExtensionAuthenticationOperations = new MFWSVaultExtensionAuthenticationOperations(this);
-		}
+        }
 
-		/// <summary>
-		/// Creates an MFWSClient pointing at the MFWA site.
-		/// </summary>
-		/// <param name="baseUrl">The base url of the MFWA (web access) site; note that this should be of the form
-		/// "http://localhost", not of the form "http://localhost/REST".</param>
-		protected MFWSClientBase(string baseUrl)
-			: this(new RestClient(baseUrl)
-			{
-				FollowRedirects = true,
-				PreAuthenticate = true
-			})
-		{
-		}
+        /// <summary>
+        /// Creates an MFWSClient pointing at the MFWA site.
+        /// </summary>
+        /// <param name="baseUrl">The base url of the MFWA (web access) site; note that this should be of the form
+        /// "http://localhost", not of the form "http://localhost/REST".</param>
+        protected MFWSClientBase(string baseUrl)
+            : this(new Uri(baseUrl))
+        {
+        }
 
-		/// <summary>
-		/// Adds a default header to requests.
-		/// </summary>
-		/// <param name="name">The name of the HTTP header.</param>
-		/// <param name="value">The value of the HTTP header.</param>
-		public void AddDefaultHeader(string name, string value)
+        /// <summary>
+        /// Creates an MFWSClient pointing at the MFWA site.
+        /// </summary>
+        /// <param name="baseUrl">The base url of the MFWA (web access) site; note that this should be of the form
+        /// "http://localhost", not of the form "http://localhost/REST".</param>
+        protected MFWSClientBase(Uri baseUrl)
+            : this(new RestSharpRestClient(baseUrl))
+        {
+        }
+
+        /// <summary>
+        /// Adds a default header to requests.
+        /// </summary>
+        /// <param name="name">The name of the HTTP header.</param>
+        /// <param name="value">The value of the HTTP header.</param>
+        public void AddDefaultHeader(string name, string value)
 		{
-			try { this.restClient.RemoveDefaultParameter(name); }
+			try { this.RestClient.DefaultParameters.RemoveParameter(name); }
 			catch{ }
 
-			this.restClient.AddDefaultHeader(name, value);
+			this.RestClient.DefaultParameters.AddParameter(new HeaderParameter(name, value));
 		}
 
 		/// <summary>
@@ -214,13 +278,13 @@ namespace MFaaP.MFWSClient
 		public void ClearPresharedKey()
 		{
 			// Remove any existing accept-langauge header.
-			var existingHeaders = this.DefaultParameters
-				.Where(p => p.Type == ParameterType.HttpHeader)
+			var existingHeaders = this.RestClient.DefaultParameters
+                .Where(p => p.Type == ParameterType.HttpHeader)
 				.Where(p => p.Name == MFWSClientBase.PresharedKeyHttpHeaderName)
 				.ToArray();
 			foreach (var existingHeader in existingHeaders)
 			{
-				this.DefaultParameters.Remove(existingHeader);
+				this.RestClient.DefaultParameters.RemoveParameter(existingHeader);
 			}
 		}
 
@@ -252,13 +316,13 @@ namespace MFaaP.MFWSClient
 		public void SetAcceptLanguage(string acceptLanguages)
 		{
 			// Remove any existing accept-langauge header.
-			var existingHeaders = this.DefaultParameters
-				.Where(p => p.Type == ParameterType.HttpHeader)
+			var existingHeaders = this.RestClient.DefaultParameters
+                .Where(p => p.Type == ParameterType.HttpHeader)
 				.Where(p => p.Name == MFWSClientBase.AcceptLanguageHttpHeaderName)
 				.ToArray();
 			foreach (var existingHeader in existingHeaders)
 			{
-				this.DefaultParameters.Remove(existingHeader);
+				this.RestClient.DefaultParameters.RemoveParameter(existingHeader);
 			}
 
 			// Sanity.
@@ -292,7 +356,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for the request.</returns>
 		/// <remarks>Only available in M-Files 12.0.6768.0 upwards.</remarks>
 		public async Task<VaultStructureAliasResponse> GetMetadataStructureIDsByAliasesAsync(VaultStructureAliasRequest aliasRequest,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == aliasRequest)
@@ -319,7 +383,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for the request.</returns>
 		public VaultStructureAliasResponse GetMetadataStructureIDsByAliases(VaultStructureAliasRequest aliasRequest,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetMetadataStructureIDsByAliasesAsync(aliasRequest, token)

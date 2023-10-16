@@ -18,7 +18,7 @@ namespace MFaaP.MFWSClient.ExtensionMethods
 		/// <param name="key">The key to look up.</param>
 		/// <param name="defaultValue">The default value to return if the key cannot be found.</param>
 		/// <returns>The value in the dictionary with the supplied key, or a default value if not found.</returns>
-		public static TB GetValueOrDefault<TA, TB>(this Dictionary<TA, TB> dictionary, TA key, TB defaultValue = default(TB))
+		public static TB GetValueOrDefault<TA, TB>(this Dictionary<TA, TB> dictionary, TA key, TB defaultValue = default)
 		{
 			// Sanity.
 			if(null == dictionary)

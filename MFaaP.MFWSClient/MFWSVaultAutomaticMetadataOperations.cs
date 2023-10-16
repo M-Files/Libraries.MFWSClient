@@ -30,7 +30,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public async Task<List<PropertyValueSuggestion>> GetAutomaticMetadataAsync(AutomaticMetadataRequestInfo requestInfo,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/objects/automaticmetadata.aspx");
@@ -64,7 +64,7 @@ namespace MFaaP.MFWSClient
 			PropertyValue[] propertyValues = null,
 			string[] metadataSuggestionProviders = null,
 			string customData = null,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Build up the request.
 			var request = new AutomaticMetadataRequestInfo()
@@ -88,7 +88,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Any metadata suggestions.</returns>
 		public List<PropertyValueSuggestion> GetAutomaticMetadata(AutomaticMetadataRequestInfo requestInfo,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetAutomaticMetadataAsync(requestInfo, token)
@@ -115,7 +115,7 @@ namespace MFaaP.MFWSClient
 			PropertyValue[] propertyValues = null,
 			string[] metadataSuggestionProviders = null,
 			string customData = null,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetAutomaticMetadataAsync(objectTypeId, objVer, temporaryFileIds, propertyValues, metadataSuggestionProviders, customData, token)
@@ -135,7 +135,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public Task<List<PropertyValueSuggestion>> GetAutomaticMetadataForObjectAsync(ObjVer objVer,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -152,7 +152,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public List<PropertyValueSuggestion> GetAutomaticMetadataForObject(ObjVer objVer,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Sanity.
 			if (null == objVer)
@@ -178,7 +178,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public List<PropertyValueSuggestion> GetAutomaticMetadataForTemporaryFile(int temporaryFileId,
 			int objectTypeId = (int)MFBuiltInObjectType.MFBuiltInObjectTypeDocument,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetAutomaticMetadataAsync(objectTypeId: objectTypeId, temporaryFileIds: new int[] { temporaryFileId }, token: token)
@@ -196,7 +196,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public Task<List<PropertyValueSuggestion>> GetAutomaticMetadataForTemporaryFileAsync(int temporaryFileId,
 			int objectTypeId = (int)MFBuiltInObjectType.MFBuiltInObjectTypeDocument,
-			CancellationToken token = default(CancellationToken))
+			CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetAutomaticMetadataAsync(objectTypeId: objectTypeId, temporaryFileIds: new int[] { temporaryFileId }, token: token);
@@ -211,7 +211,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public List<PropertyValueSuggestion> GetAutomaticMetadataForTemporaryFiles(
 			int objectTypeId = (int)MFBuiltInObjectType.MFBuiltInObjectTypeDocument,
-			CancellationToken token = default(CancellationToken),
+			CancellationToken token = default,
 			params int[] temporaryFileIds)
 		{
 			// Execute the async method.
@@ -230,7 +230,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>An awaitable task for any metadata suggestions.</returns>
 		public Task<List<PropertyValueSuggestion>> GetAutomaticMetadataForTemporaryFilesAsync(
 			int objectTypeId = (int)MFBuiltInObjectType.MFBuiltInObjectTypeDocument,
-			CancellationToken token = default(CancellationToken),
+			CancellationToken token = default,
 			params int[] temporaryFileIds)
 		{
 			// Execute the async method.

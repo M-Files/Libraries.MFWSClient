@@ -26,7 +26,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>The contents of the view.</returns>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>Identical to calling <see cref="GetFolderContentsAsync(MFaaP.MFWSClient.FolderContentItem[])"/> with no parameters.</remarks>
-		public Task<FolderContentItems> GetRootFolderContentsAsync(CancellationToken token = default(CancellationToken))
+		public Task<FolderContentItems> GetRootFolderContentsAsync(CancellationToken token = default)
 		{
 			// Get the root view contents.
 			return this.GetFolderContentsAsync(token);
@@ -38,7 +38,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>The contents of the view.</returns>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <remarks>Identical to calling <see cref="GetFolderContents(MFaaP.MFWSClient.FolderContentItem[])"/> with no parameters.</remarks>
-		public FolderContentItems GetRootFolderContents(CancellationToken token = default(CancellationToken))
+		public FolderContentItems GetRootFolderContents(CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetRootFolderContentsAsync(token)
@@ -179,7 +179,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="builtInView">An enumeration of the built-in view to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The favorited items.</returns>
-		public async Task<List<FolderContentItems>> GetFolderContentsAsync(MFBuiltInView builtInView, CancellationToken token = default(CancellationToken))
+		public async Task<List<FolderContentItems>> GetFolderContentsAsync(MFBuiltInView builtInView, CancellationToken token = default)
 		{
 			// Create the request.
 			var request = new RestRequest($"/REST/views/v{(int)builtInView}/items");
@@ -198,7 +198,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="builtInView">An enumeration of the built-in view to retrieve.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The favorited items.</returns>
-		public List<FolderContentItems> GetFolderContents(MFBuiltInView builtInView, CancellationToken token = default(CancellationToken))
+		public List<FolderContentItems> GetFolderContents(MFBuiltInView builtInView, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.GetFolderContentsAsync(builtInView, token)

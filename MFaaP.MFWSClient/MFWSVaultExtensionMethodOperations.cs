@@ -32,7 +32,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="input">The input (cannot be null) parameter.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response of the extension method, deserialised to an instance of <see paramref="TA"/>.</returns>
-		public async Task<TA> ExecuteVaultExtensionMethodAsync<TA, TB>(string extensionMethodName, TB input = null, CancellationToken token = default(CancellationToken))
+		public async Task<TA> ExecuteVaultExtensionMethodAsync<TA, TB>(string extensionMethodName, TB input = null, CancellationToken token = default)
 			where TA : new()
 			where TB : class
 		{
@@ -62,7 +62,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="input">The input (cannot be null) parameter.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response of the extension method, deserialised to an instance of <see paramref="TA"/>.</returns>
-		public TA ExecuteVaultExtensionMethod<TA, TB>(string extensionMethodName, TB input = null, CancellationToken token = default(CancellationToken))
+		public TA ExecuteVaultExtensionMethod<TA, TB>(string extensionMethodName, TB input = null, CancellationToken token = default)
 			where TA : new()
 			where TB : class
 		{
@@ -83,7 +83,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="input">The input (cannot be null) parameter.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response of the extension method.</returns>
-		public async Task<string> ExecuteVaultExtensionMethodAsync<TB>(string extensionMethodName, TB input = null, CancellationToken token = default(CancellationToken))
+		public async Task<string> ExecuteVaultExtensionMethodAsync<TB>(string extensionMethodName, TB input = null, CancellationToken token = default)
 			where TB : class
 		{
 			// Create the request.
@@ -111,7 +111,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="input">The input (cannot be null) parameter.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response of the extension method.</returns>
-		public string ExecuteVaultExtensionMethod<TB>(string extensionMethodName, TB input = null, CancellationToken token = default(CancellationToken))
+		public string ExecuteVaultExtensionMethod<TB>(string extensionMethodName, TB input = null, CancellationToken token = default)
 			where TB : class
 		{
 			// Execute the async method.
@@ -128,7 +128,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="input">The input parameter.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response of the extension method as a string.</returns>
-		public async Task<string> ExecuteVaultExtensionMethodAsync(string extensionMethodName, string input = null, CancellationToken token = default(CancellationToken))
+		public async Task<string> ExecuteVaultExtensionMethodAsync(string extensionMethodName, string input = null, CancellationToken token = default)
 		{
 
 			// Create the request.
@@ -138,7 +138,10 @@ namespace MFaaP.MFWSClient
 			if (null != input)
 			{
 				// We need to copy the default parameters if we are adding new ones (??).
-				request.Parameters.AddRange(this.MFWSClient.DefaultParameters);
+				foreach(var p in this.MFWSClient.DefaultParameters)
+				{
+					request.Parameters.AddParameter(p);
+				}
 
 				// Add the message body.
 				request.AddJsonBody(input);
@@ -159,7 +162,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="input">The input parameter.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>The response of the extension method as a string.</returns>
-		public string ExecuteVaultExtensionMethod(string extensionMethodName, string input = null, CancellationToken token = default(CancellationToken))
+		public string ExecuteVaultExtensionMethod(string extensionMethodName, string input = null, CancellationToken token = default)
 		{
 			// Execute the async method.
 			return this.ExecuteVaultExtensionMethodAsync(extensionMethodName, input, token)

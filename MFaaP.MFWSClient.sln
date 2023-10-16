@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34004.107
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MFaaP.MFWSClient", "MFaaP.MFWSClient\MFaaP.MFWSClient.csproj", "{B28D0C6A-C87B-461D-BD12-D627E9F653FC}"
 EndProject
@@ -13,6 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		CONTRIBUTING.md = CONTRIBUTING.md
 		LICENSE.md = LICENSE.md
 		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{4F12170C-831C-4FDC-9396-9275D12980B3}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet-core.yml = .github\workflows\dotnet-core.yml
+		.github\workflows\manual.yml = .github\workflows\manual.yml
 	EndProjectSection
 EndProject
 Global
