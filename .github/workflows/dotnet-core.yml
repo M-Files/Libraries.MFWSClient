@@ -71,4 +71,4 @@ jobs:
       run: dotnet pack ./MFaaP.MFWSClient/MFaaP.MFWSClient.csproj --configuration Release -p:Version=${{ env.versionNumber }}
   
     - name: Push with dotnet
-      run: dotnet nuget push ./MFaaP.MFWSClient/MFaaP.MFWSClient/bin/Release/MFaaP.MFWSClient.${{ env.versionNumber }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run: dotnet nuget push ./MFaaP.MFWSClient/bin/Release/MFaaP.MFWSClient.${{ env.versionNumber }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
