@@ -934,12 +934,12 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Based on M-Files API.
 		/// </summary>
-		public bool? RelativeBottomPaneHeight { get; set; }
+		public int? RelativeBottomPaneHeight { get; set; }
 
 		/// <summary>
 		/// Based on M-Files API.
 		/// </summary>
-		public bool? RelativeRightPaneWidth { get; set; }
+		public int? RelativeRightPaneWidth { get; set; }
 
 		/// <summary>
 		/// Based on M-Files API.

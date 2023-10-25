@@ -101,7 +101,7 @@ namespace MFaaP.MFWSClient
 			// Create the request, adding the mandatory items.
 			var tokenEndpoint = new Uri( pluginConfiguration.TokenEndpoint, uriKind: UriKind.Absolute );
 			var request = new RestSharp.RestRequest( tokenEndpoint.PathAndQuery, RestSharp.Method.Post );
-			request.AddParameter( new QueryParameter("code", code) );
+			request.AddParameter( "code", code);
 			request.AddParameter( "grant_type", pluginConfiguration.GrantType );
 			request.AddParameter( "redirect_uri", pluginConfiguration.GetAppropriateRedirectUri() );
 
