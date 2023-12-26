@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net472;net48;net60;net70;net80</TargetFrameworks>
+	<TargetFramework>netstandard2.0</TargetFramework>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 	
@@ -19,10 +19,6 @@
   <ItemGroup>
     <PackageReference Include="RestSharp" Version="108.0.2" />
   </ItemGroup>
-	<ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
-		<Reference Include="System.Web.dll" />
-		<Reference Include="System.Net.Http" Version="4.0.0.0" />
-	</ItemGroup>
   
   <PropertyGroup>
     <Authors>M-Files Corporation</Authors>
