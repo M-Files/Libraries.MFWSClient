@@ -115,11 +115,19 @@ namespace MFaaP.MFWSClient
 		}
 
 		/// <summary>
-		/// Attempts SSO (Single Sign On) authentication with the remote web server.
+		/// Generate a new client that use current user credentials.
 		/// </summary>
-		/// <param name="vaultId">The id of the vault to authenticate to.</param>
-		/// <param name="token">A cancellation token for the request.</param>
-		public async Task AuthenticateUsingSingleSignOnAsync(Guid vaultId, CancellationToken token = default)
+		protected virtual IRestClient GenerateClientForSingleSignOn()
+		{
+            return new RestSharpRestClient(new RestClientOptions { BaseUrl = this.BaseUrl, Credentials = CredentialCache.DefaultNetworkCredentials, UseDefaultCredentials = true });
+        }
+
+        /// <summary>
+        /// Attempts SSO (Single Sign On) authentication with the remote web server.
+        /// </summary>
+        /// <param name="vaultId">The id of the vault to authenticate to.</param>
+        /// <param name="token">A cancellation token for the request.</param>
+        public async Task AuthenticateUsingSingleSignOnAsync(Guid vaultId, CancellationToken token = default)
 		{
 			// Clear any current tokens.
 			this.ClearAuthenticationToken();
@@ -129,19 +137,22 @@ namespace MFaaP.MFWSClient
 			// Note: The vault Id in the QueryString indicates which vault to authenticate to.  This is optional if there is only one vault.
 			var request = new RestRequest("/WebServiceSSO.aspx?popup=1&vault=" + vaultId.ToString("D").ToUpper());
 
-			// Set the credentials of the request to be our current network credentials.
-			var credentials = base.RestClient.Options.Credentials;
-			var useDefaultCredentials = base.RestClient.Options.UseDefaultCredentials;
-            base.RestClient.Options.Credentials = CredentialCache.DefaultNetworkCredentials;
-			base.RestClient.Options.UseDefaultCredentials = true;
+            // We need another client to generate a session using our current network credentials.
+            var ssoClient = GenerateClientForSingleSignOn();
 
-			// Execute the request and store the response.
-			RestResponse response = await this.Get(request, token)
+            // Notify before we execute a request.
+            this.OnBeforeExecuteRequest(request);
+
+			// Execute the request.
+			var response = await ssoClient.ExecuteAsync(request, token)
 				.ConfigureAwait(false);
+
+			// Notify after the request.
+			this.OnAfterExecuteRequest(response);
 
 			// Save the response cookies in our persistent RestClient cookie container.
 			// Note: We should have at least one returned which is the ASP.NET session Id.
-			if(null != this.CookieContainer && null != this.BaseUrl)
+			if (null != this.CookieContainer && null != this.BaseUrl)
 				foreach(var cookie in this.CookieContainer.GetCookies(this.BaseUrl).Cast<Cookie>())
 				{
 					cookie.Expired = true;
@@ -155,10 +166,6 @@ namespace MFaaP.MFWSClient
 					this.CookieContainer.Add(this.BaseUrl, cookie);
 				}
 			}
-
-            // Set the credentials back.
-            base.RestClient.Options.Credentials = credentials;
-            base.RestClient.Options.UseDefaultCredentials = useDefaultCredentials;
         }
 
 		/// <summary>

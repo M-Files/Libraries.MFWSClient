@@ -31,6 +31,11 @@ namespace MFaaP.MFWSClient
 
         }
 
+		public RestSharpRestClient(RestClientOptions options)
+			: base(options)
+		{
+		}
+
 #if NETSTANDARD2_0_OR_GREATER
         public RestSharpRestClient(HttpClient httpClient, bool disposeHttpClient = false) 
 			: base(httpClient, disposeHttpClient)

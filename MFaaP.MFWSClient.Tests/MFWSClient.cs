@@ -123,6 +123,12 @@ namespace MFaaP.MFWSClient.Tests
 				// Base implementation.
 				base.OnAfterExecuteRequest(e);
 			}
-		}
+
+            protected override IRestClient GenerateClientForSingleSignOn()
+            {
+				// We use the current mock client
+				return RestClient;
+            }
+        }
 	}
 }
