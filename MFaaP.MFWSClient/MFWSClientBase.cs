@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
-using RestSharp.Serializers.Xml;
-using RestSharp.Serializers;
 
 namespace MFaaP.MFWSClient
 {
@@ -35,8 +32,6 @@ namespace MFaaP.MFWSClient
 			: base(options)
 		{
 		}
-
-#if NETSTANDARD2_0_OR_GREATER
         public RestSharpRestClient(HttpClient httpClient, bool disposeHttpClient = false) 
 			: base(httpClient, disposeHttpClient)
         {
@@ -47,8 +42,6 @@ namespace MFaaP.MFWSClient
         {
 
         }
-#endif
-
         public Task<RestResponse<T>> ExecuteAsync<T>(RestRequest request, CancellationToken cancellationToken = default)
 		{
 			return RestClientExtensions.ExecuteAsync<T>(this, request, request.Method, cancellationToken);
