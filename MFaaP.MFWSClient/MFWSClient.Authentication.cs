@@ -40,11 +40,7 @@ namespace MFaaP.MFWSClient
 				this.authenticationToken = value;
 
 				// Remove any existing default parameters.
-				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.XAuthenticationHttpHeaderName)
-					.ToArray())
-				{
-					this.DefaultParameters.RemoveParameter(parameter.Name, parameter.Type);
-				}
+				this.DefaultParameters.RemoveParameter(MFWSClient.XAuthenticationHttpHeaderName, ParameterType.HttpHeader);
 
 				// Add the new one.
 				if(null != this.authenticationToken)
@@ -78,11 +74,7 @@ namespace MFaaP.MFWSClient
 		public void ClearVaultHeader()
 		{
 			// Remove the authorisation header.
-			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.VaultHttpHeaderName)
-				.ToArray())
-			{
-				this.DefaultParameters.RemoveParameter(parameter.Name, parameter.Type);
-			}
+			this.DefaultParameters.RemoveParameter(MFWSClient.VaultHttpHeaderName, ParameterType.HttpHeader);
 		}
 
 		/// <summary>
@@ -107,11 +99,7 @@ namespace MFaaP.MFWSClient
 
 			// Remove the authorisation header.
 			if(null != this.DefaultParameters)
-				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
-					.ToArray())
-				{
-					this.DefaultParameters.RemoveParameter(parameter.Name, parameter.Type);
-				}
+				this.DefaultParameters.RemoveParameter(MFWSClient.AuthorizationHttpHeaderName, ParameterType.HttpHeader);
 		}
 
 		/// <summary>
