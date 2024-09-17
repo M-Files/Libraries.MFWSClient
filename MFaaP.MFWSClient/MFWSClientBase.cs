@@ -256,8 +256,9 @@ namespace MFaaP.MFWSClient
 			{
 				BaseUrl = baseUrl,
 				FollowRedirects = true,
-				PreAuthenticate = true
-			})
+				PreAuthenticate = true,
+                CookieContainer = new CookieContainer()
+            })
 		{
 		}
 
@@ -278,10 +279,7 @@ namespace MFaaP.MFWSClient
 		/// <param name="value">The value of the HTTP header.</param>
 		public void AddDefaultHeader(string name, string value)
 		{
-			try { this.RestClient.DefaultParameters.RemoveParameter(name, ParameterType.HttpHeader); }
-			catch{ }
-
-			this.RestClient.DefaultParameters.AddParameter(new HeaderParameter(name, value));
+            this.RestClient.DefaultParameters.ReplaceParameter(new HeaderParameter(name, value));
 		}
 
 		/// <summary>
@@ -290,14 +288,7 @@ namespace MFaaP.MFWSClient
 		public void ClearPresharedKey()
 		{
 			// Remove any existing accept-langauge header.
-			var existingHeaders = this.RestClient.DefaultParameters
-                .Where(p => p.Type == ParameterType.HttpHeader)
-				.Where(p => p.Name == MFWSClientBase.PresharedKeyHttpHeaderName)
-				.ToArray();
-			foreach (var existingHeader in existingHeaders)
-			{
-				this.RestClient.DefaultParameters.RemoveParameter(existingHeader.Name, existingHeader.Type);
-			}
+			this.RestClient.DefaultParameters.RemoveParameter(MFWSClientBase.PresharedKeyHttpHeaderName, ParameterType.HttpHeader);
 		}
 
 		/// <summary>
@@ -328,14 +319,7 @@ namespace MFaaP.MFWSClient
 		public void SetAcceptLanguage(string acceptLanguages)
 		{
 			// Remove any existing accept-langauge header.
-			var existingHeaders = this.RestClient.DefaultParameters
-                .Where(p => p.Type == ParameterType.HttpHeader)
-				.Where(p => p.Name == MFWSClientBase.AcceptLanguageHttpHeaderName)
-				.ToArray();
-			foreach (var existingHeader in existingHeaders)
-			{
-				this.RestClient.DefaultParameters.RemoveParameter(existingHeader.Name, existingHeader.Type);
-			}
+			this.RestClient.DefaultParameters.RemoveParameter(MFWSClientBase.AcceptLanguageHttpHeaderName, ParameterType.HttpHeader);
 
 			// Sanity.
 			if (null == acceptLanguages)
