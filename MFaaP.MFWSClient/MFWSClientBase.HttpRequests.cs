@@ -403,7 +403,7 @@ namespace MFaaP.MFWSClient
 
 			// Retrieve the current X-Extensions values (comma-separated) as an array.
 			// Need to handle various null/empty scenarios here.
-			var existingExtensions = ((request.Parameters ?? new ParametersCollection())
+			var existingExtensions = ((request.Parameters ?? new RequestParameters())
 										.FirstOrDefault(p =>
 											p.Type == ParameterType.HttpHeader
 											&& p.Name == MFWSClientBase.ExtensionsHttpHeaderName)?

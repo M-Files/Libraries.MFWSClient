@@ -36,7 +36,7 @@ namespace MFaaP.MFWSClient.Tests
             {
                 var options = new RestClientOptions();
                 options.BaseUrl = runner.RestClientMock.Object.BaseUrl;
-                runner.RestClientMock.Setup(m => m.Options).Returns(options);
+                runner.RestClientMock.Setup(m => m.Options).Returns(new ReadOnlyRestClientOptions(options));
                 var cookieContainer = new CookieContainer();
                 runner.RestClientMock.Setup(m => m.CookieContainer).Returns(cookieContainer);
             }
@@ -110,7 +110,7 @@ namespace MFaaP.MFWSClient.Tests
             {
                 var options = new RestClientOptions();
                 options.BaseUrl = runner.RestClientMock.Object.BaseUrl;
-                runner.RestClientMock.Setup(m => m.Options).Returns(options);
+                runner.RestClientMock.Setup(m => m.Options).Returns(new ReadOnlyRestClientOptions(options));
                 var cookieContainer = new CookieContainer();
                 runner.RestClientMock.Setup(m => m.CookieContainer).Returns(cookieContainer);
             }

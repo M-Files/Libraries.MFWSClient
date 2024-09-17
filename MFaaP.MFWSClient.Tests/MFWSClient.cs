@@ -89,7 +89,7 @@ namespace MFaaP.MFWSClient.Tests
 			// Ensure that we have a default parameter collection, if it's not been mocked already.
 			if (null == restClientMoq.Object.DefaultParameters)
 			{
-                var defaultParameters = new ParametersCollection();
+                var defaultParameters = new DefaultParameters(new ReadOnlyRestClientOptions(new RestClientOptions()));
                 restClientMoq
                     .SetupGet(p => p.DefaultParameters)
 					.Returns(defaultParameters);
