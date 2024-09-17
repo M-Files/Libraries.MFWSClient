@@ -43,7 +43,7 @@ namespace MFaaP.MFWSClient
 				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.XAuthenticationHttpHeaderName)
 					.ToArray())
 				{
-					this.DefaultParameters.RemoveParameter(parameter);
+					this.DefaultParameters.RemoveParameter(parameter.Name, parameter.Type);
 				}
 
 				// Add the new one.
@@ -81,7 +81,7 @@ namespace MFaaP.MFWSClient
 			foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.VaultHttpHeaderName)
 				.ToArray())
 			{
-				this.DefaultParameters.RemoveParameter(parameter);
+				this.DefaultParameters.RemoveParameter(parameter.Name, parameter.Type);
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace MFaaP.MFWSClient
 				foreach (var parameter in this.DefaultParameters.Where(p => p.Name == MFWSClient.AuthorizationHttpHeaderName)
 					.ToArray())
 				{
-					this.DefaultParameters.RemoveParameter(parameter);
+					this.DefaultParameters.RemoveParameter(parameter.Name, parameter.Type);
 				}
 		}
 

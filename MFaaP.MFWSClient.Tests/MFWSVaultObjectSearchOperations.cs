@@ -670,13 +670,12 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
+					return Task.FromResult
 					(
-						Mock.Of<RestResponse<Results<ObjectVersion>>>
-						(
-							m => m.Data == new Results<ObjectVersion>()
-						)
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
 					);
 				});
 
@@ -721,15 +720,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -772,15 +771,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -827,15 +826,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -878,15 +877,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -933,15 +932,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -984,15 +983,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1039,15 +1038,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1090,15 +1089,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1141,15 +1140,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1192,15 +1191,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1243,15 +1242,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1294,15 +1293,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1345,15 +1344,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1396,15 +1395,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1451,15 +1450,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -1502,15 +1501,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<Results<ObjectVersion>>>
-                        (
-                            m => m.Data == new Results<ObjectVersion>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<Results<ObjectVersion>>(new RestRequest())
+						{
+							Data = new Results<ObjectVersion>()
+						}
+					);
+				});
 
 			/* Act */
 

@@ -423,14 +423,14 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<ExtendedObjectVersion>>
-                        (
-                            m => m.Data == new ExtendedObjectVersion()
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<ExtendedObjectVersion>(new RestRequest())
+						{
+							Data = new ExtendedObjectVersion()
+						}
+					);
                 });
 
             // We also need to handle the upload file call or our tests will except.
@@ -439,17 +439,17 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<UploadInfo>>
-                        (
-                            m => m.Data == new UploadInfo()
-                            {
-                                UploadID = 1
-                            }
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<UploadInfo>(new RestRequest())
+						{
+							Data = new UploadInfo()
+							{
+								UploadID = 1
+							}
+						}
+					);
                 });
 
             /* Act */
@@ -498,14 +498,14 @@ namespace MFaaP.MFWSClient.Tests
                 })
                 // Return a mock response.
                 .Returns(() =>
-                {
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<ExtendedObjectVersion>>
-                        (
-                            m => m.Data == new ExtendedObjectVersion()
-                        )
-                    );
+				{
+					return Task.FromResult
+					(
+						new RestResponse<ExtendedObjectVersion>(new RestRequest())
+						{
+							Data = new ExtendedObjectVersion()
+						}
+					);
                 });
 
             // We also need to handle the upload file call or our tests will except.
@@ -514,17 +514,17 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<UploadInfo>>
-                        (
-                            m => m.Data == new UploadInfo()
-                            {
-                                UploadID = 1
-                            }
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<UploadInfo>(new RestRequest())
+						{
+							Data = new UploadInfo()
+							{
+								UploadID = 1
+							}
+						}
+					);
                 });
 
 
@@ -578,14 +578,14 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<ExtendedObjectVersion>>
-                        (
-                            m => m.Data == new ExtendedObjectVersion()
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<ExtendedObjectVersion>(new RestRequest())
+						{
+							Data = new ExtendedObjectVersion()
+						}
+					);
                 });
 
             // We also need to handle the upload file call or our tests will except.
@@ -594,17 +594,17 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<UploadInfo>>
-                        (
-                            m => m.Data == new UploadInfo()
-                            {
-                                UploadID = 1
-                            }
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<UploadInfo>(new RestRequest())
+						{
+							Data = new UploadInfo()
+							{
+								UploadID = 1
+							}
+						}
+					);
                 });
 
             /* Act */
@@ -657,10 +657,10 @@ namespace MFaaP.MFWSClient.Tests
                     //Return the mock object.
                     return Task.FromResult
                     (
-                        Mock.Of<RestResponse<ExtendedObjectVersion>>
-                        (
-                            m => m.Data == new ExtendedObjectVersion()
-                        )
+                        new RestResponse<ExtendedObjectVersion>(new RestRequest())
+                        {
+                            Data = new ExtendedObjectVersion()
+                        }
                     );
                 });
 
@@ -670,17 +670,17 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    //Return the mock object.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<UploadInfo>>
-                        (
-                            m => m.Data == new UploadInfo()
-                            {
-                                UploadID = 1
-                            }
-                        )
-                    );
+					//Return the mock object.
+					return Task.FromResult
+					(
+						new RestResponse<UploadInfo>(new RestRequest())
+						{
+							Data = new UploadInfo()
+							{
+								UploadID = 1
+							}
+						}
+					);
                 });
 
             /* Act */
@@ -830,14 +830,14 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<ExtendedObjectVersion>>
-                        (
-                            m => m.Data == new ExtendedObjectVersion()
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<ExtendedObjectVersion>(new RestRequest())
+						{
+							Data = new ExtendedObjectVersion()
+						}
+					);
                 });
 
 
@@ -881,14 +881,14 @@ namespace MFaaP.MFWSClient.Tests
                 // Return a mock response.
                 .Returns(() =>
                 {
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<ExtendedObjectVersion>>
-                        (
-                            m => m.Data == new ExtendedObjectVersion()
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<ExtendedObjectVersion>(new RestRequest())
+						{
+							Data = new ExtendedObjectVersion()
+						}
+					);
                 });
 
 

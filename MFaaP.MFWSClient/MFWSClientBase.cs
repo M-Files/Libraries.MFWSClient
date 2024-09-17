@@ -11,13 +11,13 @@ namespace MFaaP.MFWSClient
 	public interface IRestClient
 	{
 		CookieContainer CookieContainer { get; }
-		ParametersCollection DefaultParameters { get; }
+		DefaultParameters DefaultParameters { get; }
         Task<RestResponse> ExecuteAsync(RestRequest request, CancellationToken cancellationToken = default);
         Task<RestResponse<T>> ExecuteAsync<T>(RestRequest request, CancellationToken cancellationToken = default);
-        bool FollowRedirects { get; set; }
-		bool PreAuthenticate { get; set; }
-		RestClientOptions Options { get; }
-		Uri BaseUrl { get; set; }
+        bool FollowRedirects { get; }
+		bool PreAuthenticate { get; }
+		ReadOnlyRestClientOptions Options { get; }
+		Uri BaseUrl { get; }
 	}
 	public class RestSharpRestClient
 		: RestClient, IRestClient
@@ -25,7 +25,6 @@ namespace MFaaP.MFWSClient
         public RestSharpRestClient(Uri baseUri)
             : base(baseUri)
         {
-
         }
 
 		public RestSharpRestClient(RestClientOptions options)
@@ -47,21 +46,23 @@ namespace MFaaP.MFWSClient
 			return RestClientExtensions.ExecuteAsync<T>(this, request, request.Method, cancellationToken);
 		}
 
+		public CookieContainer CookieContainer
+		{
+			get => base.Options?.CookieContainer;
+		}
+
 		public Uri BaseUrl
 		{
 			get => base.Options?.BaseUrl;
-			set => base.Options.BaseUrl = value;
 		}
 
-        public bool FollowRedirects
+		public bool FollowRedirects
 		{
 			get => base.Options.FollowRedirects;
-			set => base.Options.FollowRedirects = value;
 		}
 		public bool PreAuthenticate
         {
             get => base.Options.PreAuthenticate;
-            set => base.Options.PreAuthenticate = value;
         }
     }
 	/// <summary>
@@ -115,7 +116,7 @@ namespace MFaaP.MFWSClient
         /// <summary>
         /// The default parameters for all http requests.
         /// </summary>
-        public ParametersCollection DefaultParameters
+        public DefaultParameters DefaultParameters
         {
             get { return this.RestClient.DefaultParameters; }
         }
@@ -215,8 +216,6 @@ namespace MFaaP.MFWSClient
 			// Set up the RestClient.
 			this.RestClient = restClient
 				?? throw new ArgumentNullException(nameof(restClient));
-            this.RestClient.FollowRedirects = true;
-            this.RestClient.PreAuthenticate = true;
 
             // Set up our sub-objects.
             this.ObjectSearchOperations = new MFWSVaultObjectSearchOperations(this);
@@ -245,26 +244,41 @@ namespace MFaaP.MFWSClient
         protected MFWSClientBase(string baseUrl)
             : this(new Uri(baseUrl))
         {
-        }
+		}
 
-        /// <summary>
-        /// Creates an MFWSClient pointing at the MFWA site.
-        /// </summary>
-        /// <param name="baseUrl">The base url of the MFWA (web access) site; note that this should be of the form
-        /// "http://localhost", not of the form "http://localhost/REST".</param>
-        protected MFWSClientBase(Uri baseUrl)
-            : this(new RestSharpRestClient(baseUrl))
-        {
-        }
-
-        /// <summary>
-        /// Adds a default header to requests.
-        /// </summary>
-        /// <param name="name">The name of the HTTP header.</param>
-        /// <param name="value">The value of the HTTP header.</param>
-        public void AddDefaultHeader(string name, string value)
+		/// <summary>
+		/// Creates an MFWSClient pointing at the MFWA site.
+		/// </summary>
+		/// <param name="baseUrl">The base url of the MFWA (web access) site; note that this should be of the form
+		/// "http://localhost", not of the form "http://localhost/REST".</param>
+		protected MFWSClientBase(Uri baseUrl)
+			: this(new RestClientOptions()
+			{
+				BaseUrl = baseUrl,
+				FollowRedirects = true,
+				PreAuthenticate = true
+			})
 		{
-			try { this.RestClient.DefaultParameters.RemoveParameter(name); }
+		}
+
+		/// <summary>
+		/// Creates an MFWSClient pointing at the MFWA site.
+		/// </summary>
+		/// <param name="baseUrl">The base url of the MFWA (web access) site; note that this should be of the form
+		/// "http://localhost", not of the form "http://localhost/REST".</param>
+		protected MFWSClientBase(RestClientOptions options)
+			: this(new RestSharpRestClient(options ?? new RestClientOptions()))
+		{
+		}
+
+		/// <summary>
+		/// Adds a default header to requests.
+		/// </summary>
+		/// <param name="name">The name of the HTTP header.</param>
+		/// <param name="value">The value of the HTTP header.</param>
+		public void AddDefaultHeader(string name, string value)
+		{
+			try { this.RestClient.DefaultParameters.RemoveParameter(name, ParameterType.HttpHeader); }
 			catch{ }
 
 			this.RestClient.DefaultParameters.AddParameter(new HeaderParameter(name, value));
@@ -282,7 +296,7 @@ namespace MFaaP.MFWSClient
 				.ToArray();
 			foreach (var existingHeader in existingHeaders)
 			{
-				this.RestClient.DefaultParameters.RemoveParameter(existingHeader);
+				this.RestClient.DefaultParameters.RemoveParameter(existingHeader.Name, existingHeader.Type);
 			}
 		}
 
@@ -320,7 +334,7 @@ namespace MFaaP.MFWSClient
 				.ToArray();
 			foreach (var existingHeader in existingHeaders)
 			{
-				this.RestClient.DefaultParameters.RemoveParameter(existingHeader);
+				this.RestClient.DefaultParameters.RemoveParameter(existingHeader.Name, existingHeader.Type);
 			}
 
 			// Sanity.

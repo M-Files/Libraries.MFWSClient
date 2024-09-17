@@ -126,16 +126,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<List<PropertyDef>>>
-                        (
-                            m => m.Data == new List<PropertyDef>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<List<PropertyDef>>(new RestRequest())
+						{
+							Data = new List<PropertyDef>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -178,16 +177,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<List<PropertyDef>>>
-                        (
-                            m => m.Data == new List<PropertyDef>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<List<PropertyDef>>(new RestRequest())
+						{
+							Data = new List<PropertyDef>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -230,16 +228,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<List<PropertyDef>>>
-                        (
-                            m => m.Data == new List<PropertyDef>()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<List<PropertyDef>>(new RestRequest())
+						{
+							Data = new List<PropertyDef>()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -282,14 +279,14 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<List<PropertyDef>>>
-                        (
-                            m => m.Data == new List<PropertyDef>()
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<List<PropertyDef>>(new RestRequest())
+						{
+							Data = new List<PropertyDef>()
+						}
+					);
 				});
 
 			/* Act */
@@ -337,15 +334,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<PropertyDef>>
-                        (
-                            m => m.Data == new PropertyDef()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<PropertyDef>(new RestRequest())
+						{
+							Data = new PropertyDef()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -388,15 +385,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<PropertyDef>>
-                        (
-                            m => m.Data == new PropertyDef()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<PropertyDef>(new RestRequest())
+						{
+							Data = new PropertyDef()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -439,15 +436,15 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<PropertyDef>>
-                        (
-                            m => m.Data == new PropertyDef()
-                        )
-                    );
-                });
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<PropertyDef>(new RestRequest())
+						{
+							Data = new PropertyDef()
+						}
+					);
+				});
 
 			/* Act */
 
@@ -490,14 +487,14 @@ namespace MFaaP.MFWSClient.Tests
 				// Return a mock response.
 				.Returns(() =>
 				{
-                    // Create the mock response.
-                    return Task.FromResult
-                    (
-                        Mock.Of<RestResponse<PropertyDef>>
-                        (
-                            m => m.Data == new PropertyDef()
-                        )
-                    );
+					// Create the mock response.
+					return Task.FromResult
+					(
+						new RestResponse<PropertyDef>(new RestRequest())
+						{
+							Data = new PropertyDef()
+						}
+					);
 				});
 
 			/* Act */

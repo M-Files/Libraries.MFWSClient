@@ -249,14 +249,14 @@ namespace MFaaP.MFWSClient.Tests
             if (null != this.ExpectedRequestBody)
 			{
                 // Get the body from the request.
-                var requestBody = (r.Parameters ?? new ParametersCollection())
+                var requestBody = (r.Parameters ?? new RequestParameters())
                     .FirstOrDefault(p => p.Type == ParameterType.RequestBody);
 				if (null == requestBody)
 					Assert.Fail("A request body was expected but none was provided.");
 
 				// Ensure the content type is correct.
 				Assert.AreEqual(
-					this.ExpectedRequestBody.Name,
+					this.ExpectedRequestBody.ContentType,
 					requestBody.ContentType);
 
 				// Ensure that the value is correct.
@@ -364,16 +364,15 @@ namespace MFaaP.MFWSClient.Tests
 		/// <inheritdoc />
 		public new Task<RestResponse<T>> HandleReturns(RestRequest r)
 		{
+			var result = new RestResponse<T>(r)
+			{
+				Data = this.ResponseData,
+				StatusCode = this.ResponseStatusCode,
+				ResponseUri = new Uri(r.Resource, UriKind.Relative)
+			};
+
 			// Create the mock response.
-			return Task.FromResult
-			(
-				Mock.Of<RestResponse<T>>
-				(
-					m => m.Data == this.ResponseData
-					&& m.StatusCode == this.ResponseStatusCode
-					&& m.ResponseUri == new Uri(r.Resource, UriKind.Relative)
-				)
-			);
+			return Task.FromResult(result);
 
 		}
 	}
