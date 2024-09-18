@@ -73,6 +73,7 @@ namespace MFaaP.MFWSClient.Tests
 			Assert.IsNotNull(client.ValueListItemOperations);
 			Assert.IsNotNull(client.ValueListOperations);
 			Assert.IsNotNull(client.WorkflowOperations);
+			Assert.IsNotNull(client.CookieContainer);
 		}
 
 		/// <summary>
