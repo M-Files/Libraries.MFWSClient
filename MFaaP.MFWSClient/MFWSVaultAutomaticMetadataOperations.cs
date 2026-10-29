@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -235,6 +236,65 @@ namespace MFaaP.MFWSClient
 		{
 			// Execute the async method.
 			return this.GetAutomaticMetadataAsync(objectTypeId: objectTypeId, temporaryFileIds: temporaryFileIds, token: token);
+		}
+
+		/// <summary>
+		/// Returns the IML metadata suggestions for the given uploaded files.
+		/// </summary>
+		/// <param name="uploads">The uploaded files (<see cref="MFWSVaultObjectFileOperations.UploadFiles(System.IO.FileInfo[])"/>).
+		/// Stateless uploads are sent by their file references, others by their upload IDs; the two cannot be mixed.</param>
+		/// <param name="objectTypeId">The type of the object type the metadata suggestions are for.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>An awaitable task for any metadata suggestions.</returns>
+		public Task<List<PropertyValueSuggestion>> GetAutomaticMetadataForUploadsAsync(
+			int objectTypeId = (int)MFBuiltInObjectType.MFBuiltInObjectTypeDocument,
+			CancellationToken token = default,
+			params UploadInfo[] uploads)
+		{
+			// Sanity.
+			if (null == uploads)
+				throw new ArgumentNullException(nameof(uploads));
+
+			// Build up the request.
+			var request = new AutomaticMetadataRequestInfo()
+			{
+				ObjectType = objectTypeId
+			};
+			var statelessUploads = uploads.Where(u => null != u && u.IsStateless()).ToList();
+			if (statelessUploads.Count > 0)
+			{
+				// The server identifies these by their file references and extensions.
+				if (statelessUploads.Count != uploads.Length)
+					throw new ArgumentException("Stateless uploads cannot be mixed with uploads identified by upload IDs.", nameof(uploads));
+				request.UploadedFiles = statelessUploads;
+			}
+			else
+			{
+				request.UploadIds = uploads.Where(u => null != u).Select(u => u.UploadID).ToList();
+			}
+
+			// Use the other overload.
+			return this.GetAutomaticMetadataAsync(request, token);
+		}
+
+		/// <summary>
+		/// Returns the IML metadata suggestions for the given uploaded files.
+		/// </summary>
+		/// <param name="uploads">The uploaded files (<see cref="MFWSVaultObjectFileOperations.UploadFiles(System.IO.FileInfo[])"/>).
+		/// Stateless uploads are sent by their file references, others by their upload IDs; the two cannot be mixed.</param>
+		/// <param name="objectTypeId">The type of the object type the metadata suggestions are for.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Any metadata suggestions.</returns>
+		public List<PropertyValueSuggestion> GetAutomaticMetadataForUploads(
+			int objectTypeId = (int)MFBuiltInObjectType.MFBuiltInObjectTypeDocument,
+			CancellationToken token = default,
+			params UploadInfo[] uploads)
+		{
+			// Execute the async method.
+			return this.GetAutomaticMetadataForUploadsAsync(objectTypeId, token, uploads)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
 		}
 
 		#endregion

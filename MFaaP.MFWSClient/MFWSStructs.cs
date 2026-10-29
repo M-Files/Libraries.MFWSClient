@@ -441,8 +441,48 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Temporary upload ID given by the server.
 		/// </summary>
+		/// <remarks>
+		/// Zero for a stateless upload, which is identified by <see cref="FileRef"/> instead.
+		/// MFWS returns null for it, which is read as zero so that the type stays compatible with existing callers.
+		/// </remarks>
+		[System.Text.Json.Serialization.JsonConverter(typeof(NullAsZeroInt32JsonConverter))]
 		public int UploadID { get; set; }
-        
+
+		/// <summary>
+		/// The file reference of a stateless upload, which any server instance can use. Set instead of <see cref="UploadID"/>.
+		/// </summary>
+		public string FileRef { get; set; }
+
+		/// <summary>
+		/// The MD5 checksum of the whole content of a stateless upload as 32 hexadecimal characters.
+		/// Committing a <see cref="FileRef"/> requires it.
+		/// </summary>
+		/// <remarks>
+		/// Returned by the server when it receives the whole content in one request.
+		/// For content uploaded in blocks the client calculates it.
+		/// </remarks>
+		public string Checksum { get; set; }
+
+		/// <summary>
+		/// The maximum size of a block in bytes when a stateless upload is uploaded in blocks.
+		/// Returned when a stateless upload is started.
+		/// </summary>
+		public long? MaxBlockSize { get; set; }
+
+		/// <summary>
+		/// True if the blocks of a stateless upload must be uploaded in order, one at a time.
+		/// Returned when a stateless upload is started.
+		/// </summary>
+		public bool? RequireSequentialBlocks { get; set; }
+
+		/// <summary>
+		/// True if the upload is a stateless upload, identified by its <see cref="FileRef"/> instead of an <see cref="UploadID"/>.
+		/// </summary>
+		public bool IsStateless()
+		{
+			return false == string.IsNullOrEmpty(this.FileRef);
+		}
+
         /// <summary>
         /// File name without extension.
         /// </summary>
@@ -457,10 +497,23 @@ namespace MFaaP.MFWSClient
         /// File size.
         /// </summary>
         public long Size { get; set; }
-        
+
     }
 
-    
+	/// <summary>
+	/// The capabilities of the server, returned by /REST/server/capabilities.
+	/// </summary>
+	/// <remarks>Only the capabilities used by this library are included.</remarks>
+	public class ServerVaultCapabilities
+	{
+		/// <summary>
+		/// True if the server supports the stateless file upload, which identifies the uploads by file references
+		/// (<see cref="UploadInfo.FileRef"/>) instead of upload sessions, so that the requests need no sticky session.
+		/// </summary>
+		public bool FileUploadStatelessSupported { get; set; }
+	}
+
+
 
     /// <summary>
     /// A &#39;typed value&#39; represents a value, such as text, number, date or lookup item.
@@ -2906,6 +2959,12 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <remarks>May be empty.</remarks>
 		public List<int> UploadIds { get; set; } = new List<int>();
+
+		/// <summary>
+		/// Files uploaded with the stateless upload. Their <see cref="UploadInfo.FileRef"/> and <see cref="UploadInfo.Extension"/> are used.
+		/// </summary>
+		/// <remarks>May be null. Cannot be combined with <see cref="UploadIds"/>.</remarks>
+		public List<UploadInfo> UploadedFiles { get; set; }
 
 		/// <summary>
 		/// Array of object's current property values.

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -412,6 +414,11 @@ namespace MFaaP.MFWSClient
                 request.AddFile(file.Name, file.FullName);
             }
 
+			// Ask for file references instead of upload IDs if the server supports it.
+			// The server returns the file references with the checksums of the content.
+			await this.MFWSClient.AddStatelessUploadParameterIfSupportedAsync(request, token)
+				.ConfigureAwait(false);
+
 			// If we are only uploading one file then
 			// the server responds with a single item, not an array.
 			List<UploadInfo> data = new List<UploadInfo>();
@@ -732,6 +739,10 @@ namespace MFaaP.MFWSClient
 			var fileInfo = new System.IO.FileInfo(filePath);
 			request.AddFile(fileInfo.Name, fileInfo.FullName);
 
+			// Upload statelessly if the server supports it. The server commits the content with the checksum it calculates.
+			await this.MFWSClient.AddStatelessUploadParameterIfSupportedAsync(request, token)
+				.ConfigureAwait(false);
+
 			// Execute the request.
 			var response = await this.MFWSClient.Put<ExtendedObjectVersion>(request, token)
 				.ConfigureAwait(false);
@@ -935,6 +946,11 @@ namespace MFaaP.MFWSClient
 			var request = new RestRequest("/REST/files/upload.aspx");
 			request.AddJsonBody(uploadInfo);
 
+			// Ask for a file reference instead of an upload ID if the server supports it. The response then has
+			// the FileRef, MaxBlockSize and RequireSequentialBlocks; upload the blocks with UploadStatelessFileBlockAsync.
+			await this.MFWSClient.AddStatelessUploadParameterIfSupportedAsync(request, token)
+				.ConfigureAwait(false);
+
 			// Execute the request.
 			var response = await this.MFWSClient.Post<UploadInfo>(request, token)
 				.ConfigureAwait(false);
@@ -1027,6 +1043,75 @@ namespace MFaaP.MFWSClient
 
 		}
 
+		/// <summary>
+		/// Uploads a block of a stateless upload started with <see cref="UploadTemporaryFileBlockBeginAsync(UploadInfo, CancellationToken)"/>.
+		/// The last block ends the upload.
+		/// </summary>
+		/// <param name="fileRef">The file reference returned when the upload was started (<see cref="UploadInfo.FileRef"/>).</param>
+		/// <param name="blockIndex">The zero-based index of the block.</param>
+		/// <param name="blockCount">The number of blocks in the upload.</param>
+		/// <param name="blockSize">The size of every block but the last, at most <see cref="UploadInfo.MaxBlockSize"/>.</param>
+		/// <param name="block">The data of the block.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Information on the upload.</returns>
+		/// <remarks>
+		/// Every block but the last must be of the same size. If <see cref="UploadInfo.RequireSequentialBlocks"/> was returned,
+		/// upload the blocks in order, one at a time. Committing the file reference requires the MD5 checksum of the whole content
+		/// (<see cref="UploadInfo.Checksum"/>), which the caller calculates.
+		/// </remarks>
+		public async Task<UploadInfo> UploadStatelessFileBlockAsync(string fileRef, long blockIndex, long blockCount, long blockSize, byte[] block,
+			CancellationToken token = default)
+		{
+			// Sanity.
+			if (string.IsNullOrEmpty(fileRef))
+				throw new ArgumentException("The file reference must be provided.", nameof(fileRef));
+			if (null == block)
+				throw new ArgumentNullException(nameof(block));
+			if (blockIndex < 0 || blockIndex >= blockCount)
+				throw new ArgumentOutOfRangeException(nameof(blockIndex), "The block index must be between zero and the number of the blocks.");
+			if (blockSize <= 0)
+				throw new ArgumentOutOfRangeException(nameof(blockSize), "The block size must be greater than zero.");
+
+			// Create the request.
+			var request = new RestRequest($"/REST/files/fileref/{Uri.EscapeDataString(fileRef)}/upload.aspx");
+
+			// Add the binary data to the request body.
+			request.AddParameter("application/octet-stream", block, ParameterType.RequestBody);
+
+			// Identify the block. The chunk numbers start from one.
+			request.AddQueryParameter("resumableChunkNumber", (blockIndex + 1).ToString(CultureInfo.InvariantCulture));
+			request.AddQueryParameter("resumableTotalChunks", blockCount.ToString(CultureInfo.InvariantCulture));
+			request.AddQueryParameter("resumableChunkSize", blockSize.ToString(CultureInfo.InvariantCulture));
+
+			// Execute the request.
+			var response = await this.MFWSClient.Post<UploadInfo>(request, token)
+				.ConfigureAwait(false);
+
+			// Return the deserialised response data.
+			return response.Data;
+		}
+
+		/// <summary>
+		/// Uploads a block of a stateless upload started with <see cref="UploadTemporaryFileBlockBegin(FileInfo, CancellationToken)"/>.
+		/// The last block ends the upload.
+		/// </summary>
+		/// <param name="fileRef">The file reference returned when the upload was started (<see cref="UploadInfo.FileRef"/>).</param>
+		/// <param name="blockIndex">The zero-based index of the block.</param>
+		/// <param name="blockCount">The number of blocks in the upload.</param>
+		/// <param name="blockSize">The size of every block but the last, at most <see cref="UploadInfo.MaxBlockSize"/>.</param>
+		/// <param name="block">The data of the block.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Information on the upload.</returns>
+		public UploadInfo UploadStatelessFileBlock(string fileRef, long blockIndex, long blockCount, long blockSize, byte[] block,
+			CancellationToken token = default)
+		{
+			// Execute the async method.
+			return this.UploadStatelessFileBlockAsync(fileRef, blockIndex, blockCount, blockSize, block, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
+		}
+
 		#endregion
 
 		#region Complete/commit temporary file
@@ -1043,6 +1128,11 @@ namespace MFaaP.MFWSClient
 			// Sanity.
 			if (null == uploadInfo)
 				throw new ArgumentNullException(nameof(uploadInfo));
+
+			// A stateless upload is ended by its last block, and any server instance can use it. Nothing to commit.
+			if (uploadInfo.IsStateless())
+				return uploadInfo;
+
 			if (0 >= uploadInfo.Size)
 				throw new ArgumentException("The file must have a size.", nameof(uploadInfo));
 
@@ -1119,6 +1209,11 @@ namespace MFaaP.MFWSClient
 			};
 			uploadInfo = await this.UploadTemporaryFileBlockBeginAsync(uploadInfo, token);
 
+			// A stateless upload is identified by its file reference instead of an upload ID.
+			if (uploadInfo.IsStateless())
+				return await this.UploadStatelessFileInBlocksAsync(uploadInfo, fileToUpload, blockSize, token)
+					.ConfigureAwait(false);
+
 			// Iterate over the file blocks and upload them.
 			long offset = 0;
 			long totalSizeInBytes = fileToUpload.Length;
@@ -1146,6 +1241,73 @@ namespace MFaaP.MFWSClient
 			// Return the upload information.
 			return uploadInfo;
 
+		}
+
+		/// <summary>
+		/// Uploads the content of a started stateless upload in blocks and sets the checksum of the content.
+		/// </summary>
+		/// <param name="uploadInfo">The started upload, with its file reference.</param>
+		/// <param name="fileToUpload">The content.</param>
+		/// <param name="blockSize">The requested block size (bytes).</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>The upload information with the checksum of the content.</returns>
+		private async Task<UploadInfo> UploadStatelessFileInBlocksAsync(
+			UploadInfo uploadInfo,
+			Stream fileToUpload,
+			int blockSize,
+			CancellationToken token)
+		{
+			// Every block but the last must be of the same size, at most the size the server allows.
+			long totalSizeInBytes = fileToUpload.Length;
+			long size = blockSize;
+			if (uploadInfo.MaxBlockSize.HasValue && uploadInfo.MaxBlockSize.Value > 0 && uploadInfo.MaxBlockSize.Value < size)
+				size = uploadInfo.MaxBlockSize.Value;
+			long blockCount = (totalSizeInBytes + size - 1) / size;
+
+			// Upload the blocks in order, one at a time, and calculate the checksum of the content
+			// while reading them. Committing the file reference requires the checksum.
+			using (var md5 = MD5.Create())
+			{
+				for (long blockIndex = 0; blockIndex < blockCount; blockIndex++)
+				{
+					// Read the block. Only the last block may be shorter.
+					var block = new byte[(int)Math.Min(size, totalSizeInBytes - blockIndex * size)];
+					await ReadExactlyAsync(fileToUpload, block, block.Length, token)
+						.ConfigureAwait(false);
+					md5.TransformBlock(block, 0, block.Length, null, 0);
+
+					// Upload the block.
+					await this.UploadStatelessFileBlockAsync(uploadInfo.FileRef, blockIndex, blockCount, size, block, token)
+						.ConfigureAwait(false);
+				}
+				md5.TransformFinalBlock(new byte[0], 0, 0);
+
+				// The server expects 32 hexadecimal characters.
+				uploadInfo.Checksum = BitConverter.ToString(md5.Hash).Replace("-", "").ToLowerInvariant();
+			}
+
+			// Return the upload information.
+			return uploadInfo;
+		}
+
+		/// <summary>
+		/// Reads exactly the requested number of bytes from a stream.
+		/// </summary>
+		/// <param name="stream">The stream.</param>
+		/// <param name="buffer">The buffer to read into, from its start.</param>
+		/// <param name="count">The number of bytes to read.</param>
+		/// <param name="token">A cancellation token.</param>
+		private static async Task ReadExactlyAsync(Stream stream, byte[] buffer, int count, CancellationToken token)
+		{
+			var read = 0;
+			while (read < count)
+			{
+				var readNow = await stream.ReadAsync(buffer, read, count - read, token)
+					.ConfigureAwait(false);
+				if (readNow == 0)
+					throw new EndOfStreamException("The stream ended before its length.");
+				read += readNow;
+			}
 		}
 
 		/// <summary>
