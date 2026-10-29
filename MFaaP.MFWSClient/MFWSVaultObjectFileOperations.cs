@@ -20,7 +20,30 @@ namespace MFaaP.MFWSClient
             : base(client)
         {
         }
-		
+
+		/// <summary>
+		/// Gets the title of a file name: the part before its last dot, or the whole name if it has no dot.
+		/// </summary>
+		/// <param name="fileName">The file name, e.g. "report.pdf".</param>
+		/// <returns>The title, e.g. "report".</returns>
+		internal static string GetFileTitle(string fileName)
+		{
+			var dot = fileName?.LastIndexOf('.') ?? -1;
+			return dot < 0 ? fileName ?? "" : fileName.Substring(0, dot);
+		}
+
+		/// <summary>
+		/// Gets the extension of a file name without the dot, as M-Files expects it: the part after its last dot,
+		/// or an empty string if it has no dot.
+		/// </summary>
+		/// <param name="fileName">The file name, e.g. "report.pdf".</param>
+		/// <returns>The extension, e.g. "pdf".</returns>
+		internal static string GetFileExtension(string fileName)
+		{
+			var dot = fileName?.LastIndexOf('.') ?? -1;
+			return dot < 0 ? "" : fileName.Substring(dot + 1);
+		}
+
 		#region Downloading files
 
 		/// <summary>
@@ -438,7 +461,7 @@ namespace MFaaP.MFWSClient
                 var uploadInfo = data[i];
                 var file = files[i];
                 uploadInfo.Title = file.Name;
-                uploadInfo.Extension = file.Extension.Substring(1); // Remove the dot.
+                uploadInfo.Extension = GetFileExtension(file.Name);
                 uploadInfo.Size = file.Length;
             }
 
@@ -906,9 +929,7 @@ namespace MFaaP.MFWSClient
 			// Add the request body.
 			var uploadInfo = new UploadInfo()
 			{
-				Extension = fileInfo.Extension.StartsWith(".")
-					? fileInfo.Extension.Substring(1) // Remove the dot.
-					: fileInfo.Extension,
+				Extension = GetFileExtension(fileInfo.Name),
 				Size = fileInfo.Length,
 				Title = fileInfo.Name
 			};
@@ -974,28 +995,62 @@ namespace MFaaP.MFWSClient
 		/// <param name="block">The binary data for the chunk.</param>
 		/// <param name="token">A cancellation token for the request.</param>
 		/// <returns>Information on the upload.</returns>
-		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
-		public async Task<UploadInfo> UploadTemporaryFileBlockAsync(int uploadId, long totalSizeInBytes, long offset, byte[] block,
+		/// <remarks>
+		/// The block size is taken from the length of <paramref name="block"/>, so every block must be of the same size.
+		/// To upload a shorter last block, use the overload that takes the block size.
+		/// THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.
+		/// </remarks>
+		public Task<UploadInfo> UploadTemporaryFileBlockAsync(int uploadId, long totalSizeInBytes, long offset, byte[] block,
 			CancellationToken token = default)
 		{
+			// Sanity.
+			if (null == block)
+				throw new ArgumentNullException(nameof(block));
+
+			// Use the other overload.
+			return this.UploadTemporaryFileBlockAsync(uploadId, totalSizeInBytes, offset, block, block.Length, token);
+		}
+
+		/// <summary>
+		/// Uploads a block of data to a temporary file.
+		/// </summary>
+		/// <param name="uploadId">The ID of the temporary upload returned from <see cref="UploadTemporaryFileBlockBeginAsync"/>.</param>
+		/// <param name="totalSizeInBytes">The total size of the file (in bytes).</param>
+		/// <param name="offset">The offset (in bytes) to start writing this chunk. Must be a multiple of <paramref name="blockSize"/>.</param>
+		/// <param name="block">The binary data for the chunk. Only the last block may be shorter than <paramref name="blockSize"/>.</param>
+		/// <param name="blockSize">The size (in bytes) of every block but the last.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Information on the upload.</returns>
+		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
+		public async Task<UploadInfo> UploadTemporaryFileBlockAsync(int uploadId, long totalSizeInBytes, long offset, byte[] block,
+			int blockSize, CancellationToken token = default)
+		{
+			// Sanity.
+			if (null == block)
+				throw new ArgumentNullException(nameof(block));
+			if (blockSize <= 0)
+				throw new ArgumentOutOfRangeException(nameof(blockSize), "The block size must be greater than zero.");
+			if (block.Length > blockSize)
+				throw new ArgumentException("The block cannot be larger than the block size.", nameof(block));
+			if (offset < 0 || offset >= totalSizeInBytes || offset % blockSize != 0)
+				throw new ArgumentOutOfRangeException(nameof(offset), "The offset must be a multiple of the block size within the file.");
+
 			// Create the request.
 			var request = new RestRequest($"/REST/files/upload/{uploadId}.aspx");
 
-			// Calculate the block data.
-			var chunkSize = block.Length; // All chunks must be the same size, aside from the last one.
-			var resumableChunkNumber = offset / chunkSize + 1; // Chunks start at 1.
-			var totalChunks = (totalSizeInBytes / chunkSize) + 1; // Chunks start at 1.
+			// Calculate the block data. All chunks must be the same size, aside from the last one.
+			var resumableChunkNumber = offset / blockSize + 1; // Chunks start at 1.
+			var totalChunks = (totalSizeInBytes + blockSize - 1) / blockSize; // The last chunk may be shorter.
 
 			// Add the binary data to the request body.
 			request.AddParameter("application/octet-stream", block, ParameterType.RequestBody);
 
 			// Add the querystring arguments.
+			// The server calculates the offset of the chunk from its number and the chunk size,
+			// and commits the upload after the last chunk.
 			request.AddQueryParameter("resumableChunkNumber", resumableChunkNumber.ToString());
 			request.AddQueryParameter("resumableTotalChunks", totalChunks.ToString());
-			if (resumableChunkNumber > 0)
-			{
-				request.AddQueryParameter("resumableChunkSize", chunkSize.ToString());
-			}
+			request.AddQueryParameter("resumableChunkSize", blockSize.ToString());
 
 			// Execute the request.
 			var response = await this.MFWSClient.Post<UploadInfo>(request, token)
@@ -1025,6 +1080,27 @@ namespace MFaaP.MFWSClient
 				.GetAwaiter()
 				.GetResult();
 
+		}
+
+		/// <summary>
+		/// Uploads a block of data to a temporary file.
+		/// </summary>
+		/// <param name="uploadId">The ID of the temporary upload returned from <see cref="UploadTemporaryFileBlockBeginAsync"/>.</param>
+		/// <param name="totalSizeInBytes">The total size of the file (in bytes).</param>
+		/// <param name="offset">The offset (in bytes) to start writing this chunk. Must be a multiple of <paramref name="blockSize"/>.</param>
+		/// <param name="block">The binary data for the chunk. Only the last block may be shorter than <paramref name="blockSize"/>.</param>
+		/// <param name="blockSize">The size (in bytes) of every block but the last.</param>
+		/// <param name="token">A cancellation token for the request.</param>
+		/// <returns>Information on the upload.</returns>
+		/// <remarks>THIS METHOD IS NOT DOCUMENTED SO DO NOT USE IN PRODUCTION ENVIRONMENTS.</remarks>
+		public UploadInfo UploadTemporaryFileBlock(int uploadId, long totalSizeInBytes, long offset, byte[] block,
+			int blockSize, CancellationToken token = default)
+		{
+			// Execute the async method.
+			return this.UploadTemporaryFileBlockAsync(uploadId, totalSizeInBytes, offset, block, blockSize, token)
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult();
 		}
 
 		#endregion
@@ -1109,15 +1185,11 @@ namespace MFaaP.MFWSClient
 			// Start the upload.
 			var uploadInfo = new UploadInfo()
 			{
-				Title = newFileName.Contains(".")
-					? newFileName.Substring(0, newFileName.LastIndexOf("."))
-					: newFileName,
-				Extension = newFileName.Contains(".")
-					? newFileName.Substring(newFileName.LastIndexOf("."))
-					: "",
+				Title = GetFileTitle(newFileName),
+				Extension = GetFileExtension(newFileName),
 				Size = fileToUpload.Length
 			};
-			uploadInfo = await this.UploadTemporaryFileBlockBeginAsync(uploadInfo, token);
+			uploadInfo.UploadID = (await this.UploadTemporaryFileBlockBeginAsync(uploadInfo, token)).UploadID;
 
 			// Iterate over the file blocks and upload them.
 			long offset = 0;
@@ -1125,18 +1197,24 @@ namespace MFaaP.MFWSClient
 			if (blockSize > totalSizeInBytes)
 				blockSize = (int)totalSizeInBytes;
 
-			var buffer = new byte[blockSize];
 			do
 			{
-				// Read the data from the stream.
-				var bytesRead = await fileToUpload.ReadAsync(buffer, 0, blockSize, token);
+				// Read the block from the stream. Only the last block may be shorter.
+				var block = new byte[(int)Math.Min(blockSize, totalSizeInBytes - offset)];
+				var read = 0;
+				while (read < block.Length)
+				{
+					var readNow = await fileToUpload.ReadAsync(block, read, block.Length - read, token);
+					if (readNow == 0)
+						throw new EndOfStreamException("The stream ended before its length.");
+					read += readNow;
+				}
 
-				// Upload the block.
-				var ui = await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, buffer, token);
-				uploadInfo = ui;
+				// Upload the block. The response has no title or extension, so the upload info is kept.
+				await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, block, blockSize, token);
 
 				// Move onwards.
-				offset += bytesRead;
+				offset += block.Length;
 			} while (offset < totalSizeInBytes);
 
 			// Commit the file.
