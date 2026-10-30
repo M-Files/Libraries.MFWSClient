@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -109,7 +108,7 @@ namespace MFaaP.MFWSClient.Tests
 
 		/// <summary>
 		/// Ensures that <see cref="MFaaP.MFWSClient.MFWSVaultObjectFileOperations.UploadFilesAsync(FileInfo[])"/>
-		/// asks for file references when the server supports the stateless upload, and keeps the returned file reference and checksum.
+		/// asks for file references when the server supports the stateless upload, and keeps the returned file reference.
 		/// </summary>
 		[TestMethod]
 		public async Task UploadFilesAsync_Supported_AsksForFileReferences()
@@ -118,8 +117,7 @@ namespace MFaaP.MFWSClient.Tests
 			var runner = new RestApiTestRunner<UploadInfo>(Method.Post, "/REST/files.aspx?statelessUpload=true");
 			runner.ResponseData = new UploadInfo()
 			{
-				FileRef = "ref",
-				Checksum = "0123456789abcdef0123456789abcdef"
+				FileRef = "ref"
 			};
 			SetUpCapabilities(runner.RestClientMock, new ServerVaultCapabilities() { FileUploadStatelessSupported = true });
 			var file = CreateTemporaryFile(new byte[] { 1, 2, 3 });
@@ -134,7 +132,6 @@ namespace MFaaP.MFWSClient.Tests
 				Assert.IsTrue(uploads[0].IsStateless());
 				Assert.AreEqual(0, uploads[0].UploadID);
 				Assert.AreEqual("ref", uploads[0].FileRef);
-				Assert.AreEqual("0123456789abcdef0123456789abcdef", uploads[0].Checksum);
 				Assert.AreEqual(3, uploads[0].Size);
 			}
 			finally
@@ -237,7 +234,7 @@ namespace MFaaP.MFWSClient.Tests
 
 		/// <summary>
 		/// Ensures that <see cref="MFaaP.MFWSClient.MFWSVaultObjectFileOperations.UploadTemporaryFileInBlocksAsync(string, Stream, CancellationToken, int)"/>
-		/// uploads a stateless upload in blocks of the same size, at most the maximum block size, and sets the MD5 checksum of the content.
+		/// uploads a stateless upload in blocks of the same size, at most the maximum block size.
 		/// </summary>
 		[TestMethod]
 		public async Task UploadTemporaryFileInBlocksAsync_Stateless()
@@ -285,12 +282,8 @@ namespace MFaaP.MFWSClient.Tests
 				CollectionAssert.AreEqual(content.Skip(i * 4).Take(expectedBlockSizes[i]).ToArray(), body);
 			}
 
-			// The upload has the file reference and the checksum of the content.
-			string expectedChecksum;
-			using (var md5 = MD5.Create())
-				expectedChecksum = BitConverter.ToString(md5.ComputeHash(content)).Replace("-", "").ToLowerInvariant();
+			// The upload has the file reference.
 			Assert.AreEqual("a/b", upload.FileRef);
-			Assert.AreEqual(expectedChecksum, upload.Checksum);
 			Assert.AreEqual(content.Length, upload.Size);
 		}
 
@@ -379,7 +372,7 @@ namespace MFaaP.MFWSClient.Tests
 		public void UploadInfo_StatelessResponse_Deserializes()
 		{
 			var json = "{\"UploadID\":null,\"FileRef\":\"ref\",\"MaxBlockSize\":4194304,\"RequireSequentialBlocks\":true,"
-				+ "\"Checksum\":null,\"Title\":\"test\",\"Extension\":\"txt\",\"Size\":10,\"FileInformationType\":0}";
+				+ "\"Title\":\"test\",\"Extension\":\"txt\",\"Size\":10,\"FileInformationType\":0}";
 			var serializer = new RestSharp.Serializers.Json.SystemTextJsonSerializer();
 			var upload = serializer.Deserialize<UploadInfo>(new RestResponse() { Content = json });
 			Assert.AreEqual(0, upload.UploadID);

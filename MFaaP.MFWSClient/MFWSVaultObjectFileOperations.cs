@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using RestSharp;
@@ -372,8 +371,7 @@ namespace MFaaP.MFWSClient
 		/// </summary>
 		/// <remarks>
 		/// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
-		/// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
-		/// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+		/// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>), which any server instance can use. Otherwise it is identified by an upload ID
 		/// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
 		/// when creating an object or adding the files to an object.
 		/// </remarks>
@@ -389,8 +387,7 @@ namespace MFaaP.MFWSClient
         /// </summary>
         /// <remarks>
         /// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
-        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
-        /// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>), which any server instance can use. Otherwise it is identified by an upload ID
         /// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
         /// when creating an object or adding the files to an object.
         /// </remarks>
@@ -410,8 +407,7 @@ namespace MFaaP.MFWSClient
         /// </summary>
         /// <remarks>
         /// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
-        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
-        /// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>), which any server instance can use. Otherwise it is identified by an upload ID
         /// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
         /// when creating an object or adding the files to an object.
         /// </remarks>
@@ -436,7 +432,7 @@ namespace MFaaP.MFWSClient
             }
 
 			// Ask for file references instead of upload IDs if the server supports it.
-			// The server returns the file references with the checksums of the content.
+			// The server returns the file references.
 			await this.MFWSClient.AddStatelessUploadParameterIfSupportedAsync(request, token)
 				.ConfigureAwait(false);
 
@@ -480,8 +476,7 @@ namespace MFaaP.MFWSClient
         /// </summary>
         /// <remarks>
         /// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
-        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
-        /// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>), which any server instance can use. Otherwise it is identified by an upload ID
         /// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
         /// when creating an object or adding the files to an object.
         /// </remarks>
@@ -767,7 +762,7 @@ namespace MFaaP.MFWSClient
 			var fileInfo = new System.IO.FileInfo(filePath);
 			request.AddFile(fileInfo.Name, fileInfo.FullName);
 
-			// Upload statelessly if the server supports it. The server commits the content with the checksum it calculates.
+			// Upload statelessly if the server supports it.
 			await this.MFWSClient.AddStatelessUploadParameterIfSupportedAsync(request, token)
 				.ConfigureAwait(false);
 
@@ -1084,8 +1079,7 @@ namespace MFaaP.MFWSClient
 		/// <returns>Information on the upload.</returns>
 		/// <remarks>
 		/// Every block but the last must be of the same size. If <see cref="UploadInfo.RequireSequentialBlocks"/> was returned,
-		/// upload the blocks in order, one at a time. Committing the file reference requires the MD5 checksum of the whole content
-		/// (<see cref="UploadInfo.Checksum"/>), which the caller calculates.
+		/// upload the blocks in order, one at a time.
 		/// </remarks>
 		public async Task<UploadInfo> UploadStatelessFileBlockAsync(string fileRef, long blockIndex, long blockCount, long blockSize, byte[] block,
 			CancellationToken token = default)
@@ -1276,13 +1270,13 @@ namespace MFaaP.MFWSClient
 		}
 
 		/// <summary>
-		/// Uploads the content of a started stateless upload in blocks and sets the checksum of the content.
+		/// Uploads the content of a started stateless upload in blocks.
 		/// </summary>
 		/// <param name="uploadInfo">The started upload, with its file reference.</param>
 		/// <param name="fileToUpload">The content.</param>
 		/// <param name="blockSize">The requested block size (bytes).</param>
 		/// <param name="token">A cancellation token for the request.</param>
-		/// <returns>The upload information with the checksum of the content.</returns>
+		/// <returns>The upload information.</returns>
 		private async Task<UploadInfo> UploadStatelessFileInBlocksAsync(
 			UploadInfo uploadInfo,
 			Stream fileToUpload,
@@ -1296,26 +1290,17 @@ namespace MFaaP.MFWSClient
 				size = uploadInfo.MaxBlockSize.Value;
 			long blockCount = (totalSizeInBytes + size - 1) / size;
 
-			// Upload the blocks in order, one at a time, and calculate the checksum of the content
-			// while reading them. Committing the file reference requires the checksum.
-			using (var md5 = MD5.Create())
+			// Upload the blocks in order, one at a time.
+			for (long blockIndex = 0; blockIndex < blockCount; blockIndex++)
 			{
-				for (long blockIndex = 0; blockIndex < blockCount; blockIndex++)
-				{
-					// Read the block. Only the last block may be shorter.
-					var block = new byte[(int)Math.Min(size, totalSizeInBytes - blockIndex * size)];
-					await ReadExactlyAsync(fileToUpload, block, block.Length, token)
-						.ConfigureAwait(false);
-					md5.TransformBlock(block, 0, block.Length, null, 0);
+				// Read the block. Only the last block may be shorter.
+				var block = new byte[(int)Math.Min(size, totalSizeInBytes - blockIndex * size)];
+				await ReadExactlyAsync(fileToUpload, block, block.Length, token)
+					.ConfigureAwait(false);
 
-					// Upload the block.
-					await this.UploadStatelessFileBlockAsync(uploadInfo.FileRef, blockIndex, blockCount, size, block, token)
-						.ConfigureAwait(false);
-				}
-				md5.TransformFinalBlock(new byte[0], 0, 0);
-
-				// The server expects 32 hexadecimal characters.
-				uploadInfo.Checksum = BitConverter.ToString(md5.Hash).Replace("-", "").ToLowerInvariant();
+				// Upload the block.
+				await this.UploadStatelessFileBlockAsync(uploadInfo.FileRef, blockIndex, blockCount, size, block, token)
+					.ConfigureAwait(false);
 			}
 
 			// Return the upload information.

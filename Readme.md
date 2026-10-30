@@ -340,7 +340,7 @@ var newObjectVersion = client.ObjectOperations.CreateNewObject(
 
 ### With files
 
-Upload the files first with `ObjectFileOperations.UploadFiles`, then pass the returned upload information as the `Files` of the new object.  The upload information is passed on as it is returned: it identifies the uploaded content and, for a stateless upload, carries its checksum.
+Upload the files first with `ObjectFileOperations.UploadFiles`, then pass the returned upload information as the `Files` of the new object.  The upload information is passed on as it is returned: it identifies the uploaded content.
 
 ```csharp
 // Instantiate a new MFWS client.
@@ -404,7 +404,7 @@ M-Files servers that support the stateless file upload (the server capability `F
 The library asks for file references by itself:
 
 * It retrieves the capabilities of the server once (`client.GetServerCapabilities()`), and uses file references when the server supports them.  A server that does not support them, or does not return its capabilities, gets upload IDs, as before.
-* The uploaded content is committed with its MD5 checksum.  The server returns it when it receives the whole file in one request (`UploadInfo.Checksum`).  When a file is uploaded in blocks, the library calculates it.  Do not change the `FileRef` or the `Checksum` of the returned upload information; `UploadInfo.IsStateless()` tells which kind of upload it is.
+* Do not change the `FileRef` of the returned upload information; `UploadInfo.IsStateless()` tells which kind of upload it is.
 * The metadata suggestions of uploaded files are fetched with `AutomaticMetadataOperations.GetAutomaticMetadataForUploads`, which takes the upload information.  The methods that take the ids of temporary files are obsolete, as upload IDs are.
 
 A file reference can be committed only once, so a failed commit needs a new upload.

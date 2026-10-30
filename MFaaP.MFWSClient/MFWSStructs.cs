@@ -430,9 +430,9 @@ namespace MFaaP.MFWSClient
     /// Contains the information on an uploaded file.
     /// </summary>
     /// <remarks>
-    /// A stateless upload is identified by <see cref="FileRef"/>, which any server instance can use, and committed
-    /// with its <see cref="Checksum"/>. An upload ID (<see cref="UploadID"/>) is obsolete: it identifies an upload
-    /// session that is bound to one server instance, so every request of the upload needs a sticky session.
+    /// A stateless upload is identified by <see cref="FileRef"/>, which any server instance can use. An upload ID
+    /// (<see cref="UploadID"/>) is obsolete: it identifies an upload session that is bound to one server instance,
+    /// so every request of the upload needs a sticky session.
     /// </remarks>
     public class UploadInfo
 	{
@@ -458,16 +458,6 @@ namespace MFaaP.MFWSClient
 		/// The file reference of a stateless upload, which any server instance can use. Set instead of <see cref="UploadID"/>.
 		/// </summary>
 		public string FileRef { get; set; }
-
-		/// <summary>
-		/// The MD5 checksum of the whole content of a stateless upload as 32 hexadecimal characters.
-		/// Committing a <see cref="FileRef"/> requires it.
-		/// </summary>
-		/// <remarks>
-		/// Returned by the server when it receives the whole content in one request.
-		/// For content uploaded in blocks the client calculates it.
-		/// </remarks>
-		public string Checksum { get; set; }
 
 		/// <summary>
 		/// The maximum size of a block in bytes when a stateless upload is uploaded in blocks.
