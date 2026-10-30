@@ -370,6 +370,13 @@ namespace MFaaP.MFWSClient
 		/// <summary>
 		/// Uploads files to the temporary location.
 		/// </summary>
+		/// <remarks>
+		/// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
+		/// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
+		/// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+		/// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
+		/// when creating an object or adding the files to an object.
+		/// </remarks>
 		/// <param name="files">The files to upload.</param>
 		/// <returns>Information on the upload.</returns>
 		public Task<UploadInfo[]> UploadFilesAsync(params FileInfo[] files)
@@ -380,6 +387,13 @@ namespace MFaaP.MFWSClient
         /// <summary>
         /// Uploads files to the temporary location.
         /// </summary>
+        /// <remarks>
+        /// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
+        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
+        /// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+        /// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
+        /// when creating an object or adding the files to an object.
+        /// </remarks>
         /// <param name="files">The files to upload.</param>
         /// <returns>Information on the upload.</returns>
         public UploadInfo[] UploadFiles(params FileInfo[] files)
@@ -394,6 +408,13 @@ namespace MFaaP.MFWSClient
         /// <summary>
         /// Uploads files to the temporary location.
         /// </summary>
+        /// <remarks>
+        /// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
+        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
+        /// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+        /// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
+        /// when creating an object or adding the files to an object.
+        /// </remarks>
         /// <param name="files">The files to upload.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>Information on the upload.</returns>
@@ -457,6 +478,13 @@ namespace MFaaP.MFWSClient
         /// <summary>
         /// Uploads files to the temporary location.
         /// </summary>
+        /// <remarks>
+        /// If the server supports the stateless file upload (<see cref="ServerVaultCapabilities.FileUploadStatelessSupported"/>),
+        /// each upload is identified by a file reference (<see cref="UploadInfo.FileRef"/>) with the MD5 checksum of its content
+        /// (<see cref="UploadInfo.Checksum"/>), which any server instance can use. Otherwise it is identified by an upload ID
+        /// (<see cref="UploadInfo.UploadID"/>), which is obsolete and needs a sticky session. Pass the returned information as is
+        /// when creating an object or adding the files to an object.
+        /// </remarks>
         /// <param name="files">The files to upload.</param>
         /// <param name="token">A cancellation token for the request.</param>
         /// <returns>Information on the upload.</returns>
@@ -1137,7 +1165,9 @@ namespace MFaaP.MFWSClient
 				throw new ArgumentException("The file must have a size.", nameof(uploadInfo));
 
 			// Create the request.
+#pragma warning disable CS0618 // Upload IDs are obsolete; servers without the stateless upload still need them.
 			var request = new RestRequest($"/REST/files/{uploadInfo.UploadID}/{uploadInfo.Size}/uploadtemporarycommit.aspx");
+#pragma warning restore CS0618
 
 			// Execute the request.
 			var response = await this.MFWSClient.Post<int>(request, token)
@@ -1227,7 +1257,9 @@ namespace MFaaP.MFWSClient
 				var bytesRead = await fileToUpload.ReadAsync(buffer, 0, blockSize, token);
 
 				// Upload the block.
+#pragma warning disable CS0618 // Upload IDs are obsolete; servers without the stateless upload still need them.
 				var ui = await this.UploadTemporaryFileBlockAsync(uploadInfo.UploadID, totalSizeInBytes, offset, buffer, token);
+#pragma warning restore CS0618
 				uploadInfo = ui;
 
 				// Move onwards.

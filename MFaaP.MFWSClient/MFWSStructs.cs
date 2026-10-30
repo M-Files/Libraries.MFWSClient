@@ -427,8 +427,13 @@ namespace MFaaP.MFWSClient
     
 
     /// <summary>
-    /// Contains the information on a temporary upload.
+    /// Contains the information on an uploaded file.
     /// </summary>
+    /// <remarks>
+    /// A stateless upload is identified by <see cref="FileRef"/>, which any server instance can use, and committed
+    /// with its <see cref="Checksum"/>. An upload ID (<see cref="UploadID"/>) is obsolete: it identifies an upload
+    /// session that is bound to one server instance, so every request of the upload needs a sticky session.
+    /// </remarks>
     public class UploadInfo
 	{
 		/// <summary>
@@ -439,13 +444,14 @@ namespace MFaaP.MFWSClient
 		}
 
 		/// <summary>
-		/// Temporary upload ID given by the server.
+		/// Obsolete. Temporary upload ID given by the server, if the file was uploaded in an upload session.
 		/// </summary>
 		/// <remarks>
 		/// Zero for a stateless upload, which is identified by <see cref="FileRef"/> instead.
 		/// MFWS returns null for it, which is read as zero so that the type stays compatible with existing callers.
 		/// </remarks>
 		[System.Text.Json.Serialization.JsonConverter(typeof(NullAsZeroInt32JsonConverter))]
+		[Obsolete("Upload IDs are obsolete: a stateless upload is identified by FileRef, which any server instance can use.")]
 		public int UploadID { get; set; }
 
 		/// <summary>
@@ -2949,15 +2955,16 @@ namespace MFaaP.MFWSClient
 	}
 
 	/// <summary>
-	/// Holds file upload ids and property values for fetching automatic metadata. This struct is used when automatic metadata
-	/// is fetched from server.
+	/// Holds the uploaded files (file references or upload ids) and property values for fetching automatic metadata.
+	/// This struct is used when automatic metadata is fetched from server.
 	/// </summary>
 	public class AutomaticMetadataRequestInfo
 	{
 		/// <summary>
-		/// List of temporary file upload ids.
+		/// Obsolete. List of temporary file upload ids.
 		/// </summary>
-		/// <remarks>May be empty.</remarks>
+		/// <remarks>May be empty. Use <see cref="UploadedFiles"/> for stateless uploads.</remarks>
+		[Obsolete("Upload IDs are obsolete: use UploadedFiles with the file references of stateless uploads.")]
 		public List<int> UploadIds { get; set; } = new List<int>();
 
 		/// <summary>
