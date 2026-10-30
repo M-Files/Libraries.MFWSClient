@@ -427,8 +427,13 @@ namespace MFaaP.MFWSClient
     
 
     /// <summary>
-    /// Contains the information on a temporary upload.
+    /// Contains the information on an uploaded file.
     /// </summary>
+    /// <remarks>
+    /// A stateless upload is identified by <see cref="FileRef"/>, which any server instance can use. An upload ID
+    /// (<see cref="UploadID"/>) is obsolete: it identifies an upload session that is bound to one server instance,
+    /// so every request of the upload needs a sticky session.
+    /// </remarks>
     public class UploadInfo
 	{
 		/// <summary>
@@ -439,10 +444,41 @@ namespace MFaaP.MFWSClient
 		}
 
 		/// <summary>
-		/// Temporary upload ID given by the server.
+		/// Obsolete. Temporary upload ID given by the server, if the file was uploaded in an upload session.
 		/// </summary>
+		/// <remarks>
+		/// Zero for a stateless upload, which is identified by <see cref="FileRef"/> instead.
+		/// MFWS returns null for it, which is read as zero so that the type stays compatible with existing callers.
+		/// </remarks>
+		[System.Text.Json.Serialization.JsonConverter(typeof(NullAsZeroInt32JsonConverter))]
+		[Obsolete("Upload IDs are obsolete: a stateless upload is identified by FileRef, which any server instance can use.")]
 		public int UploadID { get; set; }
-        
+
+		/// <summary>
+		/// The file reference of a stateless upload, which any server instance can use. Set instead of <see cref="UploadID"/>.
+		/// </summary>
+		public string FileRef { get; set; }
+
+		/// <summary>
+		/// The maximum size of a block in bytes when a stateless upload is uploaded in blocks.
+		/// Returned when a stateless upload is started.
+		/// </summary>
+		public long? MaxBlockSize { get; set; }
+
+		/// <summary>
+		/// True if the blocks of a stateless upload must be uploaded in order, one at a time.
+		/// Returned when a stateless upload is started.
+		/// </summary>
+		public bool? RequireSequentialBlocks { get; set; }
+
+		/// <summary>
+		/// True if the upload is a stateless upload, identified by its <see cref="FileRef"/> instead of an <see cref="UploadID"/>.
+		/// </summary>
+		public bool IsStateless()
+		{
+			return false == string.IsNullOrEmpty(this.FileRef);
+		}
+
         /// <summary>
         /// File name without extension.
         /// </summary>
@@ -457,10 +493,23 @@ namespace MFaaP.MFWSClient
         /// File size.
         /// </summary>
         public long Size { get; set; }
-        
+
     }
 
-    
+	/// <summary>
+	/// The capabilities of the server, returned by /REST/server/capabilities.
+	/// </summary>
+	/// <remarks>Only the capabilities used by this library are included.</remarks>
+	public class ServerVaultCapabilities
+	{
+		/// <summary>
+		/// True if the server supports the stateless file upload, which identifies the uploads by file references
+		/// (<see cref="UploadInfo.FileRef"/>) instead of upload sessions, so that the requests need no sticky session.
+		/// </summary>
+		public bool FileUploadStatelessSupported { get; set; }
+	}
+
+
 
     /// <summary>
     /// A &#39;typed value&#39; represents a value, such as text, number, date or lookup item.
@@ -2896,16 +2945,23 @@ namespace MFaaP.MFWSClient
 	}
 
 	/// <summary>
-	/// Holds file upload ids and property values for fetching automatic metadata. This struct is used when automatic metadata
-	/// is fetched from server.
+	/// Holds the uploaded files (file references or upload ids) and property values for fetching automatic metadata.
+	/// This struct is used when automatic metadata is fetched from server.
 	/// </summary>
 	public class AutomaticMetadataRequestInfo
 	{
 		/// <summary>
-		/// List of temporary file upload ids.
+		/// Obsolete. List of temporary file upload ids.
 		/// </summary>
-		/// <remarks>May be empty.</remarks>
+		/// <remarks>May be empty. Use <see cref="UploadedFiles"/> for stateless uploads.</remarks>
+		[Obsolete("Upload IDs are obsolete: use UploadedFiles with the file references of stateless uploads.")]
 		public List<int> UploadIds { get; set; } = new List<int>();
+
+		/// <summary>
+		/// Files uploaded with the stateless upload. Their <see cref="UploadInfo.FileRef"/> and <see cref="UploadInfo.Extension"/> are used.
+		/// </summary>
+		/// <remarks>May be null. Cannot be combined with <see cref="UploadIds"/>.</remarks>
+		public List<UploadInfo> UploadedFiles { get; set; }
 
 		/// <summary>
 		/// Array of object's current property values.

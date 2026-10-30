@@ -10,7 +10,7 @@ It currently provides the following functionality:
 
 * Authentication, both using credentials and using Windows Single Sign On
 * Object creation
-* File upload
+* File upload, including the stateless file upload (file references)
 * Vault extension method execution
 * Searching
 
@@ -337,6 +337,77 @@ var newObjectVersion = client.ObjectOperations.CreateNewObject(
 						0, // 0 is the built-in object type of "Document"
 						newObjectDetails);
 ```
+
+### With files
+
+Upload the files first with `ObjectFileOperations.UploadFiles`, then pass the returned upload information as the `Files` of the new object.  The upload information is passed on as it is returned: it identifies the uploaded content.
+
+```csharp
+// Instantiate a new MFWS client.
+var client = new MFWSClient("http://m-files.mycompany.com");
+
+// Authentiate to a vault with GUID {C840BE1A-5B47-4AC0-8EF7-835C166C8E24} (clear credentials).
+client.AuthenticateUsingCredentials(Guid.Parse("{C840BE1A-5B47-4AC0-8EF7-835C166C8E24}"), "MyUsername", "MyPassword");
+
+// Upload the file.  The server returns a reference to the uploaded content.
+var uploads = client.ObjectFileOperations.UploadFiles(new FileInfo(@"C:\Temp\Report.pdf"));
+
+// Create a single-file document that has the uploaded file as its content.
+var newObjectDetails = new ObjectCreationInfo()
+{
+	PropertyValues = new[] {
+		new PropertyValue()
+		{
+			PropertyDef = 100, // Built-in property definition of "class".
+			TypedValue = new TypedValue()
+			{
+				DataType = MFDataType.Lookup,
+				Lookup = new Lookup() { Item = 0, Version = -1 } // The id 0 is the default Document class lookup ID
+			}
+		},
+		new PropertyValue()
+		{
+			PropertyDef = 22, // Property value 22 ("Single File Object") is required when creating a Document Object
+			TypedValue = new TypedValue() { DataType = MFDataType.Boolean, Value = true } // true = "single-file-document"
+		},
+		new PropertyValue()
+		{
+			PropertyDef = 0, // Property definition 0 (Name or Title) is the default title property
+			TypedValue = new TypedValue() { DataType = MFDataType.Text, Value = "Sample Title" }
+		}
+	},
+	Files = uploads
+};
+
+// Create the object in the M-Files vault and return data about the new object.
+var newObjectVersion = client.ObjectOperations.CreateNewObject(
+						0, // 0 is the built-in object type of "Document"
+						newObjectDetails);
+```
+
+### Adding and replacing files
+
+Files can be added to an existing object, and the content of an existing file replaced, with `ObjectFileOperations.AddFiles` and `ObjectFileOperations.UploadFile`:
+
+```csharp
+// Add a file to the object.
+var extendedObjectVersion = client.ObjectFileOperations.AddFiles(objVer, new FileInfo(@"C:\Temp\Another.pdf"));
+
+// Replace the content of a file of the object.
+client.ObjectFileOperations.UploadFile(objVer, fileVer, @"C:\Temp\Report.pdf");
+```
+
+### The stateless file upload
+
+M-Files servers that support the stateless file upload (the server capability `FileUploadStatelessSupported`, M-Files MFILES_VERSION_TBD and later) identify an upload by a file reference (`UploadInfo.FileRef`) instead of an upload ID (`UploadInfo.UploadID`).  A file reference can be used by any server instance, so the requests of an upload do not need a sticky session (session affinity) to one server.  The upload ID is obsolete.
+
+The library asks for file references by itself:
+
+* It retrieves the capabilities of the server once (`client.GetServerCapabilities()`), and uses file references when the server supports them.  A server that does not support them, or does not return its capabilities, gets upload IDs, as before.
+* Do not change the `FileRef` of the returned upload information; `UploadInfo.IsStateless()` tells which kind of upload it is.
+* The metadata suggestions of uploaded files are fetched with `AutomaticMetadataOperations.GetAutomaticMetadataForUploads`, which takes the upload information.  The methods that take the ids of temporary files are obsolete, as upload IDs are.
+
+A file reference can be committed only once, so a failed commit needs a new upload.
 
 ## Checking an object in and out.
 
