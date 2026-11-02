@@ -399,7 +399,7 @@ client.ObjectFileOperations.UploadFile(objVer, fileVer, @"C:\Temp\Report.pdf");
 
 ### The stateless file upload
 
-M-Files servers that support the stateless file upload (the server capability `FileUploadStatelessSupported`, M-Files MFILES_VERSION_TBD and later) identify an upload by a file reference (`UploadInfo.FileRef`) instead of an upload ID (`UploadInfo.UploadID`).  A file reference can be used by any server instance, so the requests of an upload do not need a sticky session (session affinity) to one server.  The upload ID is obsolete.
+M-Files servers that support the stateless file upload (the server capability `FileUploadStatelessSupported`) identify an upload by a file reference (`UploadInfo.FileRef`) instead of an upload ID (`UploadInfo.UploadID`).  A file reference can be used by any server instance, so the requests of an upload do not need a sticky session (session affinity) to one server.  The upload ID is obsolete.
 
 The library asks for file references by itself:
 
