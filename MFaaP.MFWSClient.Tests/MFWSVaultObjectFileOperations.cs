@@ -57,10 +57,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
-
-                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
-                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
+                tempFile.Create().Dispose();
                 tempFile = new FileInfo(@"test.txt");
             }
 
@@ -99,10 +96,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
-
-                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
-                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
+                tempFile.Create().Dispose();
                 tempFile = new FileInfo(@"test.txt");
             }
 
@@ -140,10 +134,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
-
-                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
-                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
+                tempFile.Create().Dispose();
                 tempFile = new FileInfo(@"test.txt");
             }
 
@@ -184,10 +175,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
-
-                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
-                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
+                tempFile.Create().Dispose();
                 tempFile.Refresh();
             }
 
@@ -224,10 +212,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
-
-                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
-                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFilesAsync.
+                tempFile.Create().Dispose();
                 tempFile.Refresh();
             }
 
@@ -271,10 +256,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
-
-                // NOTE: If test.txt did not exist the first time the test was run then 'file.Length' will throw an exception
-                // of type 'System.IO.FileNotFoundException' in MFWSVaultObjectFileOperations.UploadFiles.
+                tempFile.Create().Dispose();
                 tempFile = new FileInfo(@"test.txt");
             }
 
@@ -408,7 +390,10 @@ namespace MFaaP.MFWSClient.Tests
             // Create a temporary file.
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
-                tempFile.Create();
+            {
+                tempFile.Create().Dispose();
+                tempFile.Refresh();
+            }
 
             // Create our restsharp mock.
             var mock = new Mock<IRestClient>();
@@ -484,7 +469,10 @@ namespace MFaaP.MFWSClient.Tests
             // Create a temporary file.
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
-                tempFile.Create();
+            {
+                tempFile.Create().Dispose();
+                tempFile.Refresh();
+            }
 
             // Create our restsharp mock.
             var mock = new Mock<IRestClient>();
@@ -561,7 +549,7 @@ namespace MFaaP.MFWSClient.Tests
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
             {
-                tempFile.Create();
+                tempFile.Create().Dispose();
                 tempFile.Refresh();
             }
 
@@ -639,7 +627,10 @@ namespace MFaaP.MFWSClient.Tests
             // Create a temporary file.
             var tempFile = new FileInfo(@"test.txt");
             if (false == tempFile.Exists)
-                tempFile.Create();
+            {
+                tempFile.Create().Dispose();
+                tempFile.Refresh();
+            }
 
             // Create our restsharp mock.
             var mock = new Mock<IRestClient>();
